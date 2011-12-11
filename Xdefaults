@@ -1,0 +1,55 @@
+! bg & fg
+*background: #020202
+*foreground: #bbbbbb
+
+!black
+*color0:  #121212
+*color8:  #263033
+!red
+*color1:  #d90552
+*color9:  #f92672
+!green
+*color2:  #86c20e
+*color10: #a6e22e
+!yellow
+*color3:  #d6cb14
+*color11: #f6eb34
+!blue
+*color4:  #354ADD
+*color12: #6070ef
+!magenta
+*color5:  #ae31df
+*color13: #de51ff
+!cyan
+*color6:  #46b9cf
+*color14: #66d9ef
+!white
+*color7:  #E2D1E3
+*color15: #FFFFFF
+
+! rxvt-unicode --------------------------------------------------
+URxvt.termName:     rxvt-unicode-256color
+URxvt.title:        urxvt
+URxvt.loginShell:   false
+URxvt.transparent:  false
+URxvt.geometry:     90x30
+URxvt.cursorColor:  #ffcc22
+URxvt.scrollBar:    false
+URxvt.colorBD:      #ffffff
+URxvt.colorIT:      #a0cafa
+URxvt.colorUL:      #a0cafa
+URxvt.font: -*-terminus-medium-r-*-*-12-*-*-*-*-*-*-*
+URxvt.fontBold: -*-terminus-bold-r-*-*-12-*-*-*-*-*-*-*
+URxvt.fontItalic: -*-terminus-bold-r-*-*-12-*-*-*-*-*-*-*
+!URxvt.font: xft:Terminus:size=9:antialias=false
+!URxvt.fontBold: xft:Terminus:size=9:antialias=false:bold
+!URxvt.font: 7x14,xft:unifont.pcf:false
+!URxvt.fontBold: 7x14,xft:unifont.pcf:bold
+URxvt.perl-ext:	default,url-select
+URxvt.keysym.M-u: perl:url-select:select_next
+URxvt.underlineURLs:	true
+URxvt.urlLauncher:	br
+URxvt.matcher.button:	1
+URxvt.letterSpace:	0
+URxvt.urgentOnBell:	true
+

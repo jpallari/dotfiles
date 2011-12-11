@@ -1,0 +1,12 @@
+partial alphanumeric_keys
+xkb_symbols "diaeresis" {
+    replace key <LSGT> { [ adiaeresis, odiaeresis, Adiaeresis, Odiaeresis ] };
+};
+
+partial alphanumeric_keys
+xkb_symbols "hjkl_arrows" {
+    replace key <AC06> { [ h, H, Left,  H ] };
+    replace key <AC07> { [ j, J, Down,  J ] };
+    replace key <AC08> { [ k, K, Up,    OE ] };
+    replace key <AC09> { [ l, L, Right, Ooblique ] };
+};

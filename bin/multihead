@@ -1,0 +1,19 @@
+#!/bin/bash
+# A script for switching between a multihead and single head setup.
+
+IN="LVDS1"
+EXT="HDMI1"
+
+if [ "`xrandr | grep $EXT | grep "+"`" ]; then
+    # External off, internal on
+    xrandr --output $EXT --off --output $IN --auto
+    sh $HOME/.fehbg 
+else
+    if [ "`xrandr | grep $EXT | grep " connected"`" ]; then
+        # External on, internal on
+        xrandr --output $EXT --auto --left-of $IN
+        sh $HOME/.fehbg 
+        loadaltfin
+    fi
+fi
+

@@ -402,7 +402,6 @@ awful.rules.rules = {
       properties = { border_width = beautiful.border_width,
                      border_color = beautiful.border_normal,
                      focus = true,
-                     ontop = true,
                      keys = clientkeys,
                      buttons = clientbuttons } },
     -- Float
@@ -411,7 +410,7 @@ awful.rules.rules = {
         "feh",
         "Wicd-client.py"
       } },
-      properties = { floating = true } },
+      properties = { floating = true, ontop = true } },
     -- Float (not on top)
     { rule_any = { class = {
         "pinentry",

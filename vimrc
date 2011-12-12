@@ -70,7 +70,7 @@ noremap <buffer> <silent> j gj
 " Filetype detection
 filetype on
 filetype plugin on
-au FileType markdown set tw=79
+au FileType markdown set tw=79 sw=4 sts=4
 au FileType mail set tw=65
 
 augroup filetypedetect

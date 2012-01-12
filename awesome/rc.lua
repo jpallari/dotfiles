@@ -424,6 +424,11 @@ awful.rules.rules = {
         "Firefox"
       } },
       properties = { tag = tags[1][1] } },
+    -- Tag 5
+    { rule_any = { class = {
+        "Spotify"
+      } },
+      properties = { tag = tags[1][5] } },
     -- Firefox: float everything except the browser window
     { rule = { class = "Firefox" }, except = { instance = "Navigator" }, properties = { floating = true } }
 }

@@ -17,10 +17,11 @@ set ruler
 set sw=4 sts=4 et " Default tab behaviour
 set ofu=syntaxcomplete#Complete " OmniCompletion stuff
 set completeopt=longest,menuone
+set tw=0
 
 " Statusline
 set laststatus=2
-set statusline=%t\ %y\ [%{strlen(&fenc)?&fenc:'none'},%{&ff}]\ %h\ %m\ %r\%=%c,%l\ %LL\ %P
+"set statusline=%t\ %y\ [%{strlen(&fenc)?&fenc:'none'},%{&ff}]\ %h\ %m\ %r\%=%c,%l\ %LL\ %P
 
 " Some terminals just don't know how many colors they can actually display
 if $COLORTERM == "Terminal"
@@ -112,6 +113,9 @@ endfunction
 
 command! -nargs=1 SpaceIndent :call SpaceIndent(<q-args>)
 command! -nargs=1 TabIndent :call TabIndent(<q-args>)
+
+" Pathogen
+call pathogen#infect()
 
 " Source a local configuration file if available
 if filereadable($HOME . "/.vimrc.local")

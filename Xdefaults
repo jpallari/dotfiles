@@ -42,10 +42,10 @@ URxvt.colorUL:      #a0cafa
 !URxvt.boldFont:       -*-terminus-bold-r-*-*-12-*-*-*-*-*-*-*
 !URxvt.italicFont:     -*-terminus-bold-r-*-*-12-*-*-*-*-*-*-*
 !URxvt.boldItalicFont: -*-terminus-bold-r-*-*-12-*-*-*-*-*-*-*
-URxvt.font:           6x13,xft:unifont.pcf:false
-URxvt.boldFont:       6x13,xft:unifont.pcf:false
-URxvt.italicFont:     6x13,xft:unifont.pcf:false
-URxvt.boldItalicFont: 6x13,xft:unifont.pcf:false
+URxvt.font:           6x13,-*-unifont-*-*-*-*-0-*-*-*-*-*-*-*
+URxvt.boldFont:       
+URxvt.italicFont:     
+URxvt.boldItalicFont: 
 URxvt.perl-ext:	        default,url-select
 URxvt.keysym.M-u:       perl:url-select:select_next
 URxvt.underlineURLs:	true

@@ -97,7 +97,7 @@ end
 -- {{{ Tags
 -- Define a tag table which hold all screen tags.
 tags = {
-	names = {"web", "term", "code", "work", "♫", "λ", "π", "¶", "∅"},
+	names = {"main", "term", "c", "w", "¬", "µ", "@", "music", "_"},
 	layout = { layouts[1], layouts[1], layouts[1], layouts[1], layouts[1], layouts[1], layouts[1], layouts[1], layouts[1] }
 }
 for s = 1, screen.count() do
@@ -428,7 +428,7 @@ awful.rules.rules = {
     { rule_any = { class = {
         "Spotify"
       } },
-      properties = { tag = tags[1][5] } },
+      properties = { tag = tags[1][8] } },
     -- Firefox: float everything except the browser window
     { rule = { class = "Firefox" }, except = { instance = "Navigator" }, properties = { floating = true } }
 }

@@ -21,7 +21,10 @@ set tw=0
 
 " Statusline
 set laststatus=2
-"set statusline=%t\ %y\ [%{strlen(&fenc)?&fenc:'none'},%{&ff}]\ %h\ %m\ %r\%=%c,%l\ %LL\ %P
+set statusline=%t\ %y\ [%{strlen(&fenc)?&fenc:'none'},%{&ff}]\ %h\ %m\ %r\%=%c,%l\ %LL\ %P
+" Powerline
+let g:Powerline_cache_file = $HOME . "/.vim/Powerline.cache"
+let g:Powerline_theme = "jj"
 
 " Some terminals just don't know how many colors they can actually display
 if $COLORTERM == "Terminal"

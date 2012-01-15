@@ -9,11 +9,12 @@ set incsearch           " Incremental search
 set autowrite           " Automatically save before commands like :next and :make
 set mouse=a             " Enable mouse usage (all modes)
 set backspace=indent,eol,start " Backspace behaviour
-set ai " Autoindent
-set si " Smartindent
-set number " Line numbers
+set ai       " Autoindent
+set si       " Smartindent
+set number   " Line numbers
 set nobackup " No backup files
 set ruler 
+set hidden
 set sw=4 sts=4 et " Default tab behaviour
 set ofu=syntaxcomplete#Complete " OmniCompletion stuff
 set completeopt=longest,menuone
@@ -65,8 +66,8 @@ endif
 
 " Keymaps
 nnoremap <F2> :NERDTreeToggle<CR>
-nnoremap <C-n> :tabn<CR>
-nnoremap <C-p> :tabp<CR>
+nnoremap <C-n> :bn<CR>
+nnoremap <C-p> :bp<CR>
 nnoremap Y y$
 noremap <buffer> <silent> k gk
 noremap <buffer> <silent> j gj

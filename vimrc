@@ -15,6 +15,7 @@ set number   " Line numbers
 set nobackup " No backup files
 set ruler 
 set hidden
+set wildmenu
 set sw=4 sts=4 et " Default tab behaviour
 set ofu=syntaxcomplete#Complete " OmniCompletion stuff
 set completeopt=longest,menuone

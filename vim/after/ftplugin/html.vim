@@ -1,2 +1,2 @@
-setlocal omnifunc=htmlcomplete#CompleteTags
-setlocal sw=2 sts=2 et
+set omnifunc=htmlcomplete#CompleteTags
+set sw=2 sts=2 et

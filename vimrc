@@ -44,6 +44,10 @@ let g:syntastic_mode_map = { 'mode': 'passive',
                            \ 'active_filetypes': [],
                            \ 'passive_filetypes': [] }
 
+" Haskell
+au BufEnter *.hs compiler ghc
+let g:haddock_browser="/usr/bin/dwb"
+
 " Some terminals just don't know how many colors they can actually display
 if $COLORTERM == "Terminal"
     " for those newfangled vte terminals

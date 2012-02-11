@@ -96,7 +96,6 @@ inoremap <C-b> <C-O>h
 inoremap <C-p> <C-O>k
 inoremap <C-e> <C-O>$
 inoremap <C-a> <C-O>0
-inoremap <M-x> <C-O>:
 
 augroup filetypedetect
     " Mail

@@ -79,6 +79,8 @@ bindkey -M vicmd '^s' history-incremental-search-forward
 # Other keybindings
 bindkey -M viins '^h' backward-delete-char
 bindkey -M viins "^?" backward-delete-char
+bindkey -M viins '^a' beginning-of-line
+bindkey -M viins '^e' end-of-line
 
 # Vi or Emacs mode
 bindkey -v # Vi mode

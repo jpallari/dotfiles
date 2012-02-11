@@ -100,6 +100,9 @@ function zle-line-init zle-keymap-select {
 zle -N zle-keymap-select
 zle -N zle-line-init
 
+# Flow control
+stty -ixon
+
 # Exports
 export PYTHONSTARTUP="$HOME/.pyrc"
 

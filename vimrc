@@ -88,6 +88,16 @@ nnoremap Y y$
 noremap <buffer> <silent> k gk
 noremap <buffer> <silent> j gj
 
+" Emacs in insert mode
+inoremap <C-p> <C-O>k
+inoremap <C-n> <C-O>j
+inoremap <C-f> <C-O>l
+inoremap <C-b> <C-O>h
+inoremap <C-p> <C-O>k
+inoremap <C-e> <C-O>$
+inoremap <C-a> <C-O>0
+inoremap <M-x> <C-O>:
+
 augroup filetypedetect
     " Mail
     autocmd BufRead,BufNewFile *mutt-* setfiletype mail

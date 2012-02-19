@@ -1,42 +1,42 @@
-set nocompatible
-set background=dark
-syntax on
-set showcmd             " Show (partial) command in status line.
-set showmatch           " Show matching brackets.
-set ignorecase          " Do case insensitive matching
-set smartcase           " Do smart case matching
-set incsearch           " Incremental search
-set autowrite           " Automatically save before commands like :next and :make
-set mouse=a             " Enable mouse usage (all modes)
-set backspace=indent,eol,start " Backspace behaviour
-set ai       " Autoindent
-set number   " Line numbers
-set nobackup " No backup files
-set ruler 
-set hidden
-set wildmenu
-set sw=4 sts=4 et " Default tab behaviour
-set ofu=syntaxcomplete#Complete " OmniCompletion stuff
-set completeopt=menuone,longest,preview
-set tw=0
-set pastetoggle=<F4>
+" jkpl's vimrc
+"
 
 " Filetype detection
 filetype on
 filetype plugin on
-filetype plugin indent on
+filetype indent on
 au FileType markdown set tw=79 sw=4 sts=4
 au FileType mail set tw=65
+
+" General
+syntax on
+set nocompatible
+set background=dark
+set showcmd
+set showmatch
+set ignorecase
+set smartcase
+set incsearch
+set autowrite
+set mouse=a
+set backspace=indent,eol,start
+set ai
+set nobackup
+set ruler 
+set hidden
+set wildmenu
+set wildignore=*.o,*.obj,*.bak,*.exe
+set hlsearch
+set sw=4 sts=4 et
+set ofu=syntaxcomplete#Complete
+set completeopt=menuone,longest,preview
+set tw=0
+set pastetoggle=<F4>
+let mapleader=","
 
 " Statusline
 set laststatus=2
 set statusline=%t\ %y\ [%{strlen(&fenc)?&fenc:'none'},%{&ff}]\ %h\ %m\ %r\%=%c,%l\ %LL\ %P
-" Powerline
-let g:Powerline_cache_file = $HOME . "/.vim/Powerline.cache"
-let g:Powerline_theme = "jj"
-
-" Supertab
-let g:SuperTabDefaultCompletionType = "context"
 
 " Syntastic
 let g:syntastic_enable_highlighting = 0
@@ -62,15 +62,15 @@ endif
 
 " Choose a theme based on the available colors
 if &t_Co > 16
-    colorscheme molokai
+    colorscheme jellybeans
 else
     colorscheme robokai
 endif
 
 " Jump back to where we left
-"if has("autocmd")
-"  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-"endif
+if has("autocmd")
+  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
 
 " Arrowkey fix for rxvt-unicode
 if &term == 'rxvt-unicode'
@@ -82,20 +82,39 @@ endif
 
 " Keymaps
 nnoremap <F2> :NERDTreeToggle<CR>
+nnoremap <Leader>f :NERDTreeToggle<CR>
 nnoremap <C-n> :bn<CR>
 nnoremap <C-p> :bp<CR>
 nnoremap Y y$
 noremap <buffer> <silent> k gk
 noremap <buffer> <silent> j gj
+noremap x "_dl
+noremap <c-h> <c-w>h
+noremap <c-j> <c-w>j
+noremap <c-k> <c-w>k
+noremap <c-l> <c-w>l
+inoremap <expr> <C-Space> pumvisible() \|\| &omnifunc == '' ?
+            \ "\<lt>C-n>" :
+            \ "\<lt>C-x>\<lt>C-o><c-r>=pumvisible() ?" .
+            \ "\"\\<lt>c-n>\\<lt>c-p>\\<lt>c-n>\" :" .
+            \ "\" \\<lt>bs>\\<lt>C-n>\"\<CR>"
+imap <C-@> <C-Space>
+nnoremap <silent> <Leader>/ :set hlsearch!<cr>
+nnoremap <Leader>p :setlocal paste! paste?<cr>
+nnoremap ; :
+nnoremap - <C-w>-
+nnoremap + <C-w>+
 
-" Emacs in insert mode
+" Some Emacs keybindings
 inoremap <C-p> <C-O>k
 inoremap <C-n> <C-O>j
 inoremap <C-f> <C-O>l
 inoremap <C-b> <C-O>h
-inoremap <C-p> <C-O>k
 inoremap <C-e> <C-O>$
 inoremap <C-a> <C-O>0
+inoremap <C-k> <C-O>D
+cnoremap <C-f> <Right>
+cnoremap <C-b> <Left>
 
 augroup filetypedetect
     " Mail

@@ -5,6 +5,11 @@
 filetype on
 filetype plugin on
 filetype indent on
+augroup filetypedetect
+    au BufRead,BufNewFile *.txt setfiletype text
+    au BufRead,BufNewFile *mutt-* setfiletype mail
+    au BufRead,BufNewFile *.md setfiletype markdown
+augroup END
 au FileType markdown set tw=79 sw=4 sts=4 et
 au FileType text set tw=79 sw=4 sts=4 et
 au FileType mail set tw=65
@@ -90,10 +95,10 @@ nnoremap Y y$
 noremap <buffer> <silent> k gk
 noremap <buffer> <silent> j gj
 noremap x "_dl
-noremap <c-h> <c-w>h
-noremap <c-j> <c-w>j
-noremap <c-k> <c-w>k
-noremap <c-l> <c-w>l
+nnoremap <c-h> <c-w>h
+nnoremap <c-j> <c-w>j
+nnoremap <c-k> <c-w>k
+nnoremap <c-l> <c-w>l
 inoremap <expr> <C-Space> pumvisible() \|\| &omnifunc == '' ?
             \ "\<lt>C-n>" :
             \ "\<lt>C-x>\<lt>C-o><c-r>=pumvisible() ?" .
@@ -102,7 +107,7 @@ inoremap <expr> <C-Space> pumvisible() \|\| &omnifunc == '' ?
 imap <C-@> <C-Space>
 nnoremap <silent> <Leader>/ :set hlsearch!<cr>
 nnoremap <Leader>p :setlocal paste! paste?<cr>
-nnoremap ; :
+noremap ; :
 nnoremap - <C-w>-
 nnoremap + <C-w>+
 
@@ -116,14 +121,6 @@ inoremap <C-a> <C-O>0
 inoremap <C-k> <C-O>D
 cnoremap <C-f> <Right>
 cnoremap <C-b> <Left>
-
-augroup filetypedetect
-    " Mail
-    autocmd BufRead,BufNewFile *mutt-* setfiletype mail
-
-    " Markdown instead of modula
-    autocmd BufRead,BufNewFile *.md set filetype=markdown
-augroup END
 
 "
 " Some functions...

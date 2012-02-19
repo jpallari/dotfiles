@@ -5,7 +5,8 @@
 filetype on
 filetype plugin on
 filetype indent on
-au FileType markdown set tw=79 sw=4 sts=4
+au FileType markdown set tw=79 sw=4 sts=4 et
+au FileType text set tw=79 sw=4 sts=4 et
 au FileType mail set tw=65
 
 " General

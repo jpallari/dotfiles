@@ -28,7 +28,7 @@ set mouse=a
 set backspace=indent,eol,start
 set ai
 set nobackup
-set ruler 
+set ruler
 set hidden
 set wildmenu
 set wildignore=*.o,*.obj,*.bak,*.exe
@@ -38,7 +38,9 @@ set ofu=syntaxcomplete#Complete
 set completeopt=menuone,longest,preview
 set tw=0
 set pastetoggle=<F4>
+set listchars=tab:▸\ ,eol:¬
 let mapleader=","
+let &showbreak='↳'
 
 " Statusline
 set laststatus=2
@@ -86,28 +88,40 @@ if &term == 'rxvt-unicode'
     imap OD <Left>
 endif
 
-" Keymaps
-nnoremap <F2> :NERDTreeToggle<CR>
-nnoremap <Leader>f :NERDTreeToggle<CR>
-nnoremap <C-n> :bn<CR>
-nnoremap <C-p> :bp<CR>
-nnoremap Y y$
+" Custom mappings
+"
+
+noremap ; :
 noremap <buffer> <silent> k gk
 noremap <buffer> <silent> j gj
-noremap x "_dl
-nnoremap <c-h> <c-w>h
-nnoremap <c-j> <c-w>j
-nnoremap <c-k> <c-w>k
-nnoremap <c-l> <c-w>l
+nnoremap x "_dl
+nnoremap X "_dh
+nnoremap Y y$
+nnoremap <C-n> :bn<CR>
+nnoremap <C-p> :bp<CR>
+
+" Ctrl+Space for omnicompletion
 inoremap <expr> <C-Space> pumvisible() \|\| &omnifunc == '' ?
             \ "\<lt>C-n>" :
             \ "\<lt>C-x>\<lt>C-o><c-r>=pumvisible() ?" .
             \ "\"\\<lt>c-n>\\<lt>c-p>\\<lt>c-n>\" :" .
             \ "\" \\<lt>bs>\\<lt>C-n>\"\<CR>"
 imap <C-@> <C-Space>
+
+" Toggle stuff
+nnoremap <F2> :NERDTreeToggle<CR>
+nnoremap <Leader>f :NERDTreeToggle<CR>
 nnoremap <silent> <Leader>/ :set hlsearch!<cr>
 nnoremap <Leader>p :setlocal paste! paste?<cr>
-noremap ; :
+nnoremap <Leader>n :set number!<cr>
+nnoremap <Leader>r :set relativenumber!<cr>
+nnoremap <Leader>l :set list!<cr>
+
+" Shortcuts for managing windows
+nnoremap <c-h> <c-w>h
+nnoremap <c-j> <c-w>j
+nnoremap <c-k> <c-w>k
+nnoremap <c-l> <c-w>l
 nnoremap - <C-w>-
 nnoremap + <C-w>+
 
@@ -121,6 +135,8 @@ inoremap <C-a> <C-O>0
 inoremap <C-k> <C-O>D
 cnoremap <C-f> <Right>
 cnoremap <C-b> <Left>
+cnoremap <C-p> <Up>
+cnoremap <C-n> <Down>
 
 "
 " Some functions...

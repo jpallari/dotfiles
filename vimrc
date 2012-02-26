@@ -1,6 +1,44 @@
 " jkpl's vimrc
 "
 
+syntax on
+set nocompatible
+set background=dark
+set showcmd
+set gdefault
+set autowrite
+set mouse=a
+set backspace=indent,eol,start
+set ai
+set nobackup
+set ruler
+set hidden
+set scrolloff=3
+set wildmenu
+set wildignore=*.o,*.obj,*.bak,*.exe
+set ofu=syntaxcomplete#Complete
+set completeopt=menuone,longest,preview
+set sw=4 sts=4 ts=8 et
+set tw=0
+set pastetoggle=<F4>
+set listchars=tab:▸\ ,eol:¬
+let mapleader=","
+let &showbreak='↳'
+
+" Search stuff
+set showmatch
+set ignorecase
+set smartcase
+set incsearch
+set hlsearch
+
+" Statusline
+set laststatus=2
+set statusline=\ %<%.40f
+set statusline+=\ %y\ %m\ %r
+set statusline+=%=
+set statusline+=%c,%l\ %LL\ %P
+
 " Filetype detection
 filetype on
 filetype plugin on
@@ -14,83 +52,34 @@ au FileType markdown set tw=79 sw=4 sts=4 et
 au FileType text set tw=79 sw=4 sts=4 et
 au FileType mail set tw=65
 
-" General
-syntax on
-set nocompatible
-set background=dark
-set showcmd
-set showmatch
-set ignorecase
-set smartcase
-set incsearch
-set hlsearch
-set gdefault
-set autowrite
-set mouse=a
-set backspace=indent,eol,start
-set ai
-set nobackup
-set ruler
-set hidden
-set scrolloff=3
-set wildmenu
-set wildignore=*.o,*.obj,*.bak,*.exe
-set sw=4 sts=4 et
-set ofu=syntaxcomplete#Complete
-set completeopt=menuone,longest,preview
-set tw=0
-set pastetoggle=<F4>
-set listchars=tab:▸\ ,eol:¬
-let mapleader=","
-let &showbreak='↳'
-
-" Statusline
-set laststatus=2
-set statusline=\ %<%.40f
-set statusline+=\ %y\ %m\ %r
-set statusline+=%=
-set statusline+=%c,%l\ %LL\ %P
-
 " Syntastic
 let g:syntastic_enable_highlighting = 0
 let g:syntastic_mode_map = { 'mode': 'passive',
                            \ 'active_filetypes': [],
                            \ 'passive_filetypes': [] }
 
+" Buftabs
+let g:buftabs_only_basename=1
+
 " Haskell
 au BufEnter *.hs compiler ghc
-let g:haddock_browser="/usr/bin/dwb"
+let g:haddock_browser="/usr/bin/firefox"
 
 " Some terminals just don't know how many colors they can actually display
-if $COLORTERM == "Terminal"
-    " for those newfangled vte terminals
+if $COLORTERM =~ "rxvt-xpm"
     set t_Co=256
-elseif $COLORTERM =~ "rxvt-xpm"
-    " for rxvt-xpm based color terminals (eg. rxvt-unicode)
-    set t_Co=256
-else
-    " incase everything else fails
-    "set t_Co=16
 endif
 
 " Choose a theme based on the available colors
-if &t_Co > 16
+if &t_Co > 88
     colorscheme jellybeans
 else
-    colorscheme robokai
+    colorscheme lucius
 endif
 
 " Jump back to where we left
 if has("autocmd")
   au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-endif
-
-" Arrowkey fix for rxvt-unicode
-if &term == 'rxvt-unicode'
-    imap OA <Up>
-    imap OB <Down>
-    imap OC <Right>
-    imap OD <Left>
 endif
 
 " Custom mappings
@@ -110,6 +99,12 @@ nnoremap <C-p> :bp<CR>
 nnoremap <Leader>pp :echo &ft . ", " . &fenc . ", " . &ff<cr>
 nnoremap <Leader>f :LustyFilesystemExplorer<cr>
 nnoremap <Leader>b :LustyBufferExplorer<cr>
+
+" Indent stuff
+nnoremap <Leader>ms :setl et sts=2 sw=2 ts=8 sts? sw? ts?<cr>
+nnoremap <Leader>mm :setl et sts=4 sw=4 ts=8 sts? sw? ts?<cr>
+nnoremap <Leader>ml :setl et sts=8 sw=8 ts=8 sts? sw? ts?<cr>
+nnoremap <Leader>mt :setl noet sts=0 sw=8 ts=8 sts? sw? ts?<cr>
 
 " Ctrl+Space for omnicompletion
 inoremap <expr> <C-Space> pumvisible() \|\| &omnifunc == '' ?
@@ -146,40 +141,6 @@ cnoremap <C-f> <Right>
 cnoremap <C-b> <Left>
 cnoremap <C-p> <Up>
 cnoremap <C-n> <Down>
-
-"
-" Some functions...
-"
-function! SpaceIndent (...)
-    if a:0 > 0
-        let &l:shiftwidth = a:1
-        let &l:softtabstop = a:1
-        let len = a:1
-    else
-        setl sw=4 sts=4
-        let len = 4
-    endif
-    setl et
-    echo "Space indent set to " . len
-endfunction
-
-function! TabIndent (...)
-    if a:0 > 0
-        let &shiftwidth = a:1
-        let &tabstop = a:1
-        let len = a:1
-    else
-        setl sw=8 ts=8
-        let len = 8
-    endif
-    setl noet sts=0
-    echo "Tab indent set to " . len
-endfunction
-
-command! -nargs=1 SpaceIndent :call SpaceIndent(<q-args>)
-command! -nargs=1 TabIndent :call TabIndent(<q-args>)
-nnoremap <Leader>gs :SpaceIndent 
-nnoremap <Leader>gt :TabIndent 
 
 " Pathogen
 call pathogen#infect()

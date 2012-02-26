@@ -23,6 +23,8 @@ set showmatch
 set ignorecase
 set smartcase
 set incsearch
+set hlsearch
+set gdefault
 set autowrite
 set mouse=a
 set backspace=indent,eol,start
@@ -30,9 +32,9 @@ set ai
 set nobackup
 set ruler
 set hidden
+set scrolloff=3
 set wildmenu
 set wildignore=*.o,*.obj,*.bak,*.exe
-set hlsearch
 set sw=4 sts=4 et
 set ofu=syntaxcomplete#Complete
 set completeopt=menuone,longest,preview
@@ -44,7 +46,10 @@ let &showbreak='↳'
 
 " Statusline
 set laststatus=2
-set statusline=%t\ %y\ [%{strlen(&fenc)?&fenc:'none'},%{&ff}]\ %h\ %m\ %r\%=%c,%l\ %LL\ %P
+set statusline=\ %<%.40f
+set statusline+=\ %y\ %m\ %r
+set statusline+=%=
+set statusline+=%c,%l\ %LL\ %P
 
 " Syntastic
 let g:syntastic_enable_highlighting = 0
@@ -92,13 +97,19 @@ endif
 "
 
 noremap ; :
-noremap <buffer> <silent> k gk
-noremap <buffer> <silent> j gj
+noremap k gk
+noremap j gj
+noremap / /\v
+noremap <F1> <ESC>
+inoremap <F1> <ESC>
 nnoremap x "_dl
 nnoremap X "_dh
 nnoremap Y y$
 nnoremap <C-n> :bn<CR>
 nnoremap <C-p> :bp<CR>
+nnoremap <Leader>pp :echo &ft . ", " . &fenc . ", " . &ff<cr>
+nnoremap <Leader>f :LustyFilesystemExplorer<cr>
+nnoremap <Leader>b :LustyBufferExplorer<cr>
 
 " Ctrl+Space for omnicompletion
 inoremap <expr> <C-Space> pumvisible() \|\| &omnifunc == '' ?
@@ -109,8 +120,6 @@ inoremap <expr> <C-Space> pumvisible() \|\| &omnifunc == '' ?
 imap <C-@> <C-Space>
 
 " Toggle stuff
-nnoremap <F2> :NERDTreeToggle<CR>
-nnoremap <Leader>f :NERDTreeToggle<CR>
 nnoremap <silent> <Leader>/ :set hlsearch!<cr>
 nnoremap <Leader>p :setlocal paste! paste?<cr>
 nnoremap <Leader>n :set number!<cr>
@@ -169,6 +178,8 @@ endfunction
 
 command! -nargs=1 SpaceIndent :call SpaceIndent(<q-args>)
 command! -nargs=1 TabIndent :call TabIndent(<q-args>)
+nnoremap <Leader>gs :SpaceIndent 
+nnoremap <Leader>gt :TabIndent 
 
 " Pathogen
 call pathogen#infect()

@@ -93,14 +93,14 @@ bindkey -v # Vi mode
 
 # Prompt
 autoload -U colors && colors
-PROMPT="%{$fg_bold[cyan]%}%m%{$fg_bold[grey]%}> %{$reset_color%}"
+PROMPT="%{$fg_bold[red]%}» %{$reset_color%}"
 RPROMPT=""
 
 # Fun time VI mode prompt for great justice
-VIMODE="cyan"
+VIMODE=""
 function zle-line-init zle-keymap-select {
-    VIMODE="${${KEYMAP/vicmd/magenta}/(main|viins)/cyan}"
-    PROMPT="%{$fg_bold[${VIMODE}]%}%m%{$fg_bold[grey]%}> %{$reset_color%}"
+    VIMODE="${${KEYMAP/vicmd/-CMD-}/(main|viins)/}"
+    RPROMPT="%{$fg_bold[red]%}${VIMODE}%{$reset_color%}"
     zle reset-prompt
 }
 

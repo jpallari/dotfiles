@@ -21,7 +21,7 @@ set completeopt=menuone,longest,preview
 set sw=4 sts=4 ts=8 et
 set tw=0
 set pastetoggle=<F4>
-set listchars=tab:▸\ ,eol:¬
+set listchars=tab:▸\ ,eol:¬,trail:⋅,extends:❯,precedes:❮
 let mapleader=","
 let &showbreak='↳'
 
@@ -99,6 +99,9 @@ nnoremap <C-p> :bp<CR>
 nnoremap <Leader>pp :echo &ft . ", " . &fenc . ", " . &ff<cr>
 nnoremap <Leader>f :LustyFilesystemExplorer<cr>
 nnoremap <Leader>b :LustyBufferExplorer<cr>
+nnoremap <Leader><Leader> <C-^>
+vnoremap < <gv
+vnoremap > >gv
 
 " Indent stuff
 nnoremap <Leader>ms :setl et sts=2 sw=2 ts=8 sts? sw? ts?<cr>
@@ -119,7 +122,8 @@ nnoremap <silent> <Leader>/ :set hlsearch!<cr>
 nnoremap <Leader>p :setlocal paste! paste?<cr>
 nnoremap <Leader>n :set number!<cr>
 nnoremap <Leader>r :set relativenumber!<cr>
-nnoremap <Leader>l :set list!<cr>
+nnoremap <Leader>l :set list! list?<cr>
+nnoremap <Leader>w :set wrap! wrap?<cr>
 
 " Shortcuts for managing windows
 nnoremap <c-h> <c-w>h

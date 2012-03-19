@@ -30,7 +30,7 @@ set showmatch
 set ignorecase
 set smartcase
 set incsearch
-set hlsearch
+set nohls
 
 " Statusline
 set laststatus=2
@@ -96,7 +96,7 @@ nnoremap X "_dh
 nnoremap Y y$
 nnoremap <C-n> :bn<CR>
 nnoremap <C-p> :bp<CR>
-nnoremap <Leader>pp :echo &ft . ", " . &fenc . ", " . &ff<cr>
+nnoremap <Leader>p :echo &ft . ", " . &fenc . ", " . &ff<cr>
 nnoremap <Leader>f :LustyFilesystemExplorer<cr>
 nnoremap <Leader>b :LustyBufferExplorer<cr>
 nnoremap <Leader><Leader> <C-^>
@@ -119,11 +119,11 @@ imap <C-@> <C-Space>
 
 " Toggle stuff
 nnoremap <silent> <Leader>/ :set hlsearch!<cr>
-nnoremap <Leader>p :setlocal paste! paste?<cr>
-nnoremap <Leader>n :set number!<cr>
-nnoremap <Leader>r :set relativenumber!<cr>
-nnoremap <Leader>l :set list! list?<cr>
-nnoremap <Leader>w :set wrap! wrap?<cr>
+nnoremap <Leader>tp :setlocal paste! paste?<cr>
+nnoremap <Leader>tn :set number!<cr>
+nnoremap <Leader>tr :set relativenumber!<cr>
+nnoremap <Leader>tl :set list! list?<cr>
+nnoremap <Leader>tw :set wrap! wrap?<cr>
 
 " Shortcuts for managing windows
 nnoremap <c-h> <c-w>h
@@ -132,6 +132,16 @@ nnoremap <c-k> <c-w>k
 nnoremap <c-l> <c-w>l
 nnoremap - <C-w>-
 nnoremap + <C-w>+
+
+" Shortcuts for managing splits
+nnoremap <Leader>swh :topleft vnew<cr>
+nnoremap <Leader>swj :botright new<cr>
+nnoremap <Leader>swk :topleft new<cr>
+nnoremap <Leader>swl :botright vnew<cr>
+nnoremap <Leader>sh :leftabove vnew<cr>
+nnoremap <Leader>sj :rightbelow new<cr>
+nnoremap <Leader>sk :leftabove new<cr>
+nnoremap <Leader>sl :rightbelow vnew<cr>
 
 " Some Emacs keybindings
 inoremap <C-p> <C-O>k

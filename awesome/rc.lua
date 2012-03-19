@@ -59,7 +59,42 @@ end
 
 -- Volume control function: updates volinfo widget
 -- mostly ripped from vicious volume widget
-function volctrl(mctrl, cmd)
+function volctrl(cmd)
+    mctrl = 'Master'
+
+    local mixer_state = {
+        ["on"]  = "on",
+        ["off"] = "off"
+    }
+    local amxcmd = "amixer get " .. mctrl
+    local pacmd = ""
+    if     cmd == "up"     then pacmd = "vol_up"
+    elseif cmd == "down"   then pacmd = "vol_down"
+    elseif cmd == "toggle" then pacmd = "mute_toggle"
+    end
+
+    if pacmd then os.execute(pacmd) end
+    local f = io.popen(amxcmd)
+    local mixer = f:read("*all")
+    f:close()
+
+    local volu, mute = string.match(mixer, "([%d]+)%%.*%[([%l]*)")
+    if volu == nil then
+       volinfo.text = "VOL 0 " .. mixer_state["off"]
+       return
+    end
+
+    if mute == "" and volu == "0"
+    or mute == "off" then
+       mute = mixer_state["off"]
+    else
+       mute = mixer_state["on"]
+    end
+
+    volinfo.text = " <span color='".. beautiful.volume .."'>VOL " .. volu .. " " .. mute .. "</span> "
+end
+
+function oldvolctrl(mctrl, cmd)
     if not mctrl then mctrl = 'Master' end
 
     local mixer_state = {
@@ -146,7 +181,7 @@ vicious.register(mybattery, vicious.widgets.bat, " <span color='".. beautiful.ba
 
 -- Volume info
 volinfo = widget({ type = "textbox" })
-volctrl("Master", false)
+volctrl(false)
 
 -- Create a wibox for each screen and add it
 mywibox = {}
@@ -311,9 +346,9 @@ globalkeys = awful.util.table.join(
         end),
 
     -- Volume keys
-    awful.key({ modkey }, "[", function () volctrl("Master", "5-") end),
-    awful.key({ modkey }, "]", function () volctrl("Master", "5+") end),
-    awful.key({ modkey }, "'", function () volctrl("Master", "toggle") end),
+    awful.key({ modkey }, "[", function () volctrl("down") end),
+    awful.key({ modkey }, "]", function () volctrl("up") end),
+    awful.key({ modkey }, "'", function () volctrl("toggle") end),
 
     awful.key({        }, "XF86Sleep",   function () awful.util.spawn("sleeplock", false) end),
     awful.key({        }, "XF86Display", function () awful.util.spawn("multihead", false) end),

@@ -16,3 +16,6 @@
 [submodule "vim/bundle/lustyExplorer"]
 	path = vim/bundle/lustyExplorer
 	url = https://github.com/vim-scripts/LustyExplorer.git
+[submodule "vim/bundle/vim-jade"]
+	path = vim/bundle/vim-jade
+	url = git://github.com/digitaltoad/vim-jade.git

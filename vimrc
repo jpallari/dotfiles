@@ -77,10 +77,10 @@ if has('gui_running')
     set guioptions+=T
     set guicursor=a:blinkon0
     set lines=40 columns=100
-    colorscheme jellybeans
+    colorscheme seanmod
 else
     " Settings for non-GUI VIM
-    colorscheme sean3
+    colorscheme seanmod
 endif
 
 " Jump back to where we left

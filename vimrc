@@ -70,11 +70,17 @@ if $COLORTERM =~ "rxvt-xpm"
     set t_Co=256
 endif
 
-" Choose a theme based on the available colors
-if &t_Co > 88
+if has('gui_running')
+    " Settings for GUI version of VIM
+    set guifont=terminus\ 8
+    set guioptions-=m
+    set guioptions+=T
+    set guicursor=a:blinkon0
+    set lines=40 columns=100
     colorscheme jellybeans
 else
-    colorscheme lucius
+    " Settings for non-GUI VIM
+    colorscheme sean3
 endif
 
 " Jump back to where we left

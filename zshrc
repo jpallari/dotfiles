@@ -11,8 +11,8 @@ unsetopt autocd notify
 
 # variables
 HISTFILE=~/.histfile
-HISTSIZE=100
-SAVEHIST=100
+HISTSIZE=400
+SAVEHIST=400
 WORDCHARS='*?_-[]~=&;!#$%^(){}<>'
 eval `dircolors -b`
 
@@ -28,7 +28,6 @@ zstyle ':completion:*' file-sort name
 zstyle ':completion:*' select-prompt %SMenu active. Location: %p %s
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
-zstyle :compinstall filename '/home/jaakkop/.zshrc'
 
 # Fix the annoying globbing issue with urls and scp
 autoload -U url-quote-magic
@@ -77,6 +76,7 @@ bindkey -M vicmd '^s' history-incremental-search-forward
 bindkey -M vicmd '^s' history-incremental-search-forward
 
 # Other keybindings
+bindkey -M viins '^w' backward-delete-word
 bindkey -M viins '^h' backward-delete-char
 bindkey -M viins "^?" backward-delete-char
 bindkey -M viins '^a' beginning-of-line
@@ -86,6 +86,8 @@ bindkey -M viins '^p' up-line-or-history
 bindkey -M viins '^k' kill-line
 bindkey -M viins '^f' forward-char
 bindkey -M viins '^b' backward-char
+bindkey -M viins 'f' forward-word
+bindkey -M viins 'b' backward-word
 
 # Vi or Emacs mode
 bindkey -v # Vi mode
@@ -93,7 +95,8 @@ bindkey -v # Vi mode
 
 # Prompt
 autoload -U colors && colors
-PROMPT="%{$fg_bold[red]%}» %{$reset_color%}"
+#PROMPT="%{$fg[red]%}>%{$fg_bold[red]%}> %{$reset_color%}"
+PROMPT="%{$fg_bold[red]%}\$ %{$reset_color%}"
 RPROMPT=""
 
 # Fun time VI mode prompt for great justice
@@ -107,7 +110,7 @@ function zle-line-init zle-keymap-select {
 zle -N zle-keymap-select
 zle -N zle-line-init
 
-# Flow control
+# Disable flow control
 stty -ixon
 
 # Exports

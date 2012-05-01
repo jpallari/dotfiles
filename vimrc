@@ -15,7 +15,7 @@ set ruler
 set hidden
 set scrolloff=3
 set wildmenu
-set wildignore=*.o,*.obj,*.bak,*.exe
+set wildignore=*.so,*.dll,*.o,*.obj,*.bak,*.exe,*.pyc,*/.git*,*/.hg*,*/.svn*
 set ofu=syntaxcomplete#Complete
 set completeopt=menuone,longest,preview
 set sw=4 sts=4 ts=8 et
@@ -63,7 +63,17 @@ let g:buftabs_only_basename=1
 
 " Haskell
 au BufEnter *.hs compiler ghc
-let g:haddock_browser="/usr/bin/firefox"
+
+" CtrlP
+let g:ctrlp_map = ""
+let g:ctrlp_working_path_mode = 0
+let g:ctrlp_max_files = 4000
+let g:ctrlp_max_depth = 10
+let g:ctrlp_follow_symlinks = 0
+let g:ctrlp_dotfiles = 0
+let g:ctrlp_custom_ignore = {
+    \ 'dir': '\.cache$'
+    \ }
 
 " Some terminals just don't know how many colors they can actually display
 if $COLORTERM =~ "rxvt-xpm"
@@ -74,7 +84,7 @@ if has('gui_running')
     " Settings for GUI version of VIM
     set guifont=terminus\ 8
     set guioptions-=m
-    set guioptions+=T
+    set guioptions+=Tc
     set guicursor=a:blinkon0
     set lines=40 columns=100
     colorscheme seanmod
@@ -103,9 +113,12 @@ nnoremap Y y$
 nnoremap <C-n> :bn<CR>
 nnoremap <C-p> :bp<CR>
 nnoremap <Leader>p :echo &ft . ", " . &fenc . ", " . &ff<cr>
-nnoremap <Leader>f :LustyFilesystemExplorer<cr>
-nnoremap <Leader>b :LustyBufferExplorer<cr>
-nnoremap <Leader><Leader> <C-^>
+nnoremap <Leader>f :CtrlP<cr>
+nnoremap <Leader>b :CtrlPBuffer<cr>
+nnoremap <Leader>r :CtrlPMRUFiles<cr>
+nnoremap <Leader>j <C-^>
+nnoremap <Leader><Leader> :CtrlPBuffer<cr>
+nnoremap <Leader>e :e 
 vnoremap < <gv
 vnoremap > >gv
 

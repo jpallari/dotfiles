@@ -52,6 +52,9 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 (set-face-background 'modeline "#0000ee")
 (set-face-foreground 'modeline "#ffffff")
+(set-cursor-color "#ffcc22")
+(xterm-mouse-mode)
+(set-mouse-color "#ffffff")
 
 ; Some defaults
 (setq-default tab-width 4)

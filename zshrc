@@ -115,6 +115,7 @@ stty -ixon
 
 # Exports
 export PYTHONSTARTUP="$HOME/.pyrc"
+export PAGER=less
 
 # Aliases
 alias ls="ls --color=auto -F"
@@ -124,6 +125,6 @@ alias ..="cd .."
 alias ..."cd ../.."
 alias ii="tmux attach -d"
 alias h="hostname"
-alias e="emacsclient -t"
+alias e='emacsclient -t --alternate-editor=""'
 [[ -f $HOME/.zshaliases ]] && source $HOME/.zshaliases
 

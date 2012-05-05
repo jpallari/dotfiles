@@ -12,7 +12,7 @@
 
 ; Package management
 (setq my-pkgs
-  '(evil evil-leader auto-complete org
+  '(evil evil-leader auto-complete
          haskell-mode jade-mode markdown-mode
          python stylus-mode undo-tree))
 (require 'package)

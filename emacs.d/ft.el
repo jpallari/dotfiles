@@ -6,6 +6,7 @@
 (add-to-list 'auto-mode-alist '("\\.md" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.mdown" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.text" . markdown-mode))
+(add-to-list 'auto-mode-alist '("dotfiles\\/emacs$" . lisp-mode))
 
 ; JavaScript
 (setq js-indent-level 2)

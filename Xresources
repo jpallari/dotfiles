@@ -1,3 +1,6 @@
+! Emacs
+Emacs.font: Terminus-9
+
 ! bg & fg
 *background: #020202
 *foreground: #bbbbbb

@@ -78,6 +78,9 @@
 (require 'w3m-load nil t)
 (require 'mime-w3m nil t)
 
+; IDO
+(require 'ido)
+
 ; EVIL
 (when (require 'evil nil t)
   (define-key evil-normal-state-map "\C-e" 'evil-end-of-line)
@@ -97,3 +100,7 @@
 
 ; Undo tree
 (require 'undo-tree)
+
+; Custom variables
+(setq custom-file "~/.emacs.d/custom-file.el")
+(load custom-file)

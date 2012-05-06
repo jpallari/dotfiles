@@ -56,7 +56,8 @@
 (global-set-key (kbd "RET") 'newline-and-indent)
 
 ;; UI
-(when (not window-system) (menu-bar-mode -1))
+(when (not window-system)
+  (menu-bar-mode -1))
 (setq inhibit-splash-screen t)
 (blink-cursor-mode 0)
 (show-paren-mode 1)
@@ -66,7 +67,7 @@
 (set-face-foreground 'modeline "#ffffff")
 (set-cursor-color "#ffcc22")
 (set-mouse-color "#ffffff")
-(set-scroll-bar-mode 'right)
+(when (fboundp 'set-scroll-bar-mode) (set-scroll-bar-mode 'right))
 (xterm-mouse-mode)
 
 ;; Some defaults

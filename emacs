@@ -7,6 +7,9 @@
 (setq backup-inhibited t)
 (setq auto-save-default nil)
 
+;; Custom envs
+(setenv "PAGER" "/bin/cat")
+
 ;; Load paths
 (add-to-list 'load-path "~/.emacs.d/")
 (when (> emacs-major-version 23) ;; for Emacs 24 and newer
@@ -23,6 +26,8 @@
 (package-initialize)
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
+
+;; Custom functions
 (defun install-missing-packages ()
   "Installs all the missing packages"
   (interactive)
@@ -31,9 +36,16 @@
       (or (package-installed-p pkg)
           (if (y-or-n-p (format "Package %s is missing. Install it? " pkg))
             (package-install pkg)))) my-pkgs))
+(defun kr-or-bwkw (&optional arg region)
+  "`kill-region` if the region is active, otherwise `backward-kill-word`"
+  (interactive
+   (list (prefix-numeric-value current-prefix-arg) (use-region-p)))
+  (if region
+      (kill-region (region-beginning) (region-end))
+    (backward-kill-word arg)))
 
 ;; Keybindings
-(global-set-key (kbd "C-w") 'backward-kill-word)
+(global-set-key (kbd "C-w") 'kr-or-bwkw)
 (global-set-key (kbd "C-x C-k") 'kill-region)
 (global-set-key (kbd "C-c C-k") 'kill-region)
 (global-set-key (kbd "C-c q") 'auto-fill-mode)
@@ -48,11 +60,13 @@
 (setq inhibit-splash-screen t)
 (blink-cursor-mode 0)
 (show-paren-mode 1)
+(eldoc-mode 1)
 (defalias 'yes-or-no-p 'y-or-n-p)
 (set-face-background 'modeline "#0000ee")
 (set-face-foreground 'modeline "#ffffff")
 (set-cursor-color "#ffcc22")
 (set-mouse-color "#ffffff")
+(set-scroll-bar-mode 'right)
 (xterm-mouse-mode)
 
 ;; Some defaults

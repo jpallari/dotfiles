@@ -1,0 +1,21 @@
+"1.0rc1
+
+loadplugins '\.(js|penta)$'
+group user
+colorscheme molokai
+hi FontCode font-size: 8pt; font-family: "Terminus", "Consolas", "Dejavu Sans Mono", "Courier New";
+hi FontFixed font-family: "Terminus", "Consolas", "Dejavu Sans Mono", "Courier New"; font-size: 8pt;
+hi FontProportional font-size: 8pt; font-family: "Terminus", "Consolas", "Dejavu Sans Mono", "Courier New";
+hi -a Hint font-size: 16px; font-weight: bold; text-transform: uppercase;
+map -count -modes=n k -builtin <count><count><C-u>
+map -count -modes=n j -builtin <count><count><C-d>
+map -count -modes=n K -builtin <count><count><C-n>
+map -count -modes=n J -builtin <count><count><C-p>
+inoremap -builtin <C-x><C-a> <ESC>
+cnoremap -builtin <C-g> <ESC>
+set autocomplete=
+set defsearch=s
+set fbwhitelist=youtube.com,github.com,soundcloud.com,facebook.com,infoq.com
+set followhints=1
+set hintkeys=asdfglkjhrutyvbncmie
+set scroll=4

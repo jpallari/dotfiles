@@ -12,14 +12,15 @@
 
 ;; Load paths
 (add-to-list 'load-path "~/.emacs.d/")
-(when (> emacs-major-version 23) ;; for Emacs 24 and newer
-  (add-to-list 'custom-theme-load-path "~/.emacs.d/themes"))
-(when (< emacs-major-version 24) ;; for Emacs 23 and older
-  (add-to-list 'load-path "~/.emacs.d/package"))
+(if (>= emacs-major-version 24)
+  (progn ;; Emacs 24 and newer
+    (add-to-list 'custom-theme-load-path "~/.emacs.d/themes"))
+  (progn ;; Emacs 23 and older
+    (add-to-list 'load-path "~/.emacs.d/package")))
 
 ;; Package management
 (setq my-pkgs
-  '(evil evil-leader auto-complete surround
+  '(evil auto-complete surround
          haskell-mode jade-mode markdown-mode
          python stylus-mode undo-tree))
 (require 'package)
@@ -106,11 +107,12 @@
   (evil-mode 1)
   (setq evil-default-state 'normal)
 
-  ;; switch between emacs mode and evil normal mode
+  ;; emacs mode as insert mode
   (setcdr evil-insert-state-map nil)
   (define-key evil-insert-state-map
     (read-kbd-macro evil-toggle-key) 'evil-emacs-state)
   (define-key evil-insert-state-map (kbd "C-x C-a") 'evil-normal-state)
+  (define-key evil-insert-state-map (kbd "C-z") 'evil-normal-state)
   (evil-set-initial-state ido-mode 'insert)
 
   ;; evil surround

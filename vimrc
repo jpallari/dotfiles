@@ -162,7 +162,7 @@ nnoremap <Leader>sj :rightbelow new<cr>
 nnoremap <Leader>sk :leftabove new<cr>
 nnoremap <Leader>sl :rightbelow vnew<cr>
 
-" Some Emacs keybindings
+" Some keybindings from Emacs
 inoremap <C-p> <C-O>k
 inoremap <C-n> <C-O>j
 inoremap <C-f> <C-O>l
@@ -174,6 +174,7 @@ cnoremap <C-f> <Right>
 cnoremap <C-b> <Left>
 cnoremap <C-p> <Up>
 cnoremap <C-n> <Down>
+inoremap <C-z> <ESC>
 inoremap <C-x><C-a> <ESC>
 inoremap <C-x><C-s> <C-o>:w<cr>
 nnoremap <C-x><C-s> :w<cr>

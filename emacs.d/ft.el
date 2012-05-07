@@ -37,5 +37,7 @@
 ; CoffeeScript
 (add-hook 'coffee-mode-hook
           '(lambda ()
-             (setq tab-width 2)))
+             (setq tab-width 2)
+             (setq coffee-js-mode 'js-mode)
+             (define-key coffee-mode-map (kbd "C-c C-r") 'coffee-compile-buffer)))
 

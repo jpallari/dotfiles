@@ -12,16 +12,19 @@
 
 ;; Load paths
 (add-to-list 'load-path "~/.emacs.d/")
+
+;; Version specific settings
 (if (>= emacs-major-version 24)
   (progn ;; Emacs 24 and newer
-    (add-to-list 'custom-theme-load-path "~/.emacs.d/themes"))
+    (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
+    (load-theme 'seanmod t))
   (progn ;; Emacs 23 and older
     (add-to-list 'load-path "~/.emacs.d/package")))
 
 ;; Package management
 (setq my-pkgs
-  '(evil auto-complete surround
-         haskell-mode jade-mode markdown-mode
+  '(evil popup sws-mode auto-complete surround
+         haskell-mode jade-mode coffee-mode markdown-mode
          python stylus-mode undo-tree))
 (require 'package)
 (package-initialize)
@@ -44,6 +47,11 @@
   (if region
       (kill-region (region-beginning) (region-end))
     (backward-kill-word arg)))
+(defun what-face (pos)
+  (interactive "d")
+  (let ((face (or (get-char-property (point) 'read-face-name)
+                  (get-char-property (point) 'face))))
+    (if face (message "Face: %s" face) (message "No face at %d" pos))))
 
 ;; Keybindings
 (global-set-key (kbd "C-w") 'kr-or-bwkw)
@@ -62,6 +70,7 @@
 (setq inhibit-splash-screen t)
 (blink-cursor-mode 0)
 (show-paren-mode 1)
+(column-number-mode 1)
 (eldoc-mode 1)
 (defalias 'yes-or-no-p 'y-or-n-p)
 (set-face-background 'modeline "#0000ee")
@@ -96,6 +105,12 @@
 ;; IDO
 (require 'ido nil t)
 
+;; Auto-complete
+(when (require 'auto-complete-config nil t)
+  (ac-config-default)
+  (setq ac-auto-start nil)
+  (ac-set-trigger-key "TAB"))
+
 ;; EVIL
 (when (require 'evil nil t)
   (define-key evil-normal-state-map "\C-h" 'evil-window-left)
@@ -113,6 +128,7 @@
     (read-kbd-macro evil-toggle-key) 'evil-emacs-state)
   (define-key evil-insert-state-map (kbd "C-x C-a") 'evil-normal-state)
   (define-key evil-insert-state-map (kbd "C-z") 'evil-normal-state)
+  (define-key evil-visual-state-map (kbd "C-z") 'evil-normal-state)
   (evil-set-initial-state ido-mode 'insert)
 
   ;; evil surround

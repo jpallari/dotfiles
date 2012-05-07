@@ -49,7 +49,7 @@ URxvt.font:            6x13,-*-unifont-*-*-*-*-0-*-*-*-*-*-*-*
 URxvt.boldFont:       
 URxvt.italicFont:     
 URxvt.boldItalicFont: 
-URxvt.perl-ext:	        selection,url-select
+URxvt.perl-ext:	        selection,url-select,-searchable-scrollback
 URxvt.keysym.M-u:       perl:url-select:select_next
 URxvt.underlineURLs:	false
 URxvt.urlLauncher:      br

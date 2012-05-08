@@ -103,7 +103,7 @@
 
 ;; Browser
 (setq w3m-use-cookies t)
-(when (getenv "DISPLAY")
+(when (not (getenv "DISPLAY"))
   (setq browse-url-browser-function 'w3m-browse-url)
   (autoload 'w3m-browse-url "w3m" "Ask a WWW browser to show a URL." t))
 (setq w3m-coding-system 'utf-8

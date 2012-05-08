@@ -14,6 +14,15 @@
           ("gmail" . "tag:gmail AND tag:unread")
           ("rss" . "tag:rss AND tag:unread")
           ("facebook" . "tag:facebook AND tag:unread")))
+  (setq notmuch-hello-sections
+        '(notmuch-hello-insert-header
+          notmuch-hello-insert-saved-searches
+          notmuch-hello-insert-recent-searches
+          notmuch-hello-insert-alltags
+          notmuch-hello-insert-footer))
+  (setq notmuch-search-oldest-first nil)
+  (setq notmuch-show-all-multipart/alternative-parts nil)
+  (setq notmuch-show-part-button-default-action 'notmuch-show-save-part)
 
   (define-key notmuch-search-mode-map "j" 'notmuch-search-next-thread)
   (define-key notmuch-search-mode-map "k" 'notmuch-search-previous-thread)

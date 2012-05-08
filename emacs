@@ -58,8 +58,8 @@
 (global-set-key (kbd "C-x C-k") 'kill-region)
 (global-set-key (kbd "C-c C-k") 'kill-region)
 (global-set-key (kbd "C-c q") 'auto-fill-mode)
-(global-set-key (kbd "C-c C-n") 'next-buffer)
-(global-set-key (kbd "C-c C-p") 'previous-buffer)
+(global-set-key (kbd "M-]") 'next-buffer)
+(global-set-key (kbd "M-[") 'previous-buffer)
 (global-set-key (kbd "C-c C-m") 'execute-extended-command)
 (global-set-key (kbd "C-x C-m") 'execute-extended-command)
 (global-set-key (kbd "RET") 'newline-and-indent)
@@ -98,12 +98,20 @@
 ;; Notmuch
 (autoload 'notmuch "~/.emacs.d/my-notmuch" "notmuch mail" t)
 
-;; W3M
-(require 'w3m-load nil t)
-(require 'mime-w3m nil t)
-
 ;; IDO
 (require 'ido nil t)
+
+;; Browser
+(setq w3m-use-cookies t)
+(when (getenv "DISPLAY")
+  (setq browse-url-browser-function 'w3m-browse-url)
+  (autoload 'w3m-browse-url "w3m" "Ask a WWW browser to show a URL." t))
+(setq w3m-coding-system 'utf-8
+      w3m-file-coding-system 'utf-8
+      w3m-file-name-coding-system 'utf-8
+      w3m-input-coding-system 'utf-8
+      w3m-output-coding-system 'utf-8
+      w3m-terminal-coding-system 'utf-8)
 
 ;; Auto-complete
 (when (require 'auto-complete-config nil t)

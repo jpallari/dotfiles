@@ -16,16 +16,17 @@
 ;; Version specific settings
 (if (>= emacs-major-version 24)
   (progn ;; Emacs 24 and newer
-    (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
+    (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
     (load-theme 'seanmod t))
   (progn ;; Emacs 23 and older
-    (add-to-list 'load-path "~/.emacs.d/package")))
+    (add-to-list 'load-path "~/.emacs.d/package/")))
 
 ;; Package management
 (setq my-pkgs
-  '(evil popup sws-mode auto-complete surround
+  '(evil popup sws-mode auto-complete surround magit
          haskell-mode jade-mode coffee-mode markdown-mode
-         python stylus-mode undo-tree))
+         python stylus-mode js2-mode undo-tree
+         flymake-coffee flymake-jslint))
 (require 'package)
 (package-initialize)
 (add-to-list 'package-archives
@@ -56,7 +57,6 @@
 ;; Keybindings
 (global-set-key (kbd "C-w") 'kr-or-bwkw)
 (global-set-key (kbd "C-x C-k") 'kill-region)
-(global-set-key (kbd "C-c C-k") 'kill-region)
 (global-set-key (kbd "C-c q") 'auto-fill-mode)
 (global-set-key (kbd "M-]") 'next-buffer)
 (global-set-key (kbd "M-[") 'previous-buffer)
@@ -98,14 +98,18 @@
 ;; Notmuch
 (autoload 'notmuch "~/.emacs.d/my-notmuch" "notmuch mail" t)
 
-;; IDO
-(require 'ido nil t)
+;; IDO mode
+(when (require 'ido nil t)
+  (setq ido-enable-flex-matching t)
+  (setq ido-everywhere t)
+  (setq ido-use-filename-at-point 'guess)
+  (ido-mode 1))
 
 ;; Browser
-(setq w3m-use-cookies t)
 (when (not (getenv "DISPLAY"))
   (setq browse-url-browser-function 'w3m-browse-url)
   (autoload 'w3m-browse-url "w3m" "Ask a WWW browser to show a URL." t))
+(setq w3m-use-cookies t)
 (setq w3m-coding-system 'utf-8
       w3m-file-coding-system 'utf-8
       w3m-file-name-coding-system 'utf-8
@@ -115,6 +119,7 @@
 
 ;; Auto-complete
 (when (require 'auto-complete-config nil t)
+  (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
   (ac-config-default)
   (setq ac-auto-start nil)
   (ac-set-trigger-key "TAB"))
@@ -135,9 +140,9 @@
   (define-key evil-insert-state-map
     (read-kbd-macro evil-toggle-key) 'evil-emacs-state)
   (define-key evil-insert-state-map (kbd "C-x C-a") 'evil-normal-state)
+  (define-key evil-visual-state-map (kbd "C-x C-a") 'evil-normal-state)
   (define-key evil-insert-state-map (kbd "C-z") 'evil-normal-state)
   (define-key evil-visual-state-map (kbd "C-z") 'evil-normal-state)
-  (evil-set-initial-state ido-mode 'insert)
 
   ;; evil surround
   (when (require 'surround nil t)
@@ -146,6 +151,11 @@
 ;; Undo tree
 (require 'undo-tree nil t)
 
-;; Custom variables
+;; Customizations file
 (setq custom-file "~/.emacs.d/custom-file.el")
 (load custom-file)
+
+;; Local settings
+(let ((fname "~/.emacs.local"))
+  (when (file-exists-p fname)
+    (load fname)))

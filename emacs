@@ -43,8 +43,7 @@
             (package-install pkg)))) my-pkgs))
 (defun kr-or-bwkw (&optional arg region)
   "`kill-region` if the region is active, otherwise `backward-kill-word`"
-  (interactive
-   (list (prefix-numeric-value current-prefix-arg) (use-region-p)))
+  (interactive (list (prefix-numeric-value current-prefix-arg) (use-region-p)))
   (if region
       (kill-region (region-beginning) (region-end))
     (backward-kill-word arg)))
@@ -63,6 +62,7 @@
 (global-set-key (kbd "C-c C-m") 'execute-extended-command)
 (global-set-key (kbd "C-x C-m") 'execute-extended-command)
 (global-set-key (kbd "RET") 'newline-and-indent)
+(global-set-key (kbd "C-z") 'keyboard-escape-quit)
 
 ;; UI
 (when (not window-system)
@@ -103,7 +103,8 @@
   (setq ido-enable-flex-matching t)
   (setq ido-everywhere t)
   (setq ido-use-filename-at-point 'guess)
-  (ido-mode 1))
+  (ido-mode 1)
+  (define-key ido-common-completion-map (kbd "C-z") 'keyboard-escape-quit))
 
 ;; Browser
 (when (not (getenv "DISPLAY"))
@@ -126,21 +127,20 @@
 
 ;; EVIL
 (when (require 'evil nil t)
-  (define-key evil-normal-state-map "\C-h" 'evil-window-left)
-  (define-key evil-normal-state-map "\C-j" 'evil-window-down)
-  (define-key evil-normal-state-map "\C-k" 'evil-window-up)
-  (define-key evil-normal-state-map "\C-l" 'evil-window-right)
-  (define-key evil-normal-state-map "-" 'evil-window-decrease-height)
-  (define-key evil-normal-state-map "+" 'evil-window-increase-height)
   (evil-mode 1)
   (setq evil-default-state 'normal)
+  (define-key evil-normal-state-map (kbd ";") 'evil-ex)
+  (define-key evil-normal-state-map (kbd "C-h") 'evil-window-left)
+  (define-key evil-normal-state-map (kbd "C-j") 'evil-window-down)
+  (define-key evil-normal-state-map (kbd "C-k") 'evil-window-up)
+  (define-key evil-normal-state-map (kbd "C-l") 'evil-window-right)
+  (define-key evil-normal-state-map (kbd "-") 'evil-window-decrease-height)
+  (define-key evil-normal-state-map (kbd "+") 'evil-wndow-increase-height)
 
   ;; emacs mode as insert mode
   (setcdr evil-insert-state-map nil)
   (define-key evil-insert-state-map
     (read-kbd-macro evil-toggle-key) 'evil-emacs-state)
-  (define-key evil-insert-state-map (kbd "C-x C-a") 'evil-normal-state)
-  (define-key evil-visual-state-map (kbd "C-x C-a") 'evil-normal-state)
   (define-key evil-insert-state-map (kbd "C-z") 'evil-normal-state)
   (define-key evil-visual-state-map (kbd "C-z") 'evil-normal-state)
 

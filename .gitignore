@@ -4,4 +4,5 @@ emacs.d/elpa
 emacs.d/auto-save-list
 emacs.d/abbrev_defs
 emacs.d/ac-comphist.dat
+*.elc
 pentadactyl/info

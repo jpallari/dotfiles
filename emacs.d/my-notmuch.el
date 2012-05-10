@@ -3,9 +3,11 @@
 (when (require 'notmuch nil t)
   ;; Functions
   (defun notmuch-show-browser-browse-part (message-id nth &optional filename content-type)
-    (notmuch-with-temp-part-buffer message-id nth
-      (set-buffer-file-coding-system 'raw-text)
-      (browse-url-of-buffer)))
+    (if (string= content-type "text/html")
+        (notmuch-with-temp-part-buffer message-id nth
+          (set-buffer-file-coding-system 'raw-text)
+          (browse-url-of-buffer))
+      (notmuch-show-save-part message-id nth filename content-type)))
   (defun notmuch-show-part-button-browser-browse (&optional button)
     (interactive)
     (notmuch-show-part-button-internal button #'notmuch-show-browser-browse-part))

@@ -24,7 +24,7 @@
 (setq my-pkgs
   '(evil popup sws-mode auto-complete surround magit
          haskell-mode jade-mode coffee-mode markdown-mode
-         python stylus-mode js2-mode undo-tree
+         python stylus-mode js2-mode undo-tree tango-2-theme
          flymake-coffee flymake-jslint))
 (require 'package)
 (package-initialize)
@@ -66,23 +66,25 @@
 (global-set-key (kbd "C-x C-m") 'execute-extended-command)
 (global-set-key (kbd "C-z") 'keyboard-escape-quit)
 (global-set-key (kbd "C-t") 'other-window)
+(global-set-key (kbd "RET") 'indent-new-comment-line)
+(global-set-key (kbd "C-j") 'newline)
 
 ;; UI
+(when (>= emacs-major-version 24)
+  (load-theme 'tango-2 t))
 (if (not window-system)
   (progn ;; No window system
-    (set-face-background 'modeline "#0000ee")
-    (set-face-foreground 'modeline "#ffffff")
     ;; (when (require 'mouse nil t)
     ;;   (xterm-mouse-mode t)
     ;;   (defun track-mouse (e))
     ;;   (setq mouse-sel-mode t))
     (menu-bar-mode -1)
-    (when (>= emacs-major-version 24) (load-theme 'seanmod t)))
+    (set-face-background 'modeline "#0000ee")
+    (set-face-foreground 'modeline "#ffffff")
+    (set-face-background 'default "#000000"))
   (progn ;; Window system
-    (when (>= emacs-major-version 24)
-      (load-theme 'misterioso t)
-      (set-cursor-color "#ffcc22")
-      (set-mouse-color "#ffffff"))))
+    (set-cursor-color "#ffcc22")
+    (set-mouse-color "#ffffff")))
 (setq inhibit-splash-screen t)
 (blink-cursor-mode 0)
 (show-paren-mode 1)
@@ -97,6 +99,9 @@
 (setq-default indent-tabs-mode nil)
 (setq-default fill-column 79)
 (turn-on-font-lock)
+
+;; Enable disabled commands
+(put 'downcase-region 'disabled nil)
 
 ;; Filetype specific settings
 (load "~/.emacs.d/ft")

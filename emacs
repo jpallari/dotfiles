@@ -79,8 +79,10 @@
     ;;   (defun track-mouse (e))
     ;;   (setq mouse-sel-mode t))
     (menu-bar-mode -1)
-    (set-face-background 'modeline "#0000ee")
-    (set-face-foreground 'modeline "#ffffff")
+    (set-face-background 'mode-line "#0000ee")
+    (set-face-foreground 'mode-line "#ffffff")
+    (set-face-background 'mode-line-inactive "#00005f")
+    (set-face-foreground 'mode-line-inactive "#767676")
     (set-face-background 'default "#000000"))
   (progn ;; Window system
     (set-cursor-color "#ffcc22")

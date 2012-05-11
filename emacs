@@ -16,8 +16,7 @@
 ;; Version specific settings
 (if (>= emacs-major-version 24)
   (progn ;; Emacs 24 and newer
-    (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
-    (load-theme 'seanmod t))
+    (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/"))
   (progn ;; Emacs 23 and older
     (add-to-list 'load-path "~/.emacs.d/package/")))
 
@@ -52,8 +51,12 @@
   (let ((face (or (get-char-property (point) 'read-face-name)
                   (get-char-property (point) 'face))))
     (if face (message "Face: %s" face) (message "No face at %d" pos))))
+(defun jump-to-last-mark () (interactive) (set-mark-command 1))
 
 ;; Keybindings
+(global-set-key (kbd "M-`") 'jump-to-last-mark)
+(global-set-key (kbd "M-p") 'scroll-down-command)
+(global-set-key (kbd "M-n") 'scroll-up-command)
 (global-set-key (kbd "C-w") 'kr-or-bwkw)
 (global-set-key (kbd "C-x C-k") 'kill-region)
 (global-set-key (kbd "C-c q") 'auto-fill-mode)
@@ -61,24 +64,31 @@
 (global-set-key (kbd "M-[") 'previous-buffer)
 (global-set-key (kbd "C-c C-m") 'execute-extended-command)
 (global-set-key (kbd "C-x C-m") 'execute-extended-command)
-(global-set-key (kbd "RET") 'newline-and-indent)
 (global-set-key (kbd "C-z") 'keyboard-escape-quit)
+(global-set-key (kbd "C-t") 'other-window)
 
 ;; UI
-(when (not window-system)
-  (menu-bar-mode -1))
+(if (not window-system)
+  (progn ;; No window system
+    (set-face-background 'modeline "#0000ee")
+    (set-face-foreground 'modeline "#ffffff")
+    ;; (when (require 'mouse nil t)
+    ;;   (xterm-mouse-mode t)
+    ;;   (defun track-mouse (e))
+    ;;   (setq mouse-sel-mode t))
+    (menu-bar-mode -1)
+    (when (>= emacs-major-version 24) (load-theme 'seanmod t)))
+  (progn ;; Window system
+    (when (>= emacs-major-version 24)
+      (load-theme 'misterioso t)
+      (set-cursor-color "#ffcc22")
+      (set-mouse-color "#ffffff"))))
 (setq inhibit-splash-screen t)
 (blink-cursor-mode 0)
 (show-paren-mode 1)
 (column-number-mode 1)
-(eldoc-mode 1)
 (defalias 'yes-or-no-p 'y-or-n-p)
-(set-face-background 'modeline "#0000ee")
-(set-face-foreground 'modeline "#ffffff")
-(set-cursor-color "#ffcc22")
-(set-mouse-color "#ffffff")
 (when (fboundp 'set-scroll-bar-mode) (set-scroll-bar-mode 'right))
-(xterm-mouse-mode)
 
 ;; Some defaults
 (setq-default tab-width 4)
@@ -135,7 +145,7 @@
   (define-key evil-normal-state-map (kbd "C-k") 'evil-window-up)
   (define-key evil-normal-state-map (kbd "C-l") 'evil-window-right)
   (define-key evil-normal-state-map (kbd "-") 'evil-window-decrease-height)
-  (define-key evil-normal-state-map (kbd "+") 'evil-wndow-increase-height)
+  (define-key evil-normal-state-map (kbd "+") 'evil-window-increase-height)
 
   ;; emacs mode as insert mode
   (setcdr evil-insert-state-map nil)
@@ -149,7 +159,8 @@
     (global-surround-mode 1)))
 
 ;; Undo tree
-(require 'undo-tree nil t)
+(when (require 'undo-tree nil t)
+  (global-set-key (kbd "M-?") 'undo-tree-redo))
 
 ;; Customizations file
 (setq custom-file "~/.emacs.d/custom-file.el")

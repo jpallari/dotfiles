@@ -1,57 +1,57 @@
 ! Emacs
-Emacs.font: Terminus-9
+Emacs.font:             Monaco-9
 
 ! bg & fg
-*background: #020202
-*foreground: #bbbbbb
+*background:            #000000
+*foreground:            #bbbbbb
 
 !black
-*color0:  #121212
-*color8:  #263033
+*color0:                #000000
+*color8:                #263033
 !red
-*color1:  #d4004c
-*color9:  #f92672
+*color1:                #d4004c
+*color9:                #f92672
 !green
-*color2:  #86c20e
-*color10: #a6e22e
+*color2:                #86c20e
+*color10:               #a6e22e
 !yellow
-*color3:  #d6cb14
-*color11: #f6eb34
+*color3:                #d6cb14
+*color11:               #f6eb34
 !blue
-*color4:  #3045D8
-*color12: #6070ef
+*color4:                #3045D8
+*color12:               #6070ef
 !magenta
-*color5:  #ae31df
-*color13: #de51ff
+*color5:                #ae31df
+*color13:               #de51ff
 !cyan
-*color6:  #46b9cf
-*color14: #66d9ef
+*color6:                #46b9cf
+*color14:               #66d9ef
 !white
-*color7:  #E2D1E3
-*color15: #FFFFFF
+*color7:                #E2D1E3
+*color15:               #FFFFFF
 
 ! rxvt-unicode --------------------------------------------------
-URxvt.termName:     xterm-256color
-URxvt.title:        urxvt
-URxvt.loginShell:   false
-URxvt.transparent:  false
-URxvt.geometry:     90x30
-URxvt.cursorColor:  #ffcc22
-URxvt.scrollBar:    false
-URxvt.colorBD:      #ffffff
-URxvt.colorIT:      #a0cafa
-URxvt.colorUL:      #a0cafa
+URxvt.termName:         xterm-256color
+URxvt.title:            urxvt
+URxvt.loginShell:       false
+URxvt.transparent:      false
+URxvt.geometry:         90x30
+URxvt.cursorColor:      #ffcc22
+URxvt.scrollBar:        false
+URxvt.colorBD:          #ffffff
+URxvt.colorIT:          #a0cafa
+URxvt.colorUL:          #a0cafa
 !URxvt.font:           -*-terminus-medium-r-*-*-12-*-*-*-*-*-*-*
 !URxvt.boldFont:       -*-terminus-bold-r-*-*-12-*-*-*-*-*-*-*
 !URxvt.italicFont:     -*-terminus-bold-r-*-*-12-*-*-*-*-*-*-*
 !URxvt.boldItalicFont: -*-terminus-bold-r-*-*-12-*-*-*-*-*-*-*
-URxvt.font:            6x13,-*-unifont-*-*-*-*-0-*-*-*-*-*-*-*
-URxvt.boldFont:       
-URxvt.italicFont:     
-URxvt.boldItalicFont: 
-URxvt.perl-ext:	        selection,url-select,-searchable-scrollback
+URxvt.font:             6x13,-*-unifont-*-*-*-*-0-*-*-*-*-*-*-*
+URxvt.boldFont:
+URxvt.italicFont:
+URxvt.boldItalicFont:
+URxvt.perl-ext:         selection,url-select,-searchable-scrollback
 URxvt.keysym.M-u:       perl:url-select:select_next
-URxvt.underlineURLs:	false
+URxvt.underlineURLs:    false
 URxvt.urlLauncher:      br
 URxvt.matcher.button:   1
 URxvt.letterSpace:      0

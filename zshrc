@@ -134,6 +134,4 @@ if [[ $TERM == "dumb" || $EMACS != "" ]]; then
     unsetopt zle
     unsetopt prompt_cr
     unsetopt prompt_subst
-    unfunction precmd
-    unfunction preexec
 fi

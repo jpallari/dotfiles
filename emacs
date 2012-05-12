@@ -22,7 +22,7 @@
 
 ;; Package management
 (setq my-pkgs
-  '(evil popup sws-mode auto-complete surround magit
+  '(evil popup sws-mode auto-complete surround magit lua-mode
          haskell-mode jade-mode coffee-mode markdown-mode
          python stylus-mode js2-mode undo-tree tango-2-theme
          flymake-coffee flymake-jslint))
@@ -128,6 +128,14 @@
   (setq ido-use-filename-at-point 'guess)
   (ido-mode 1)
   (define-key ido-common-completion-map (kbd "C-z") 'keyboard-escape-quit))
+
+;; TRAMP
+(if window-system
+    (progn ;; For some strange reason, TRAMP doesn't work well with terminal.
+      (setq tramp-default-method "scp")
+      (setq tramp-chunkzise 500)
+      (setq tramp-shell-prompt-pattern "^[^$>\n]*[#$%>] *\\(\[[0-9;]*[a-zA-Z] *\\)*"))
+  (setq tramp-mode nil))
 
 ;; Browser
 (when (not (getenv "DISPLAY"))

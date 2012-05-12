@@ -129,3 +129,11 @@ alias e='emacsclient -c -t --alternate-editor=""'
 alias em='emacs -nw'
 [[ -f $HOME/.zshaliases ]] && source $HOME/.zshaliases
 
+if [[ $TERM == "dumb" || $EMACS != "" ]]; then
+    PS1='$ '
+    unsetopt zle
+    unsetopt prompt_cr
+    unsetopt prompt_subst
+    unfunction precmd
+    unfunction preexec
+fi

@@ -91,8 +91,14 @@
 (blink-cursor-mode 0)
 (show-paren-mode 1)
 (column-number-mode 1)
-(defalias 'yes-or-no-p 'y-or-n-p)
 (when (fboundp 'set-scroll-bar-mode) (set-scroll-bar-mode 'right))
+
+;; Aliases
+(defalias 'yes-or-no-p 'y-or-n-p)
+(defalias 'wins 'shrink-window)
+(defalias 'wine 'enlarge-window)
+(defalias 'winsh 'shrink-window-horizontally)
+(defalias 'wineh 'enlarge-window-horizontally)
 
 ;; Some defaults
 (setq-default tab-width 4)
@@ -151,6 +157,7 @@
   (define-key evil-normal-state-map (kbd "C-j") 'evil-window-down)
   (define-key evil-normal-state-map (kbd "C-k") 'evil-window-up)
   (define-key evil-normal-state-map (kbd "C-l") 'evil-window-right)
+  (define-key evil-normal-state-map (kbd "C-t") 'other-window)
   (define-key evil-normal-state-map (kbd "-") 'evil-window-decrease-height)
   (define-key evil-normal-state-map (kbd "+") 'evil-window-increase-height)
 

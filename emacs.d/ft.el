@@ -11,52 +11,59 @@
   (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode)))
 
 ;; LISP
-(add-hook 'lisp-mode-hook
-          '(lambda ()
-             (eldoc-mode 1)))
+(defun ft-lisp ()
+  (eldoc-mode 1))
+(add-hook 'lisp-mode-hook 'ft-lisp)
 
 ;; JavaScript
-(add-hook 'js-mode-hook
-          '(lambda ()
-             (setq js-indent-level 2)
-             (setq tab-width 2)
-             (setq c-basic-offset 2)))
-(add-hook 'js2-mode-hook
-          '(lambda ()
-             (setq tab-width 2)
-             (setq c-basic-offset 2)
-             (setq js2-consistent-level-indent-inner-bracket-p t)
-             (setq js2-pretty-multiline-decl-indentation-p t)
-             (setq js2-basic-offset 2)))
+(defun ft-js ()
+  (setq js-indent-level 2)
+  (setq tab-width 2)
+  (setq c-basic-offset 2))
+(defun ft-js2 ()
+  (setq tab-width 2)
+  (setq c-basic-offset 2)
+  (setq js2-consistent-level-indent-inner-bracket-p t)
+  (setq js2-pretty-multiline-decl-indentation-p t)
+  (setq js2-basic-offset 2))
+(add-hook 'js-mode-hook 'ft-js)
+(add-hook 'js2-mode-hook 'ft-js2)
+
+;; Magit
+(defun ft-magit ()
+  (setq fill-column 72)
+  (turn-on-auto-fill))
+(add-hook 'magit-log-edit-mode-hook 'ft-magit)
 
 ;; Markdown
-(add-hook 'markdown-mode-hook
-          '(lambda ()
-             (turn-on-auto-fill)
-             (setq tab-width 4)
-             (setq c-basic-offset 4)
-             (setq fill-column 79)))
+(defun ft-markdown ()
+  (turn-on-auto-fill)
+  (setq tab-width 4)
+  (setq c-basic-offset 4)
+  (setq fill-column 79))
+(add-hook 'markdown-mode-hook 'ft-markdown)
 
 ;; Python
-(add-hook 'python-mode-hook
-          '(lambda ()
-             (turn-on-auto-fill)
-             (setq tab-width 4)
-             (setq c-basic-offset 4)
-             (setq fill-column 79)))
+(defun ft-python ()
+  (turn-on-auto-fill)
+  (setq tab-width 4)
+  (setq c-basic-offset 4)
+  (setq python-indent-offset 4)
+  (setq fill-column 79))
+(add-hook 'python-mode-hook 'ft-python)
 
 ;; Haskell
-(add-hook 'haskell-mode-hook
-          '(lambda ()
-             (setq tab-width 2)
-             (setq c-basic-offset 2)
-             (turn-on-haskell-indent)))
+(defun ft-haskell ()
+  (setq tab-width 2)
+  (setq c-basic-offset 2)
+  (turn-on-haskell-indent))
+(add-hook 'haskell-mode-hook 'ft-haskell)
 
 ;; CoffeeScript
-(add-hook 'coffee-mode-hook
-          '(lambda ()
-             (setq tab-width 2)
-             (setq c-basic-offset 2)
-             (setq coffee-js-mode 'js-mode)
-             (define-key coffee-mode-map (kbd "C-c C-r") 'coffee-compile-buffer)))
+(defun ft-coffee ()
+  (setq tab-width 2)
+  (setq c-basic-offset 2)
+  (setq coffee-js-mode 'js-mode)
+  (define-key coffee-mode-map (kbd "C-c C-r") 'coffee-compile-buffer))
+(add-hook 'coffee-mode-hook 'ft-coffee)
 

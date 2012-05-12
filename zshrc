@@ -123,7 +123,7 @@ alias ll="ls -lh"
 alias grep='grep --color=auto'
 alias ..="cd .."
 alias ..."cd ../.."
-alias ii="tmux attach -d"
+alias jk="tmux attach -d"
 alias h="hostname"
 alias e='emacsclient -c -t --alternate-editor=""'
 alias em='emacs -nw'

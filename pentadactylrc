@@ -11,7 +11,7 @@ map -count -modes=n k -builtin <count><count><C-u>
 map -count -modes=n j -builtin <count><count><C-d>
 map -count -modes=n K -builtin <count><count><C-n>
 map -count -modes=n J -builtin <count><count><C-p>
-inoremap -builtin <C-x><C-a> <ESC>
+inoremap -builtin <C-g> <ESC>
 cnoremap -builtin <C-g> <ESC>
 set autocomplete=
 set defsearch=s

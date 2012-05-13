@@ -129,7 +129,7 @@ alias e='emacsclient -c -t --alternate-editor=""'
 alias em='emacs -nw'
 [[ -f $HOME/.zshaliases ]] && source $HOME/.zshaliases
 
-if [[ $TERM == "dumb" || $EMACS != "" ]]; then
+if [[ $TERM == "eterm-color" || $TERM == "dumb" || $EMACS != "" ]]; then
     PS1='$ '
     unsetopt zle
     unsetopt prompt_cr

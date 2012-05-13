@@ -40,17 +40,27 @@
       (or (package-installed-p pkg)
           (if (y-or-n-p (format "Package %s is missing. Install it? " pkg))
             (package-install pkg)))) my-pkgs))
+
 (defun kr-or-bwkw (&optional arg region)
   "`kill-region` if the region is active, otherwise `backward-kill-word`"
   (interactive (list (prefix-numeric-value current-prefix-arg) (use-region-p)))
   (if region
       (kill-region (region-beginning) (region-end))
     (backward-kill-word arg)))
+
+(defun kr-or-kl (&optional arg region)
+  "`kill-region` if the region is active, otherwise `kill-line`"
+  (interactive (list (prefix-numeric-value current-prefix-arg) (use-region-p)))
+  (if region
+      (kill-region (region-beginning) (region-end))
+    (kill-line arg)))
+
 (defun what-face (pos)
   (interactive "d")
   (let ((face (or (get-char-property (point) 'read-face-name)
                   (get-char-property (point) 'face))))
     (if face (message "Face: %s" face) (message "No face at %d" pos))))
+
 (defun jump-to-last-mark () (interactive) (set-mark-command 1))
 
 ;; Keybindings
@@ -58,6 +68,7 @@
 (global-set-key (kbd "M-p") 'scroll-down-command)
 (global-set-key (kbd "M-n") 'scroll-up-command)
 (global-set-key (kbd "C-w") 'kr-or-bwkw)
+(global-set-key (kbd "C-k") 'kr-or-kl)
 (global-set-key (kbd "C-x C-k") 'kill-region)
 (global-set-key (kbd "C-c q") 'auto-fill-mode)
 (global-set-key (kbd "M-]") 'next-buffer)
@@ -68,6 +79,7 @@
 (global-set-key (kbd "C-t") 'other-window)
 (global-set-key (kbd "RET") 'indent-new-comment-line)
 (global-set-key (kbd "C-j") 'newline)
+(global-set-key (kbd "C-x C-j") 'join-line)
 
 ;; UI
 (when (>= emacs-major-version 24)
@@ -83,15 +95,22 @@
     (set-face-foreground 'mode-line "#ffffff")
     (set-face-background 'mode-line-inactive "#00005f")
     (set-face-foreground 'mode-line-inactive "#767676")
-    (set-face-background 'default "#000000"))
+    (set-face-background 'default "#000000")
+    (set-face-foreground 'default "#dadada"))
   (progn ;; Window system
     (set-cursor-color "#ffcc22")
     (set-mouse-color "#ffffff")))
-(setq inhibit-splash-screen t)
 (blink-cursor-mode 0)
-(show-paren-mode 1)
-(column-number-mode 1)
+(show-paren-mode (column-number-mode t))
+(global-font-lock-mode t)
+(transient-mark-mode t)
+(setq inhibit-splash-screen t
+      completion-cycle-threshold 10
+      show-paren-delay 0.0)
 (when (fboundp 'set-scroll-bar-mode) (set-scroll-bar-mode 'right))
+
+;; Winner mode
+(winner-mode 1)
 
 ;; Aliases
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -101,12 +120,11 @@
 (defalias 'wineh 'enlarge-window-horizontally)
 
 ;; Some defaults
-(setq-default tab-width 4)
-(setq-default c-basic-offset 4)
-(setq-default py-indent-offset 4)
-(setq-default indent-tabs-mode nil)
-(setq-default fill-column 79)
-(turn-on-font-lock)
+(setq-default
+ tab-width 4
+ c-basic-offset 4
+ indent-tabs-mode nil
+ fill-column 79)
 
 ;; Enable disabled commands
 (put 'downcase-region 'disabled nil)
@@ -123,26 +141,29 @@
 
 ;; IDO mode
 (when (require 'ido nil t)
-  (setq ido-enable-flex-matching t)
-  (setq ido-everywhere t)
-  (setq ido-use-filename-at-point 'guess)
+  (setq ido-enable-flex-matching t
+        ido-everywhere t
+        ido-case-fold t
+        confirm-nonexistent-file-or-buffer nil
+        ido-use-filename-at-point 'guess)
   (ido-mode 1)
   (define-key ido-common-completion-map (kbd "C-z") 'keyboard-escape-quit))
 
 ;; TRAMP
-(if window-system
-    (progn ;; For some strange reason, TRAMP doesn't work well with terminal.
-      (setq tramp-default-method "scp")
-      (setq tramp-chunkzise 500)
-      (setq tramp-shell-prompt-pattern "^[^$>\n]*[#$%>] *\\(\[[0-9;]*[a-zA-Z] *\\)*"))
-  (setq tramp-mode nil))
+;; (if window-system
+;;     (progn ;; For some strange reason, TRAMP doesn't work well with terminal.
+;;       (setq tramp-default-method "scp"
+;;             tramp-chunkzise 500
+;;             tramp-shell-prompt-pattern "^[^$>\n]*[#$%>] *\\(\[[0-9;]*[a-zA-Z] *\\)*"))
+;;   (setq tramp-mode nil))
+(setq tramp-mode nil)
 
 ;; Browser
 (when (not (getenv "DISPLAY"))
   (setq browse-url-browser-function 'w3m-browse-url)
   (autoload 'w3m-browse-url "w3m" "Ask a WWW browser to show a URL." t))
-(setq w3m-use-cookies t)
-(setq w3m-coding-system 'utf-8
+(setq w3m-use-cookies t
+      w3m-coding-system 'utf-8
       w3m-file-coding-system 'utf-8
       w3m-file-name-coding-system 'utf-8
       w3m-input-coding-system 'utf-8
@@ -175,6 +196,7 @@
     (read-kbd-macro evil-toggle-key) 'evil-emacs-state)
   (define-key evil-insert-state-map (kbd "C-z") 'evil-normal-state)
   (define-key evil-visual-state-map (kbd "C-z") 'evil-normal-state)
+  (define-key evil-replace-state-map (kbd "C-z") 'evil-normal-state)
 
   ;; evil surround
   (when (require 'surround nil t)

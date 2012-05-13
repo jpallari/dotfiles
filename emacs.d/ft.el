@@ -17,15 +17,15 @@
 
 ;; JavaScript
 (defun ft-js ()
-  (setq js-indent-level 2)
-  (setq tab-width 2)
-  (setq c-basic-offset 2))
+  (setq js-indent-level 2
+        tab-width 2
+        c-basic-offset 2))
 (defun ft-js2 ()
-  (setq tab-width 2)
-  (setq c-basic-offset 2)
-  (setq js2-consistent-level-indent-inner-bracket-p t)
-  (setq js2-pretty-multiline-decl-indentation-p t)
-  (setq js2-basic-offset 2))
+  (setq tab-width 2
+        c-basic-offset 2
+        js2-consistent-level-indent-inner-bracket-p t
+        js2-pretty-multiline-decl-indentation-p t
+        js2-basic-offset 2))
 (add-hook 'js-mode-hook 'ft-js)
 (add-hook 'js2-mode-hook 'ft-js2)
 
@@ -38,32 +38,33 @@
 ;; Markdown
 (defun ft-markdown ()
   (turn-on-auto-fill)
-  (setq tab-width 4)
-  (setq c-basic-offset 4)
-  (setq fill-column 79))
+  (setq tab-width 4
+        c-basic-offset 4
+        fill-column 79))
 (add-hook 'markdown-mode-hook 'ft-markdown)
 
 ;; Python
 (defun ft-python ()
   (turn-on-auto-fill)
-  (setq tab-width 4)
-  (setq c-basic-offset 4)
-  (setq python-indent-offset 4)
-  (setq fill-column 79))
+  (setq tab-width 4
+        c-basic-offset 4
+        py-indent-offset 4
+        python-indent-offset 4
+        fill-column 79))
 (add-hook 'python-mode-hook 'ft-python)
 
 ;; Haskell
 (defun ft-haskell ()
-  (setq tab-width 2)
-  (setq c-basic-offset 2)
+  (setq tab-width 2
+        c-basic-offset 2)
   (turn-on-haskell-indent))
 (add-hook 'haskell-mode-hook 'ft-haskell)
 
 ;; CoffeeScript
 (defun ft-coffee ()
-  (setq tab-width 2)
-  (setq c-basic-offset 2)
-  (setq coffee-js-mode 'js-mode)
+  (setq tab-width 2
+        c-basic-offset 2
+        coffee-js-mode 'js-mode)
   (define-key coffee-mode-map (kbd "C-c C-r") 'coffee-compile-buffer))
 (add-hook 'coffee-mode-hook 'ft-coffee)
 

@@ -14,7 +14,7 @@ require("vicious")
 beautiful.init(awful.util.getdir("config") .. "/themes/jkpl/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
-terminal = "urxvtc"
+terminal = "uxterm"
 editor = os.getenv("EDITOR") or "editor"
 editor_cmd = terminal .. " -e " .. editor
 

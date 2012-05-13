@@ -14,11 +14,13 @@
   (setq notmuch-show-part-button-default-action 'notmuch-show-browser-browse-part)
 
   ;; Settings
-  (setq message-kill-buffer-on-exit 1)
-  (setq user-mail-address (notmuch-user-primary-email)
-        user-full-name (notmuch-user-name))
-  (setq notmuch-message-headers '("Subject" "To" "Cc" "Date"))
-  (setq notmuch-search-oldest-first nil)
+  (setq message-kill-buffer-on-exit 1
+        user-mail-address (notmuch-user-primary-email)
+        user-full-name (notmuch-user-name)
+        notmuch-message-headers '("Subject" "To" "Cc" "Date")
+        notmuch-search-oldest-first nil
+        notmuch-search-oldest-first nil
+        notmuch-show-all-multipart/alternative-parts nil)
   (setq notmuch-saved-searches
         '(("inbox" . "tag:inbox AND tag:unread")
           ("unread" . "tag:unread")
@@ -33,8 +35,6 @@
           notmuch-hello-insert-recent-searches
           notmuch-hello-insert-alltags
           notmuch-hello-insert-footer))
-  (setq notmuch-search-oldest-first nil)
-  (setq notmuch-show-all-multipart/alternative-parts nil)
 
   ;; Keybindings
   (define-key notmuch-search-mode-map "j" 'notmuch-search-next-thread)

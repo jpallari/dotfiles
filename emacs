@@ -65,14 +65,12 @@
 
 ;; Keybindings
 (global-set-key (kbd "M-`") 'jump-to-last-mark)
-(global-set-key (kbd "M-p") 'scroll-down-command)
-(global-set-key (kbd "M-n") 'scroll-up-command)
 (global-set-key (kbd "C-w") 'kr-or-bwkw)
 (global-set-key (kbd "C-k") 'kr-or-kl)
 (global-set-key (kbd "C-x C-k") 'kill-region)
 (global-set-key (kbd "C-c q") 'auto-fill-mode)
-(global-set-key (kbd "M-]") 'next-buffer)
-(global-set-key (kbd "M-[") 'previous-buffer)
+(global-set-key (kbd "M-n") 'next-buffer)
+(global-set-key (kbd "M-p") 'previous-buffer)
 (global-set-key (kbd "C-c C-m") 'execute-extended-command)
 (global-set-key (kbd "C-x C-m") 'execute-extended-command)
 (global-set-key (kbd "C-z") 'keyboard-escape-quit)
@@ -108,6 +106,7 @@
       completion-cycle-threshold 10
       show-paren-delay 0.0)
 (when (fboundp 'set-scroll-bar-mode) (set-scroll-bar-mode 'right))
+(set-input-mode t nil t)
 
 ;; Winner mode
 (winner-mode 1)

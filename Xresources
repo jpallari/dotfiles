@@ -44,6 +44,9 @@ xterm*boldFont:         6x13,-*-unifont-*-*-*-*-0-*-*-*-*-*-*-*
 xterm*boldMode:         false
 xterm*highlightSelection:false
 xterm*bellIsUrgent:     true
+xterm*ttyModes:         erase ^?
+xterm*VT100*translations: #override <Key>BackSpace: string(0x7f)
+xterm*backarrowKeyIsErase: true
 
 ! rxvt-unicode --------------------------------------------------
 URxvt.termName:         xterm-256color

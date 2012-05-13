@@ -276,6 +276,8 @@ root.buttons(awful.util.table.join(
 globalkeys = awful.util.table.join(
     awful.key({ modkey,           }, "Left",   awful.tag.viewprev       ),
     awful.key({ modkey,           }, "Right",  awful.tag.viewnext       ),
+    awful.key({ modkey,           }, "n",      awful.tag.viewnext       ),
+    awful.key({ modkey,           }, "p",      awful.tag.viewprev       ),
     awful.key({ modkey,           }, "Tab", awful.tag.history.restore),
 
     awful.key({ modkey,           }, "j",
@@ -373,7 +375,7 @@ clientkeys = awful.util.table.join(
     awful.key({ modkey, "Shift"   }, "r",      function (c) c:redraw()                       end),
     awful.key({ modkey,           }, "t",      function (c) c.ontop = not c.ontop            end),
 --    awful.key({ modkey,           }, "n",      function (c) c.minimized = not c.minimized    end),
-    awful.key({ modkey,           }, "n", -- Move to last tag instead of minimize
+    awful.key({ modkey, "Shift"   }, "n", -- Move to last tag instead of minimize
         function (c)
             awful.client.movetotag(tags[mouse.screen][9],c)
         end),

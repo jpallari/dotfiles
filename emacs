@@ -86,8 +86,8 @@
 (defun apply-settings-frame (frame)
   (with-selected-frame frame
     (if (not (display-graphic-p))
-        (apply-theme-terminal frame)
-        (apply-theme-gui frame))))
+        (apply-settings-terminal frame)
+        (apply-settings-gui frame))))
 
 ;; Keybindings
 (global-set-key (kbd "M-`") 'jump-to-last-mark)

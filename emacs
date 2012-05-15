@@ -24,7 +24,7 @@
 (setq my-pkgs
   '(evil popup sws-mode auto-complete surround magit lua-mode
          haskell-mode jade-mode coffee-mode markdown-mode
-         python stylus-mode js2-mode undo-tree tango-2-theme
+         stylus-mode js2-mode undo-tree tango-2-theme
          flymake-coffee flymake-jslint))
 (require 'package)
 (package-initialize)
@@ -63,6 +63,32 @@
 
 (defun jump-to-last-mark () (interactive) (set-mark-command 1))
 
+(defun apply-settings-terminal (&optional frame)
+  "Applies terminal specific settings."
+  (set-frame-parameter frame 'menu-bar-lines 0)
+  (set-face-background 'mode-line "#0000ee" frame)
+  (set-face-foreground 'mode-line "#ffffff" frame)
+  (set-face-background 'mode-line-inactive "#00005f" frame)
+  (set-face-foreground 'mode-line-inactive "#767676" frame)
+  (set-face-background 'default "#000000" frame)
+  (set-face-foreground 'default "#dadada" frame))
+
+(defun apply-settings-gui (&optional frame)
+  "Applies settings used in GUI environment."
+  (set-frame-parameter frame 'menu-bar-lines 1)
+  (set-face-background 'mode-line "#2e3436" frame)
+  (set-face-foreground 'mode-line "#eeeeec" frame)
+  (set-face-background 'mode-line-inactive "#111111" frame)
+  (set-face-foreground 'mode-line-inactive "#cccddd" frame)
+  (set-face-background 'default "#121212" frame)
+  (set-face-foreground 'default "#eeeeec" frame))
+
+(defun apply-settings-frame (frame)
+  (with-selected-frame frame
+    (if (not (display-graphic-p))
+        (apply-theme-terminal frame)
+        (apply-theme-gui frame))))
+
 ;; Keybindings
 (global-set-key (kbd "M-`") 'jump-to-last-mark)
 (global-set-key (kbd "C-w") 'kr-or-bwkw)
@@ -78,26 +104,35 @@
 (global-set-key (kbd "RET") 'indent-new-comment-line)
 (global-set-key (kbd "C-j") 'newline)
 (global-set-key (kbd "C-x C-j") 'join-line)
+(global-set-key [f5] 'shrink-window-horizontally)
+(global-set-key [f6] 'enlarge-window)
+(global-set-key [f7] 'shrink-window)
+(global-set-key [f8] 'enlarge-window-horizontally)
+(global-set-key [f9] 'ielm)
+(global-set-key [f9] 'calc)
+(global-set-key [f12] 'magit-status)
 
-;; UI
+;; Theme
 (when (>= emacs-major-version 24)
   (load-theme 'tango-2 t))
-(if (not window-system)
-  (progn ;; No window system
-    ;; (when (require 'mouse nil t)
-    ;;   (xterm-mouse-mode t)
-    ;;   (defun track-mouse (e))
-    ;;   (setq mouse-sel-mode t))
-    (menu-bar-mode -1)
-    (set-face-background 'mode-line "#0000ee")
-    (set-face-foreground 'mode-line "#ffffff")
-    (set-face-background 'mode-line-inactive "#00005f")
-    (set-face-foreground 'mode-line-inactive "#767676")
-    (set-face-background 'default "#000000")
-    (set-face-foreground 'default "#dadada"))
-  (progn ;; Window system
-    (set-cursor-color "#ffcc22")
-    (set-mouse-color "#ffffff")))
+
+;; Theme per frame
+(add-hook 'after-make-frame-functions 'apply-settings-frame)
+
+;; For some reason, setting face colors for frame 'F1' does nothing.
+;; Therefore I need to call one of the environment specific setting
+;; functions to get the correct color on single frame Emacs instances.
+(if (window-system)
+    (apply-settings-gui)
+    (apply-settings-terminal))
+
+;; Xterm mouse
+(when (require 'mouse nil t)
+  (xterm-mouse-mode t)
+  (defun track-mouse (e))
+  (setq mouse-sel-mode t))
+
+;; Other UI settings
 (blink-cursor-mode 0)
 (show-paren-mode (column-number-mode t))
 (global-font-lock-mode t)
@@ -119,11 +154,10 @@
 (defalias 'wineh 'enlarge-window-horizontally)
 
 ;; Some defaults
-(setq-default
- tab-width 4
- c-basic-offset 4
- indent-tabs-mode nil
- fill-column 79)
+(setq-default tab-width 4
+              c-basic-offset 4
+              indent-tabs-mode nil
+              fill-column 79)
 
 ;; Enable disabled commands
 (put 'downcase-region 'disabled nil)
@@ -179,7 +213,7 @@
 ;; EVIL
 (when (require 'evil nil t)
   (evil-mode 1)
-  (setq evil-default-state 'normal)
+  (setq evil-default-state 'insert)
   (define-key evil-normal-state-map (kbd ";") 'evil-ex)
   (define-key evil-normal-state-map (kbd "C-h") 'evil-window-left)
   (define-key evil-normal-state-map (kbd "C-j") 'evil-window-down)
@@ -213,3 +247,12 @@
 (let ((fname "~/.emacs.local"))
   (when (file-exists-p fname)
     (load fname)))
+
+;; Encoding
+(prefer-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-selection-coding-system 'utf-8)
+(setq locale-coding-system 'utf-8)
+(setq default-file-name-coding-system 'utf-8)
+(setq default-buffer-file-coding-system 'utf-8)

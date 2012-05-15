@@ -46,10 +46,10 @@
 ;; Python
 (defun ft-python ()
   (turn-on-auto-fill)
+  (eldoc-mode 1)
   (setq tab-width 4
         c-basic-offset 4
         py-indent-offset 4
-        python-indent-offset 4
         fill-column 79))
 (add-hook 'python-mode-hook 'ft-python)
 

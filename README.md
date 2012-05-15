@@ -6,7 +6,7 @@ what I have:
 
 ## Awesome WM
 
-The window manager I use on Linux these days.
+The window manager I use these days.
 
 - Some keymappings are similar to ones used in [dwm][].
 - Volume control widget mostly ripped from [Vicious][].
@@ -14,8 +14,8 @@ The window manager I use on Linux these days.
 
 ## Emacs
 
-I run Emacs 24 (pre-release) on most of my machines, and already use some new
-features it offers.
+I run Emacs 24 (pre-release) on most of my computers, and already use some of
+the new features it offers.
 
 - Package management using package.
 - Configurations for [Notmuch][] plugin.
@@ -23,8 +23,7 @@ features it offers.
 
 ## Vim
 
-I mostly use Emacs these days, but I do launch Vim for small edits from time to
-time.
+These days I use Vim mostly for smaller edits.
 
 - Color scheme: seanmod.vim (a variant of sean.vim)
 - Bunch of really nice mappings courtesy of [Vimbits][].

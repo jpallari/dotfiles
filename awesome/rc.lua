@@ -19,8 +19,14 @@ editor = os.getenv("EDITOR") or "editor"
 editor_cmd = terminal .. " -e " .. editor
 
 -- Other useful app commands
-filemanager = "pcmanfm"
-screenlock  = "slock"
+filemanager    = "pcmanfm"
+screenlock     = "slock"
+sleeplock      = "sleeplock"
+monitorswitch  = "multihead"
+networkmanager = "wicd-gui"
+webbrowser     = "firefox"
+monitorprefs   = "lxrandr"
+emacs_cmd      = "emacs"
 
 -- Default modkey.
 modkey = "Mod4"
@@ -32,14 +38,6 @@ layouts =
     awful.layout.suit.max,
     awful.layout.suit.tile.bottom,
     awful.layout.suit.floating,
-    --awful.layout.suit.tile.left,
-    --awful.layout.suit.tile.top,
-    --awful.layout.suit.fair,
-    --awful.layout.suit.fair.horizontal
-    --awful.layout.suit.spiral,
-    --awful.layout.suit.spiral.dwindle,
-    --awful.layout.suit.max.fullscreen,
-    -- awful.layout.suit.magnifier
 }
 -- }}}
 
@@ -151,7 +149,7 @@ myawesomemenu = {
 }
 
 myprefsmenu = {
-    { "monitor", "lxrandr" },
+    { "monitor", monitorprefs },
     { "lock", screenlock },
 }
 
@@ -159,14 +157,10 @@ mymainmenu = awful.menu({ items = {
     { "awesome", myawesomemenu, beautiful.awesome_icon },
     { "preferences", myprefsmenu },
     { "terminal", terminal },
-    { "browser", "dwb" },
-    { "gvim",  "gvim" },
+    { "browser", webbrowser },
+    { "emacs",  emacs_cmd },
     { "file manager", filemanager }
 }})
-
---mylauncher = awful.widget.launcher({ image = image(beautiful.awesome_icon),
---                                     menu = mymainmenu })
--- }}}
 
 -- {{{ Wibox
 -- Create a textclock widget
@@ -193,18 +187,13 @@ mytaglist.buttons = awful.util.table.join(
                     awful.button({ modkey }, 1, awful.client.movetotag),
                     awful.button({ }, 3, awful.tag.viewtoggle),
                     awful.button({ modkey }, 3, awful.client.toggletag)
---                    awful.button({ }, 4, awful.tag.viewnext),
---                    awful.button({ }, 5, awful.tag.viewprev)
                     )
 mytasklist = {}
 mytasklist.buttons = awful.util.table.join(
                      awful.button({ }, 1, function (c)
-                                              if not c:isvisible() then
-                                                  awful.tag.viewonly(c:tags()[1])
-                                              end
-                                              --client.focus = c
-                                              awful.client.focus.byidx(1,c)
-                                              --c:raise()
+                                              d = awful.client.next(1,c)
+                                              client.focus = d
+                                              d:raise()
                                           end),
                      awful.button({ }, 3, function ()
                                               if instance then
@@ -214,14 +203,6 @@ mytasklist.buttons = awful.util.table.join(
                                                   instance = awful.menu.clients({ width=250 })
                                               end
                                           end)
---                     awful.button({ }, 4, function ()
---                                              awful.client.focus.byidx(1)
---                                              if client.focus then client.focus:raise() end
---                                          end),
---                     awful.button({ }, 5, function ()
---                                              awful.client.focus.byidx(-1)
---                                              if client.focus then client.focus:raise() end
---                                          end))
                                           )
 
 for s = 1, screen.count() do
@@ -248,7 +229,6 @@ for s = 1, screen.count() do
     -- Add widgets to the wibox - order matters
     mywibox[s].widgets = {
         {
-            --mylauncher,
             mytaglist[s],
             mylayoutbox[s],
             mypromptbox[s],
@@ -267,8 +247,6 @@ end
 -- {{{ Mouse bindings
 root.buttons(awful.util.table.join(
     awful.button({ }, 3, function () mymainmenu:toggle() end)
---    awful.button({ }, 4, awful.tag.viewnext),
---    awful.button({ }, 5, awful.tag.viewprev)
 ))
 -- }}}
 
@@ -309,7 +287,6 @@ globalkeys = awful.util.table.join(
     -- Standard program
     awful.key({ modkey, "Shift"   }, "Return", function () awful.util.spawn(terminal,false) end),
     awful.key({ modkey, "Shift"   }, "q", awesome.restart),
-    --awful.key({ modkey, "Shift"   }, "q", awesome.quit),
 
     awful.key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.05)    end),
     awful.key({ modkey,           }, "h",     function () awful.tag.incmwfact(-0.05)    end),
@@ -321,7 +298,6 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(layouts, -1) end),
 
     -- Prompt (use dmenu instead)
-    --awful.key({ modkey },            "r",     function () mypromptbox[mouse.screen]:run() end),
     awful.key({ modkey }, "a", function () awful.util.spawn(
         "dmenu_run -nb '".. beautiful.bg_normal
         .."' -nf '".. beautiful.fg_normal
@@ -338,7 +314,7 @@ globalkeys = awful.util.table.join(
               end),
 
     -- I don't like minimized windows...
-    awful.key({ modkey, "Shift" }, "n",
+    awful.key({ modkey, "Control" }, "n",
         function()
             local tagi = awful.tag.selected()
                 for i=1, #tag:clients() do
@@ -352,9 +328,9 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey }, "]", function () volctrl("up") end),
     awful.key({ modkey }, "'", function () volctrl("toggle") end),
 
-    awful.key({        }, "XF86Sleep",   function () awful.util.spawn("sleeplock", false) end),
-    awful.key({        }, "XF86Display", function () awful.util.spawn("multihead", false) end),
-    awful.key({ modkey }, "F12",         function () awful.util.spawn("wicd-gui", false) end)
+    awful.key({        }, "XF86Sleep",   function () awful.util.spawn(sleeplock, false) end),
+    awful.key({        }, "XF86Display", function () awful.util.spawn(monitorswitch, false) end),
+    awful.key({ modkey }, "F12",         function () awful.util.spawn(networkmanager, false) end)
 )
 
 clientkeys = awful.util.table.join(
@@ -374,7 +350,6 @@ clientkeys = awful.util.table.join(
     awful.key({ modkey,           }, "o",      awful.client.movetoscreen                        ),
     awful.key({ modkey, "Shift"   }, "r",      function (c) c:redraw()                       end),
     awful.key({ modkey,           }, "t",      function (c) c.ontop = not c.ontop            end),
---    awful.key({ modkey,           }, "n",      function (c) c.minimized = not c.minimized    end),
     awful.key({ modkey, "Shift"   }, "n", -- Move to last tag instead of minimize
         function (c)
             awful.client.movetotag(tags[mouse.screen][9],c)

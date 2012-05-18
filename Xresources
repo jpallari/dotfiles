@@ -48,8 +48,11 @@ xterm*boldMode:         false
 xterm*highlightSelection:false
 xterm*bellIsUrgent:     true
 xterm*ttyModes:         erase ^?
-xterm*VT100*translations: #override <Key>BackSpace: string(0x7f)
-xterm*backarrowKeyIsErase: true
+xterm*VT100*translations:#override <Key>BackSpace: string(0x7f)
+xterm*backarrowKeyIsErase:true
+xterm*pointerMode:      0
+xterm*fullscreen:       never
+xterm*omitTranslation:  fullscreen
 
 ! rxvt-unicode --------------------------------------------------
 URxvt.termName:         xterm-256color

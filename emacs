@@ -50,18 +50,33 @@
 
 (defun kr-or-kl (&optional arg region)
   "`kill-region` if the region is active, otherwise `kill-line`"
-  (interactive (list (prefix-numeric-value current-prefix-arg) (use-region-p)))
+  (interactive (list current-prefix-arg (use-region-p)))
   (if region
       (kill-region (region-beginning) (region-end))
     (kill-line arg)))
 
 (defun what-face (pos)
+  "Displays the current face name under the cursor."
   (interactive "d")
   (let ((face (or (get-char-property (point) 'read-face-name)
                   (get-char-property (point) 'face))))
     (if face (message "Face: %s" face) (message "No face at %d" pos))))
 
-(defun jump-to-last-mark () (interactive) (set-mark-command 1))
+(defun jump-to-last-mark ()
+  "Jumps to last set mark."
+  (interactive) (set-mark-command 1))
+
+(defun keybind-ret ()
+  "Binds RET to either indent-new-comment-line or newline depending on the current binding."
+  (interactive)
+  (let ((rb (key-binding (kbd "RET"))))
+    (cond ((eq rb 'newline)
+           (global-set-key (kbd "RET") 'indent-new-comment-line))
+          ((eq rb 'indent-new-comment-line)
+           (global-set-key (kbd "RET") 'newline))
+          ((eq rb 'newline-and-indent)
+           (global-set-key (kbd "RET") 'indent-new-comment-line)))
+    (message (format "RET binded to %s" rb))))
 
 (defun apply-settings-terminal (&optional frame)
   "Applies terminal specific settings."
@@ -84,6 +99,7 @@
   (set-face-foreground 'default "#eeeeec" frame))
 
 (defun apply-settings-frame (frame)
+  "Applies GUI or terminal settings for frame depending on which one the frame is runned on."
   (with-selected-frame frame
     (if (not (display-graphic-p))
         (apply-settings-terminal frame)
@@ -102,7 +118,8 @@
 (global-set-key (kbd "C-z") 'keyboard-escape-quit)
 (global-set-key (kbd "C-t") 'other-window)
 (global-set-key (kbd "RET") 'indent-new-comment-line)
-(global-set-key (kbd "C-j") 'newline)
+(global-set-key (kbd "C-j") 'indent-new-comment-line)
+(global-set-key (kbd "M-j") 'newline)
 (global-set-key (kbd "C-x C-j") 'join-line)
 (global-set-key [f5] 'shrink-window-horizontally)
 (global-set-key [f6] 'enlarge-window)
@@ -110,6 +127,7 @@
 (global-set-key [f8] 'enlarge-window-horizontally)
 (global-set-key [f9] 'ielm)
 (global-set-key [f9] 'calc)
+(global-set-key [f11] 'keybind-ret)
 (global-set-key [f12] 'magit-status)
 
 ;; Theme

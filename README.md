@@ -1,8 +1,10 @@
 # dotfiles
 
 Here's a bunch of my dotfiles. Some of them I've built myself but most of the
-stuff is recycled from other people's files. Here are a couple of highlights on
-what I have:
+stuff is recycled from other people's files. Feel free to grab any part of
+these configurations for your own use.
+
+Here are a couple of highlights on what I have in my dotfiles.
 
 ## Awesome WM
 

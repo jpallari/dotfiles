@@ -111,9 +111,10 @@
 (global-set-key (kbd "C-k") 'kr-or-kl)
 (global-set-key (kbd "C-x C-k") 'kill-region)
 (global-set-key (kbd "C-c q") 'auto-fill-mode)
-(global-set-key (kbd "M-n") 'next-buffer)
-(global-set-key (kbd "M-p") 'previous-buffer)
-(global-set-key (kbd "C-c C-m") 'execute-extended-command)
+(global-set-key (kbd "M-P") 'previous-buffer)
+(global-set-key (kbd "M-N") 'next-buffer)
+(global-set-key (kbd "C-x C-p") 'previous-buffer)
+(global-set-key (kbd "C-x C-n") 'next-buffer)
 (global-set-key (kbd "C-x C-m") 'execute-extended-command)
 (global-set-key (kbd "C-z") 'keyboard-escape-quit)
 (global-set-key (kbd "C-t") 'other-window)
@@ -125,10 +126,9 @@
 (global-set-key [f6] 'enlarge-window)
 (global-set-key [f7] 'shrink-window)
 (global-set-key [f8] 'enlarge-window-horizontally)
-(global-set-key [f9] 'ielm)
-(global-set-key [f9] 'calc)
-(global-set-key [f11] 'keybind-ret)
-(global-set-key [f12] 'magit-status)
+(global-set-key [f9] 'keybind-ret)
+(global-set-key [f11] 'previous-buffer)
+(global-set-key [f12] 'next-buffer)
 
 ;; Theme
 (when (>= emacs-major-version 24)
@@ -170,6 +170,7 @@
 (defalias 'wine 'enlarge-window)
 (defalias 'winsh 'shrink-window-horizontally)
 (defalias 'wineh 'enlarge-window-horizontally)
+(defalias 'sgc 'set-goal-column)
 
 ;; Some defaults
 (setq-default tab-width 4
@@ -179,6 +180,8 @@
 
 ;; Enable disabled commands
 (put 'downcase-region 'disabled nil)
+(put 'set-goal-column 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
 
 ;; Filetype specific settings
 (load "~/.emacs.d/ft")

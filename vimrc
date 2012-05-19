@@ -175,11 +175,14 @@ cnoremap <C-b> <Left>
 cnoremap <C-p> <Up>
 cnoremap <C-n> <Down>
 inoremap <C-z> <ESC>
+inoremap <C-g> <ESC>
 inoremap <C-x><C-a> <ESC>
 inoremap <C-x><C-s> <C-o>:w<cr>
 nnoremap <C-x><C-s> :w<cr>
 inoremap <C-x><C-f> <C-o>:e 
 nnoremap <C-x><C-f> :e 
+inoremap <C-x><C-c> <C-o>:q<cr>
+nnoremap <C-x><C-c> :q<cr>
 
 " Pathogen
 call pathogen#infect()

@@ -171,6 +171,7 @@
 (defalias 'winsh 'shrink-window-horizontally)
 (defalias 'wineh 'enlarge-window-horizontally)
 (defalias 'sgc 'set-goal-column)
+(defalias 'git-st 'magit-status)
 
 ;; Some defaults
 (setq-default tab-width 4
@@ -182,9 +183,6 @@
 (put 'downcase-region 'disabled nil)
 (put 'set-goal-column 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
-
-;; Filetype specific settings
-(load "~/.emacs.d/ft")
 
 ;; Email
 (setq message-send-mail-function 'message-send-mail-with-sendmail)
@@ -234,12 +232,8 @@
 ;; EVIL
 (when (require 'evil nil t)
   (evil-mode 1)
-  (setq evil-default-state 'insert)
+  (setq evil-default-state 'normal)
   (define-key evil-normal-state-map (kbd ";") 'evil-ex)
-  (define-key evil-normal-state-map (kbd "C-h") 'evil-window-left)
-  (define-key evil-normal-state-map (kbd "C-j") 'evil-window-down)
-  (define-key evil-normal-state-map (kbd "C-k") 'evil-window-up)
-  (define-key evil-normal-state-map (kbd "C-l") 'evil-window-right)
   (define-key evil-normal-state-map (kbd "C-t") 'other-window)
   (define-key evil-normal-state-map (kbd "-") 'evil-window-decrease-height)
   (define-key evil-normal-state-map (kbd "+") 'evil-window-increase-height)
@@ -251,6 +245,21 @@
   (define-key evil-insert-state-map (kbd "C-z") 'evil-normal-state)
   (define-key evil-visual-state-map (kbd "C-z") 'evil-normal-state)
   (define-key evil-replace-state-map (kbd "C-z") 'evil-normal-state)
+  (define-key evil-insert-state-map (kbd "C-x C-a") 'evil-normal-state)
+  (define-key evil-visual-state-map (kbd "C-x C-a") 'evil-normal-state)
+  (define-key evil-replace-state-map (kbd "C-x C-a") 'evil-normal-state)
+
+  ;; org-mode mappings
+  (evil-declare-key 'normal org-mode-map
+                    (kbd "TAB") 'org-cycle
+                    (kbd "M-l") 'org-metaright
+                    (kbd "M-h") 'org-metaleft
+                    (kbd "M-k") 'org-metaup
+                    (kbd "M-j") 'org-metadown
+                    (kbd "M-L") 'org-shiftmetaright
+                    (kbd "M-H") 'org-shiftmetaleft
+                    (kbd "M-K") 'orgshiftmetaup
+                    (kbd "M-J") 'org-shiftmetadown)
 
   ;; evil surround
   (when (require 'surround nil t)
@@ -259,6 +268,76 @@
 ;; Undo tree
 (when (require 'undo-tree nil t)
   (global-set-key (kbd "M-?") 'undo-tree-redo))
+
+;; Automode
+(add-to-list 'auto-mode-alist '("\\.markdown$" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.mdown$" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.text$" . markdown-mode))
+(add-to-list 'auto-mode-alist '("dotfiles\\/emacs$" . lisp-mode))
+(when (fboundp 'js2-mode)
+  (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode)))
+
+;; LISP
+(defun ft-lisp ()
+  (eldoc-mode 1))
+(add-hook 'lisp-mode-hook 'ft-lisp)
+
+;; JavaScript
+(defun ft-js ()
+  (setq js-indent-level 2
+        tab-width 2
+        c-basic-offset 2))
+(defun ft-js2 ()
+  (setq tab-width 2
+        c-basic-offset 2
+        js2-consistent-level-indent-inner-bracket-p t
+        js2-pretty-multiline-decl-indentation-p t
+        js2-basic-offset 2))
+(add-hook 'js-mode-hook 'ft-js)
+(add-hook 'js2-mode-hook 'ft-js2)
+
+;; Magit
+(defun ft-magit ()
+  (setq fill-column 72)
+  (turn-on-auto-fill))
+(add-hook 'magit-log-edit-mode-hook 'ft-magit)
+
+;; Markdown
+(defun ft-markdown ()
+  (turn-on-auto-fill)
+  (setq tab-width 4
+        c-basic-offset 4
+        fill-column 79))
+(add-hook 'markdown-mode-hook 'ft-markdown)
+
+;; Python
+(defun ft-python ()
+  (turn-on-auto-fill)
+  (eldoc-mode 1)
+  (setq tab-width 4
+        c-basic-offset 4
+        py-indent-offset 4
+        fill-column 79))
+(add-hook 'python-mode-hook 'ft-python)
+
+;; Haskell
+(defun ft-haskell ()
+  (setq tab-width 2
+        c-basic-offset 2)
+  (define-key haskell-mode-map (kbd "C-c =") 'haskell-indent-insert-equal)
+  (define-key haskell-mode-map (kbd "C-c |") 'haskell-indent-insert-guard)
+  (define-key haskell-mode-map (kbd "C-c .") 'haskell-mode-format-imports)
+  (turn-on-haskell-indent))
+(add-hook 'haskell-mode-hook 'ft-haskell)
+
+;; CoffeeScript
+(defun ft-coffee ()
+  (setq tab-width 2
+        c-basic-offset 2
+        coffee-js-mode 'js-mode)
+  (define-key coffee-mode-map (kbd "C-c C-r") 'coffee-compile-buffer))
+(add-hook 'coffee-mode-hook 'ft-coffee)
 
 ;; Customizations file
 (setq custom-file "~/.emacs.d/custom-file.el")
@@ -277,3 +356,4 @@
 (setq locale-coding-system 'utf-8)
 (setq default-file-name-coding-system 'utf-8)
 (setq default-buffer-file-coding-system 'utf-8)
+

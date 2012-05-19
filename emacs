@@ -258,7 +258,7 @@
                     (kbd "M-j") 'org-metadown
                     (kbd "M-L") 'org-shiftmetaright
                     (kbd "M-H") 'org-shiftmetaleft
-                    (kbd "M-K") 'orgshiftmetaup
+                    (kbd "M-K") 'org-shiftmetaup
                     (kbd "M-J") 'org-shiftmetadown)
 
   ;; evil surround

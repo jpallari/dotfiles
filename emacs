@@ -77,6 +77,12 @@
           ((eq rb 'indent-new-comment-line) (funcall set-ret 'newline))
           ((eq rb 'newline-and-indent) (funcall set-ret 'indent-new-comment-line)))))
 
+(defun buffer-list-switch ()
+  "Open buffer list and activate the window"
+  (interactive)
+  (list-buffers)
+  (select-window (get-buffer-window "*Buffer List*" 0)))
+
 (defun apply-settings-terminal (&optional frame)
   "Applies terminal specific settings."
   (set-frame-parameter frame 'menu-bar-lines 0)
@@ -122,6 +128,7 @@
 (global-set-key (kbd "M-j") 'newline)
 (global-set-key (kbd "C-x C-j") 'join-line)
 (global-set-key (kbd "C-x t") 'eshell)
+(global-set-key (kbd "C-x C-b") 'buffer-list-switch)
 (global-set-key [f5] 'shrink-window-horizontally)
 (global-set-key [f6] 'enlarge-window)
 (global-set-key [f7] 'shrink-window)
@@ -172,6 +179,7 @@
 (defalias 'wineh 'enlarge-window-horizontally)
 (defalias 'sgc 'set-goal-column)
 (defalias 'git-st 'magit-status)
+(defalias 'bls 'buffer-list-switch)
 
 ;; Some defaults
 (setq-default tab-width 4

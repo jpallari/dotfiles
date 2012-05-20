@@ -35,11 +35,11 @@
 (defun install-missing-packages ()
   "Installs all the missing packages"
   (interactive)
-  (mapc
-    (lambda (pkg)
-      (or (package-installed-p pkg)
-          (if (y-or-n-p (format "Package %s is missing. Install it? " pkg))
-            (package-install pkg)))) my-pkgs))
+  (mapc (lambda (pkg)
+          (or (package-installed-p pkg)
+              (if (y-or-n-p (format "Package %s is missing. Install it? " pkg))
+                  (package-install pkg))))
+        my-pkgs))
 
 (defun kr-or-bwkw (&optional arg region)
   "`kill-region` if the region is active, otherwise `backward-kill-word`"
@@ -67,16 +67,15 @@
   (interactive) (set-mark-command 1))
 
 (defun keybind-ret ()
-  "Binds RET to either indent-new-comment-line or newline depending on the current binding."
+  "Binds RET to either indent-new-comment-line or newline depending on the existing binding."
   (interactive)
-  (let ((rb (key-binding (kbd "RET"))))
-    (cond ((eq rb 'newline)
-           (global-set-key (kbd "RET") 'indent-new-comment-line))
-          ((eq rb 'indent-new-comment-line)
-           (global-set-key (kbd "RET") 'newline))
-          ((eq rb 'newline-and-indent)
-           (global-set-key (kbd "RET") 'indent-new-comment-line)))
-    (message (format "RET binded to %s" rb))))
+  (let ((rb (key-binding (kbd "RET")))
+        (set-ret (lambda (f)
+                   (global-set-key (kbd "RET") f)
+                   (message (format "RET binded to %s" f)))))
+    (cond ((eq rb 'newline) (funcall set-ret 'indent-new-comment-line))
+          ((eq rb 'indent-new-comment-line) (funcall set-ret 'newline))
+          ((eq rb 'newline-and-indent) (funcall set-ret 'indent-new-comment-line)))))
 
 (defun apply-settings-terminal (&optional frame)
   "Applies terminal specific settings."
@@ -122,6 +121,7 @@
 (global-set-key (kbd "C-j") 'indent-new-comment-line)
 (global-set-key (kbd "M-j") 'newline)
 (global-set-key (kbd "C-x C-j") 'join-line)
+(global-set-key (kbd "C-x t") 'eshell)
 (global-set-key [f5] 'shrink-window-horizontally)
 (global-set-key [f6] 'enlarge-window)
 (global-set-key [f7] 'shrink-window)
@@ -184,10 +184,6 @@
 (put 'set-goal-column 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
 
-;; Email
-(setq message-send-mail-function 'message-send-mail-with-sendmail)
-(setq sendmail-program "/usr/bin/msmtp")
-
 ;; Notmuch
 (autoload 'notmuch "~/.emacs.d/my-notmuch" "notmuch mail" t)
 
@@ -232,7 +228,9 @@
 ;; EVIL
 (when (require 'evil nil t)
   (evil-mode 1)
-  (setq evil-default-state 'normal)
+  (setq evil-default-state 'normal
+        evil-move-cursor-back nil
+        evil-want-fine-undo t)
   (define-key evil-normal-state-map (kbd ";") 'evil-ex)
   (define-key evil-normal-state-map (kbd "C-t") 'other-window)
   (define-key evil-normal-state-map (kbd "-") 'evil-window-decrease-height)
@@ -274,14 +272,14 @@
 (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.mdown$" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.text$" . markdown-mode))
-(add-to-list 'auto-mode-alist '("dotfiles\\/emacs$" . lisp-mode))
+(add-to-list 'auto-mode-alist '("dotfiles\\/emacs$" . emacs-lisp-mode))
 (when (fboundp 'js2-mode)
   (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode)))
 
-;; LISP
-(defun ft-lisp ()
+;; Emacs LISP
+(defun ft-elisp ()
   (eldoc-mode 1))
-(add-hook 'lisp-mode-hook 'ft-lisp)
+(add-hook 'emacs-lisp-mode-hook 'ft-elisp)
 
 ;; JavaScript
 (defun ft-js ()
@@ -338,6 +336,14 @@
         coffee-js-mode 'js-mode)
   (define-key coffee-mode-map (kbd "C-c C-r") 'coffee-compile-buffer))
 (add-hook 'coffee-mode-hook 'ft-coffee)
+
+;; Email
+(setq message-send-mail-function 'message-send-mail-with-sendmail)
+(setq sendmail-program "/usr/bin/msmtp")
+(defun ft-mail ()
+  (turn-on-auto-fill)
+  (setq fill-column 72))
+(add-hook 'mail-mode-hook 'ft-mail)
 
 ;; Customizations file
 (setq custom-file "~/.emacs.d/custom-file.el")

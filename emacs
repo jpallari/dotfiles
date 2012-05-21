@@ -22,7 +22,7 @@
 
 ;; Package management
 (setq my-pkgs
-  '(evil popup sws-mode auto-complete surround magit lua-mode
+  '(evil sws-mode surround magit lua-mode python smart-tab
          haskell-mode jade-mode coffee-mode markdown-mode
          stylus-mode js2-mode undo-tree tango-2-theme auctex
          flymake-coffee flymake-jslint))
@@ -117,6 +117,7 @@
 (global-set-key (kbd "C-x C-j") 'join-line)
 (global-set-key (kbd "C-x t") 'eshell)
 (global-set-key (kbd "C-x C-b") 'buffer-list-switch)
+(global-set-key (kbd "M-/") 'hippie-expand)
 (global-set-key [f5] 'shrink-window-horizontally)
 (global-set-key [f6] 'enlarge-window)
 (global-set-key [f7] 'shrink-window)
@@ -211,13 +212,6 @@
       w3m-output-coding-system 'utf-8
       w3m-terminal-coding-system 'utf-8)
 
-;; Auto-complete
-(when (require 'auto-complete-config nil t)
-  (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
-  (ac-config-default)
-  (setq ac-auto-start nil)
-  (ac-set-trigger-key "TAB"))
-
 ;; EVIL
 (when (require 'evil nil t)
   (evil-mode 1)
@@ -259,6 +253,10 @@
 ;; Undo tree
 (when (require 'undo-tree nil t)
   (global-set-key (kbd "M-?") 'undo-tree-redo))
+
+;; Smart-tab
+(when (require 'smart-tab nil t)
+  (global-smart-tab-mode 1))
 
 ;; Automode
 (add-to-list 'auto-mode-alist '("\\.markdown$" . markdown-mode))

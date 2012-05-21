@@ -13,12 +13,9 @@ require("vicious")
 -- Themes define colours, icons, and wallpapers
 beautiful.init(awful.util.getdir("config") .. "/themes/jkpl/theme.lua")
 
--- This is used later as the default terminal and editor to run.
-terminal = "uxterm"
-editor = os.getenv("EDITOR") or "editor"
-editor_cmd = terminal .. " -e " .. editor
-
--- Other useful app commands
+-- Apps
+terminal       = "uxterm"
+editor         = "emacs"
 filemanager    = "pcmanfm"
 screenlock     = "slock"
 sleeplock      = "sleeplock"
@@ -26,7 +23,6 @@ monitorswitch  = "multihead"
 networkmanager = "wicd-gui"
 webbrowser     = "firefox"
 monitorprefs   = "lxrandr"
-emacs_cmd      = "emacs"
 
 -- Default modkey.
 modkey = "Mod4"
@@ -91,40 +87,6 @@ function volctrl(cmd)
 
     volinfo.text = " <span color='".. beautiful.volume .."'>VOL " .. volu .. " " .. mute .. "</span> "
 end
-
-function oldvolctrl(mctrl, cmd)
-    if not mctrl then mctrl = 'Master' end
-
-    local mixer_state = {
-        ["on"]  = "on",
-        ["off"] = "off"
-    }
-    local amxcmd = ""
-    if not cmd then
-        amxcmd = "amixer get " .. mctrl
-    else
-        amxcmd = "amixer set " .. mctrl .. " " .. cmd
-    end
-
-    local f = io.popen(amxcmd)
-    local mixer = f:read("*all")
-    f:close()
-
-    local volu, mute = string.match(mixer, "([%d]+)%%.*%[([%l]*)")
-    if volu == nil then
-       volinfo.text = "VOL 0 " .. mixer_state["off"]
-       return
-    end
-
-    if mute == "" and volu == "0"
-    or mute == "off" then
-       mute = mixer_state["off"]
-    else
-       mute = mixer_state["on"]
-    end
-
-    volinfo.text = " <span color='".. beautiful.volume .."'>VOL " .. volu .. " " .. mute .. "</span> "
-end
 -- }}}
 
 -- {{{ Tags
@@ -143,7 +105,7 @@ end
 -- Create a laucher widget and a main menu
 myawesomemenu = {
     { "manual", terminal .. " -e man awesome" },
-    { "edit config", editor_cmd .. " " .. awful.util.getdir("config") .. "/rc.lua" },
+    { "edit config", editor .. " " .. awful.util.getdir("config") .. "/rc.lua" },
     { "restart", awesome.restart },
     { "quit", awesome.quit },
 }
@@ -156,9 +118,9 @@ myprefsmenu = {
 mymainmenu = awful.menu({ items = {
     { "awesome", myawesomemenu, beautiful.awesome_icon },
     { "preferences", myprefsmenu },
+    { "editor", editor },
     { "terminal", terminal },
     { "browser", webbrowser },
-    { "emacs",  emacs_cmd },
     { "file manager", filemanager }
 }})
 

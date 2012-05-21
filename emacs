@@ -24,7 +24,7 @@
 (setq my-pkgs
   '(evil popup sws-mode auto-complete surround magit lua-mode
          haskell-mode jade-mode coffee-mode markdown-mode
-         stylus-mode js2-mode undo-tree tango-2-theme
+         stylus-mode js2-mode undo-tree tango-2-theme auctex
          flymake-coffee flymake-jslint))
 (require 'package)
 (package-initialize)
@@ -85,23 +85,11 @@
 
 (defun apply-settings-terminal (&optional frame)
   "Applies terminal specific settings."
-  (set-frame-parameter frame 'menu-bar-lines 0)
-  (set-face-background 'mode-line "#0000ee" frame)
-  (set-face-foreground 'mode-line "#ffffff" frame)
-  (set-face-background 'mode-line-inactive "#00005f" frame)
-  (set-face-foreground 'mode-line-inactive "#767676" frame)
-  (set-face-background 'default "#000000" frame)
-  (set-face-foreground 'default "#dadada" frame))
+  (set-frame-parameter frame 'menu-bar-lines 0))
 
 (defun apply-settings-gui (&optional frame)
   "Applies settings used in GUI environment."
-  (set-frame-parameter frame 'menu-bar-lines 1)
-  (set-face-background 'mode-line "#2e3436" frame)
-  (set-face-foreground 'mode-line "#eeeeec" frame)
-  (set-face-background 'mode-line-inactive "#111111" frame)
-  (set-face-foreground 'mode-line-inactive "#cccddd" frame)
-  (set-face-background 'default "#121212" frame)
-  (set-face-foreground 'default "#eeeeec" frame))
+  (set-frame-parameter frame 'menu-bar-lines 1))
 
 (defun apply-settings-frame (frame)
   "Applies GUI or terminal settings for frame depending on which one the frame is runned on."
@@ -144,9 +132,6 @@
 ;; Theme per frame
 (add-hook 'after-make-frame-functions 'apply-settings-frame)
 
-;; For some reason, setting face colors for frame 'F1' does nothing.
-;; Therefore I need to call one of the environment specific setting
-;; functions to get the correct color on single frame Emacs instances.
 (if (window-system)
     (apply-settings-gui)
     (apply-settings-terminal))

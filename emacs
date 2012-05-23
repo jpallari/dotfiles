@@ -111,13 +111,14 @@
 (global-set-key (kbd "C-x C-m") 'execute-extended-command)
 (global-set-key (kbd "C-z") 'keyboard-escape-quit)
 (global-set-key (kbd "C-t") 'other-window)
+(global-set-key (kbd "C-h") 'backward-delete-char-untabify)
+(global-set-key (kbd "C-x C-h") 'help-command)
 (global-set-key (kbd "RET") 'indent-new-comment-line)
 (global-set-key (kbd "C-j") 'indent-new-comment-line)
 (global-set-key (kbd "M-j") 'newline)
 (global-set-key (kbd "C-x C-j") 'join-line)
 (global-set-key (kbd "C-x t") 'eshell)
 (global-set-key (kbd "C-x C-b") 'buffer-list-switch)
-(global-set-key (kbd "M-/") 'hippie-expand)
 (global-set-key [f5] 'shrink-window-horizontally)
 (global-set-key [f6] 'enlarge-window)
 (global-set-key [f7] 'shrink-window)
@@ -227,6 +228,7 @@
   (setcdr evil-insert-state-map nil)
   (define-key evil-insert-state-map
     (read-kbd-macro evil-toggle-key) 'evil-emacs-state)
+  (define-key evil-normal-state-map (kbd "C-h") 'help-command)
   (define-key evil-insert-state-map (kbd "C-z") 'evil-normal-state)
   (define-key evil-visual-state-map (kbd "C-z") 'evil-normal-state)
   (define-key evil-replace-state-map (kbd "C-z") 'evil-normal-state)
@@ -327,6 +329,13 @@
         coffee-js-mode 'js-mode)
   (define-key coffee-mode-map (kbd "C-c C-r") 'coffee-compile-buffer))
 (add-hook 'coffee-mode-hook 'ft-coffee)
+
+(defun ft-c-common ()
+  (setq c-basic-offset 4
+        tab-width 4)
+  (c-toggle-auto-state 1)
+  (define-key c-mode-base-map (kbd "RET") 'indent-new-comment-line))
+(add-hook 'c-mode-common-hook 'ft-c-common)
 
 ;; Email
 (setq message-send-mail-function 'message-send-mail-with-sendmail)

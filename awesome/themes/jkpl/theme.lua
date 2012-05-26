@@ -1,12 +1,12 @@
 theme = {}
 
 theme.theme_dir     = awful.util.getdir("config") .. "/themes/jkpl"
-theme.wallpaper_cmd = { "feh --bg-scale " .. theme.theme_dir .. "/back.png" }
+theme.wallpaper_cmd = { "feh --bg-scale " .. os.getenv("HOME") .. "/.mybackground.png" }
 
 theme.font          = "profont 8"
 
-theme.bg_normal     = "#161616"
-theme.bg_focus      = "#161616"
+theme.bg_normal     = "#141915"
+theme.bg_focus      = "#141915"
 theme.bg_urgent     = "#f92672"
 theme.bg_minimize   = "#141414"
 
@@ -20,7 +20,7 @@ theme.border_normal = "#666666"
 theme.border_focus  = "#ffcc22"
 theme.border_marked = "#f92672"
 
-theme.taglist_bg_focus = "#181818"
+theme.taglist_bg_focus = "#1e231f"
 theme.taglist_fg_focus = "#ffffff"
 
 -- There are other variable sets

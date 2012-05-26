@@ -85,11 +85,23 @@
 
 (defun apply-settings-terminal (&optional frame)
   "Applies terminal specific settings."
-  (set-frame-parameter frame 'menu-bar-lines 0))
+  (set-frame-parameter frame 'menu-bar-lines 0)
+  (set-face-background 'mode-line "#0000ee" frame)
+  (set-face-foreground 'mode-line "#ffffff" frame)
+  (set-face-background 'mode-line-inactive "#00005f" frame)
+  (set-face-foreground 'mode-line-inactive "#767676" frame)
+  (set-face-background 'default "#000000" frame)
+  (set-face-foreground 'default "#dadada" frame))
 
 (defun apply-settings-gui (&optional frame)
   "Applies settings used in GUI environment."
-  (set-frame-parameter frame 'menu-bar-lines 1))
+  (set-frame-parameter frame 'menu-bar-lines 1)
+  (set-face-background 'mode-line "#2e3436" frame)
+  (set-face-foreground 'mode-line "#eeeeec" frame)
+  (set-face-background 'mode-line-inactive "#111111" frame)
+  (set-face-foreground 'mode-line-inactive "#cccddd" frame)
+  (set-face-background 'default "#121212" frame)
+  (set-face-foreground 'default "#eeeeec" frame))
 
 (defun apply-settings-frame (frame)
   "Applies GUI or terminal settings for frame depending on which one the frame is runned on."
@@ -114,8 +126,6 @@
 (global-set-key (kbd "C-h") 'backward-delete-char-untabify)
 (global-set-key (kbd "C-x C-h") 'help-command)
 (global-set-key (kbd "RET") 'indent-new-comment-line)
-(global-set-key (kbd "C-j") 'indent-new-comment-line)
-(global-set-key (kbd "M-j") 'newline)
 (global-set-key (kbd "C-x C-j") 'join-line)
 (global-set-key (kbd "C-x t") 'eshell)
 (global-set-key (kbd "C-x C-b") 'buffer-list-switch)
@@ -173,6 +183,7 @@
               c-basic-offset 4
               indent-tabs-mode nil
               fill-column 79)
+(setq confirm-nonexistent-file-or-buffer nil)
 
 ;; Enable disabled commands
 (put 'downcase-region 'disabled nil)
@@ -187,7 +198,7 @@
   (setq ido-enable-flex-matching t
         ido-everywhere t
         ido-case-fold t
-        confirm-nonexistent-file-or-buffer nil
+        ido-create-new-buffer 'always
         ido-use-filename-at-point 'guess)
   (ido-mode 1)
   (define-key ido-common-completion-map (kbd "C-z") 'keyboard-escape-quit))
@@ -258,7 +269,9 @@
 
 ;; Smart-tab
 (when (require 'smart-tab nil t)
-  (global-smart-tab-mode 1))
+  (global-smart-tab-mode 1)
+  (mapc (apply-partially 'add-to-list 'smart-tab-disabled-major-modes)
+        '(ielm-mode eshell-mode shell-mode notmuch-hello)))
 
 ;; Automode
 (add-to-list 'auto-mode-alist '("\\.markdown$" . markdown-mode))
@@ -330,6 +343,7 @@
   (define-key coffee-mode-map (kbd "C-c C-r") 'coffee-compile-buffer))
 (add-hook 'coffee-mode-hook 'ft-coffee)
 
+;; C
 (defun ft-c-common ()
   (setq c-basic-offset 4
         tab-width 4)

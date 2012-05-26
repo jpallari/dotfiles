@@ -23,6 +23,7 @@ monitorswitch  = "multihead"
 networkmanager = "wicd-gui"
 webbrowser     = "firefox"
 monitorprefs   = "lxrandr"
+player_cmd     = "spotifyctrl"
 
 -- Default modkey.
 modkey = "Mod4"
@@ -87,12 +88,16 @@ function volctrl(cmd)
 
     volinfo.text = " <span color='".. beautiful.volume .."'>VOL " .. volu .. " " .. mute .. "</span> "
 end
+
+function musicplayer (cmd)
+   awful.util.spawn_with_shell(player_cmd .. " " .. cmd)
+end
 -- }}}
 
 -- {{{ Tags
 -- Define a tag table which hold all screen tags.
 tags = {
-	names = {"main", "term", "c", "w", "¬", "µ", "@", "music", "_"},
+	names = {"term", "main", "emacs", "docs", "@", "µ", "v", "music", "¬"},
 	layout = { layouts[1], layouts[1], layouts[1], layouts[1], layouts[1], layouts[1], layouts[1], layouts[1], layouts[1] }
 }
 for s = 1, screen.count() do
@@ -289,10 +294,23 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey }, "[", function () volctrl("down") end),
     awful.key({ modkey }, "]", function () volctrl("up") end),
     awful.key({ modkey }, "'", function () volctrl("toggle") end),
+    awful.key({        }, "XF86AudioLowerVolume", function () volctrl("down") end),
+    awful.key({        }, "XF86AudioRaiseVolume", function () volctrl("up") end),
+    awful.key({        }, "XF86AudioMute", function () volctrl("toggle") end),
 
+    -- Sleep, display, wireless
     awful.key({        }, "XF86Sleep",   function () awful.util.spawn(sleeplock, false) end),
     awful.key({        }, "XF86Display", function () awful.util.spawn(monitorswitch, false) end),
-    awful.key({ modkey }, "F12",         function () awful.util.spawn(networkmanager, false) end)
+    awful.key({ modkey }, "F12",         function () awful.util.spawn(networkmanager, false) end),
+
+    -- Music player
+    awful.key({ modkey }, "c", function () musicplayer("play") end),
+    awful.key({ modkey }, "v", function () musicplayer("previous") end),
+    awful.key({ modkey }, "b", function () musicplayer("next") end),
+    awful.key({        }, "XF86AudioPlay", function () musicplayer("play") end),
+    awful.key({        }, "XF86AudioStop", function () musicplayer("stop") end),
+    awful.key({        }, "XF86AudioPrevious", function () musicplayer("previous") end),
+    awful.key({        }, "XF86AudioNext", function () musicplayer("next") end)
 )
 
 clientkeys = awful.util.table.join(
@@ -391,14 +409,17 @@ awful.rules.rules = {
         "Gimp"
       } },
       properties = { floating = true, ontop = false } },
-    -- Tag 1
+    -- Tag 2
     { rule_any = { class = {
-        "dwb",
-        "Dwb",
         "Firefox"
       } },
-      properties = { tag = tags[1][1] } },
-    -- Tag 5
+      properties = { tag = tags[1][2] } },
+    -- Tag 3
+    { rule_any = { class = {
+        "Emacs"
+      } },
+      properties = { tag = tags[1][3] } },
+    -- Tag 8
     { rule_any = { class = {
         "Spotify"
       } },

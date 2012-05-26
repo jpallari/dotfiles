@@ -19,7 +19,7 @@ inoremap <C-f> <Right>
 inoremap <C-b> <Left>
 inoremap <C-g> <ESC>
 cnoremap <C-g> <ESC>
-ynoremap <C-g> <ESC>
+vnoremap <C-g> <ESC>
 noremap <C-g> <ESC>
 noremap <C-s> /
 noremap <C-r> ?

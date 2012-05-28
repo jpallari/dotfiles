@@ -30,7 +30,7 @@ Emacs.menuBar:          on
 *color6:                #46b9cf
 *color14:               #66d9ef
 !white
-*color7:                #E2D1E3
+*color7:                #E3E3E3
 *color15:               #FFFFFF
 
 !cursor
@@ -42,8 +42,10 @@ xterm*metaSendsEscape:  true
 xterm*eightBitInput:    false
 xterm*title:            xterm
 xterm*scrollBar:        false
-xterm*font:             6x13,-*-unifont-*-*-*-*-0-*-*-*-*-*-*-*
-xterm*boldFont:         6x13,-*-unifont-*-*-*-*-0-*-*-*-*-*-*-*
+xterm*renderFont:       true
+xterm*font:             xft:Terminus:size=9
+xterm*faceName:         Terminus
+xterm*faceSize:         9
 xterm*boldMode:         false
 xterm*highlightSelection:false
 xterm*bellIsUrgent:     true
@@ -64,10 +66,6 @@ URxvt.scrollBar:        false
 URxvt.colorBD:          #ffffff
 URxvt.colorIT:          #a0cafa
 URxvt.colorUL:          #a0cafa
-!URxvt.font:           -*-terminus-medium-r-*-*-12-*-*-*-*-*-*-*
-!URxvt.boldFont:       -*-terminus-bold-r-*-*-12-*-*-*-*-*-*-*
-!URxvt.italicFont:     -*-terminus-bold-r-*-*-12-*-*-*-*-*-*-*
-!URxvt.boldItalicFont: -*-terminus-bold-r-*-*-12-*-*-*-*-*-*-*
 URxvt.font:             6x13,-*-unifont-*-*-*-*-0-*-*-*-*-*-*-*
 URxvt.boldFont:
 URxvt.italicFont:
@@ -75,7 +73,7 @@ URxvt.boldItalicFont:
 URxvt.perl-ext:         selection,url-select,-searchable-scrollback
 URxvt.keysym.M-u:       perl:url-select:select_next
 URxvt.underlineURLs:    false
-URxvt.urlLauncher:      br
+URxvt.urlLauncher:      firefox
 URxvt.matcher.button:   1
 URxvt.letterSpace:      0
 URxvt.urgentOnBell:     true

@@ -3,7 +3,7 @@ theme = {}
 theme.theme_dir     = awful.util.getdir("config") .. "/themes/jkpl"
 theme.wallpaper_cmd = { "feh --bg-scale " .. os.getenv("HOME") .. "/.mybackground.png" }
 
-theme.font          = "profont 8"
+theme.font          = "terminus 8"
 
 theme.bg_normal     = "#141915"
 theme.bg_focus      = "#141915"

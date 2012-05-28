@@ -14,16 +14,16 @@ require("vicious")
 beautiful.init(awful.util.getdir("config") .. "/themes/jkpl/theme.lua")
 
 -- Apps
-terminal       = "uxterm"
+terminal       = "urxvt"
 editor         = "emacs"
-filemanager    = "pcmanfm"
-screenlock     = "slock"
+filemanager    = "caja " .. os.getenv("HOME")
+screenlock     = "mate-screensaver-command -l"
 sleeplock      = "sleeplock"
-monitorswitch  = "multihead"
-networkmanager = "wicd-gui"
 webbrowser     = "firefox"
-monitorprefs   = "lxrandr"
+monitorprefs   = "mate-display-properties"
 player_cmd     = "spotifyctrl"
+logout         = "mate-session-save --logout"
+shutdown       = "mate-session-save --shutdown-dialog"
 
 -- Default modkey.
 modkey = "Mod4"
@@ -55,40 +55,31 @@ end
 -- Volume control function: updates volinfo widget
 -- mostly ripped from vicious volume widget
 function volctrl(cmd)
-    mctrl = 'Master'
-
     local mixer_state = {
         ["on"]  = "on",
         ["off"] = "off"
     }
-    local amxcmd = "amixer get " .. mctrl
-    local pacmd = ""
-    if     cmd == "up"     then pacmd = "vol_up"
-    elseif cmd == "down"   then pacmd = "vol_down"
-    elseif cmd == "toggle" then pacmd = "mute_toggle"
-    end
+    if cmd == nil then cmd = "" end
+    local amxcmd = "volume.rb " .. cmd
 
-    if pacmd then os.execute(pacmd) end
     local f = io.popen(amxcmd)
     local mixer = f:read("*all")
     f:close()
 
     local volu, mute = string.match(mixer, "([%d]+)%%.*%[([%l]*)")
     if volu == nil then
-       volinfo.text = "VOL 0 " .. mixer_state["off"]
-       return
+       volu = 0
     end
-
-    if mute == "" and volu == "0"
-    or mute == "off" then
-       mute = mixer_state["off"]
-    else
+    if mute == nil then
        mute = mixer_state["on"]
+    else
+       mute = mixer_state[mute]
     end
 
     volinfo.text = " <span color='".. beautiful.volume .."'>VOL " .. volu .. " " .. mute .. "</span> "
 end
 
+-- Command for controlling music player
 function musicplayer (cmd)
    awful.util.spawn_with_shell(player_cmd .. " " .. cmd)
 end
@@ -112,7 +103,9 @@ myawesomemenu = {
     { "manual", terminal .. " -e man awesome" },
     { "edit config", editor .. " " .. awful.util.getdir("config") .. "/rc.lua" },
     { "restart", awesome.restart },
-    { "quit", awesome.quit },
+--    { "quit", awesome.quit },
+    { "logout", logout },
+    { "shutdown", shutdown }
 }
 
 myprefsmenu = {
@@ -142,7 +135,7 @@ vicious.register(mybattery, vicious.widgets.bat, " <span color='".. beautiful.ba
 
 -- Volume info
 volinfo = widget({ type = "textbox" })
-volctrl(false)
+volctrl(nil)
 
 -- Create a wibox for each screen and add it
 mywibox = {}
@@ -300,8 +293,7 @@ globalkeys = awful.util.table.join(
 
     -- Sleep, display, wireless
     awful.key({        }, "XF86Sleep",   function () awful.util.spawn(sleeplock, false) end),
-    awful.key({        }, "XF86Display", function () awful.util.spawn(monitorswitch, false) end),
-    awful.key({ modkey }, "F12",         function () awful.util.spawn(networkmanager, false) end),
+    awful.key({        }, "XF86Display", function () awful.util.spawn(monitorprefs, false) end),
 
     -- Music player
     awful.key({ modkey }, "c", function () musicplayer("play") end),
@@ -309,7 +301,7 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey }, "b", function () musicplayer("next") end),
     awful.key({        }, "XF86AudioPlay", function () musicplayer("play") end),
     awful.key({        }, "XF86AudioStop", function () musicplayer("stop") end),
-    awful.key({        }, "XF86AudioPrevious", function () musicplayer("previous") end),
+    awful.key({        }, "XF86AudioPrev", function () musicplayer("previous") end),
     awful.key({        }, "XF86AudioNext", function () musicplayer("next") end)
 )
 
@@ -413,17 +405,17 @@ awful.rules.rules = {
     { rule_any = { class = {
         "Firefox"
       } },
-      properties = { tag = tags[1][2] } },
+      properties = { floating = false, tag = tags[1][2] } },
     -- Tag 3
     { rule_any = { class = {
         "Emacs"
       } },
-      properties = { tag = tags[1][3] } },
+      properties = { floating = false, tag = tags[1][3] } },
     -- Tag 8
     { rule_any = { class = {
         "Spotify"
       } },
-      properties = { tag = tags[1][8] } },
+      properties = { floating = false, tag = tags[1][8] } },
     -- Firefox: float everything except the browser window
     { rule = { class = "Firefox" }, except = { instance = "Navigator" }, properties = { floating = true } }
 }

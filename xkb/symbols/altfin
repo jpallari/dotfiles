@@ -10,3 +10,8 @@ xkb_symbols "hjkl_arrows" {
     replace key <AC08> { [ k, K, Up,    OE ] };
     replace key <AC09> { [ l, L, Right, Ooblique ] };
 };
+
+partial alphanumeric_keys
+xkb_symbols "menu_winkey" {
+    replace key <MENU> { [ Super_R, Super_R ] };
+};

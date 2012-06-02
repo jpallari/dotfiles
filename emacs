@@ -22,7 +22,7 @@
 
 ;; Package management
 (setq my-pkgs
-  '(evil sws-mode surround magit lua-mode python smart-tab
+  '(evil sws-mode surround magit lua-mode python
          haskell-mode jade-mode coffee-mode markdown-mode
          stylus-mode js2-mode undo-tree tango-2-theme auctex
          flymake-coffee flymake-jslint))
@@ -129,6 +129,7 @@
 (global-set-key (kbd "C-x C-j") 'join-line)
 (global-set-key (kbd "C-x t") 'eshell)
 (global-set-key (kbd "C-x C-b") 'buffer-list-switch)
+(global-set-key (kbd "M-s M-s") 'completion-at-point)
 (global-set-key [f5] 'shrink-window-horizontally)
 (global-set-key [f6] 'enlarge-window)
 (global-set-key [f7] 'shrink-window)
@@ -148,11 +149,12 @@
     (apply-settings-gui)
     (apply-settings-terminal))
 
-;; Xterm mouse
+;; Xterm mouse & selection
 (when (require 'mouse nil t)
   (xterm-mouse-mode t)
   (defun track-mouse (e))
   (setq mouse-sel-mode t))
+(setq x-select-enable-clipboard t)
 
 ;; Other UI settings
 (blink-cursor-mode 0)
@@ -267,12 +269,6 @@
 (when (require 'undo-tree nil t)
   (global-set-key (kbd "M-?") 'undo-tree-redo))
 
-;; Smart-tab
-(when (require 'smart-tab nil t)
-  (global-smart-tab-mode 1)
-  (mapc (apply-partially 'add-to-list 'smart-tab-disabled-major-modes)
-        '(ielm-mode eshell-mode shell-mode notmuch-hello)))
-
 ;; Automode
 (add-to-list 'auto-mode-alist '("\\.markdown$" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
@@ -322,6 +318,7 @@
   (setq tab-width 4
         c-basic-offset 4
         py-indent-offset 4
+        python-indent-offset 4
         fill-column 79))
 (add-hook 'python-mode-hook 'ft-python)
 
@@ -339,7 +336,7 @@
 (defun ft-coffee ()
   (setq tab-width 2
         c-basic-offset 2
-        coffee-js-mode 'js-mode)
+        coffee-tab-width 2)
   (define-key coffee-mode-map (kbd "C-c C-r") 'coffee-compile-buffer))
 (add-hook 'coffee-mode-hook 'ft-coffee)
 

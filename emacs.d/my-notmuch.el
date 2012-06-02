@@ -46,6 +46,8 @@
           notmuch-hello-insert-recent-searches
           notmuch-hello-insert-alltags
           notmuch-hello-insert-footer))
+  (setq gnus-inhibit-images t
+        mm-text-html-renderer 'w3m)
 
   ;; Keybindings
   (define-key notmuch-search-mode-map "j" 'notmuch-search-next-thread)

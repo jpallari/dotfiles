@@ -85,7 +85,6 @@ RPROMPT=""
 stty -ixon
 
 # Exports
-export PYTHONSTARTUP="$HOME/.pyrc"
 export PAGER=less
 
 # Aliases
@@ -98,6 +97,7 @@ alias jk="tmux attach -d"
 alias h="hostname"
 alias e='emacsclient -c -t --alternate-editor=""'
 alias em='emacs -nw'
+alias er='emacsclient -n'
 [[ -f $HOME/.zshaliases ]] && source $HOME/.zshaliases
 
 if [[ $TERM == "eterm-color" || $TERM == "dumb" || $EMACS != "" ]]; then

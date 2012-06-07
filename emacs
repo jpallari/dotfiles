@@ -231,6 +231,7 @@
 
 ;; Undo tree
 (when (require 'undo-tree nil t)
+  (global-undo-tree-mode)
   (global-set-key (kbd "M-?") 'undo-tree-redo))
 
 ;; Automode

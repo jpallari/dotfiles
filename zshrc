@@ -100,9 +100,16 @@ alias em='emacs -nw'
 alias er='emacsclient -n'
 [[ -f $HOME/.zshaliases ]] && source $HOME/.zshaliases
 
+# Local commands
+[[ -f $HOME/.shlocal ]] && source $HOME/.shlocal
+
 if [[ $TERM == "eterm-color" || $TERM == "dumb" || $EMACS != "" ]]; then
     PS1='$ '
     unsetopt zle
     unsetopt prompt_cr
     unsetopt prompt_subst
 fi
+
+# Show the current host and path when the shell starts
+echo "Host: $(hostname)"
+echo "Path: $(pwd)"

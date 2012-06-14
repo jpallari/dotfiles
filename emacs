@@ -23,7 +23,7 @@
 ;; Package management
 (setq my-pkgs
   '(evil sws-mode surround magit lua-mode python iy-go-to-char
-         haskell-mode jade-mode coffee-mode markdown-mode
+         haskell-mode jade-mode coffee-mode markdown-mode expand-region
          stylus-mode js2-mode undo-tree tango-2-theme auctex
          flymake-coffee flymake-jslint))
 (require 'package)
@@ -181,6 +181,10 @@
 (defalias 'sgc 'set-goal-column)
 (defalias 'git-st 'magit-status)
 (defalias 'bls 'buffer-list-switch)
+(defalias 'sr 'replace-string)
+(defalias 'qr 'query-replace)
+(defalias 'rr 'replace-regexp)
+(defalias 'qrr 'query-replace-regexp)
 
 ;; Some defaults
 (setq-default tab-width 4
@@ -209,6 +213,10 @@
         ido-use-filename-at-point 'guess)
   (ido-mode 1)
   (define-key ido-common-completion-map (kbd "C-z") 'keyboard-escape-quit))
+
+;; Expand region
+(when (require 'expand-region nil t)
+  (global-set-key (kbd "M-M") 'er/expand-region))
 
 ;; TRAMP
 ;; (if window-system

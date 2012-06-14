@@ -22,7 +22,7 @@
 
 ;; Package management
 (setq my-pkgs
-  '(evil sws-mode surround magit lua-mode python
+  '(evil sws-mode surround magit lua-mode python iy-go-to-char
          haskell-mode jade-mode coffee-mode markdown-mode
          stylus-mode js2-mode undo-tree tango-2-theme auctex
          flymake-coffee flymake-jslint))
@@ -129,7 +129,7 @@
 (global-set-key (kbd "C-x C-j") 'join-line)
 (global-set-key (kbd "C-x t") 'eshell)
 (global-set-key (kbd "C-x C-b") 'buffer-list-switch)
-(global-set-key (kbd "M-s M-s") 'completion-at-point)
+(global-set-key (kbd "M-C") 'completion-at-point)
 (global-set-key [f5] 'shrink-window-horizontally)
 (global-set-key [f6] 'enlarge-window)
 (global-set-key [f7] 'shrink-window)
@@ -137,6 +137,8 @@
 (global-set-key [f9] 'keybind-ret)
 (global-set-key [f11] 'previous-buffer)
 (global-set-key [f12] 'next-buffer)
+(if (fboundp 'iy-go-to-char)
+    (global-set-key (kbd "M-L") 'iy-go-to-char))
 
 ;; Theme
 (when (>= emacs-major-version 24)
@@ -299,9 +301,9 @@
 
 ;; CoffeeScript
 (defun ft-coffee ()
-  (setq tab-width 2
-        c-basic-offset 2
-        coffee-tab-width 2)
+  (make-local-variable 'tab-width)
+  (setq coffee-tab-width 2
+        tab-width 2)
   (define-key coffee-mode-map (kbd "C-c C-r") 'coffee-compile-buffer))
 (add-hook 'coffee-mode-hook 'ft-coffee)
 

@@ -294,6 +294,7 @@
         c-basic-offset 4
         py-indent-offset 4
         python-indent-offset 4
+        show-trailing-whitespace t
         fill-column 79))
 (add-hook 'python-mode-hook 'ft-python)
 
@@ -311,7 +312,8 @@
 (defun ft-coffee ()
   (make-local-variable 'tab-width)
   (setq coffee-tab-width 2
-        tab-width 2)
+        tab-width 2
+        show-trailing-whitespace t)
   (define-key coffee-mode-map (kbd "C-c C-r") 'coffee-compile-buffer))
 (add-hook 'coffee-mode-hook 'ft-coffee)
 

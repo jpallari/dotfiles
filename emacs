@@ -16,15 +16,15 @@
 ;; Version specific settings
 (if (>= emacs-major-version 24)
   (progn ;; Emacs 24 and newer
-    (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/"))
+    nil)
   (progn ;; Emacs 23 and older
     (add-to-list 'load-path "~/.emacs.d/package/")))
 
 ;; Package management
 (setq my-pkgs
-  '(evil sws-mode surround magit lua-mode python iy-go-to-char
+  '(evil sws-mode evil surround magit lua-mode python iy-go-to-char
          haskell-mode jade-mode coffee-mode markdown-mode expand-region
-         stylus-mode js2-mode undo-tree tango-2-theme auctex
+         stylus-mode js2-mode undo-tree auctex less-css-mode
          flymake-coffee flymake-jslint))
 (require 'package)
 (package-initialize)
@@ -97,14 +97,16 @@
   "Applies settings used in GUI environment."
   (set-frame-parameter frame 'menu-bar-lines 1)
   (set-face-background 'mode-line "#2e3436" frame)
-  (set-face-foreground 'mode-line "#eeeeec" frame)
+  (set-face-foreground 'mode-line "#eeeeee" frame)
   (set-face-background 'mode-line-inactive "#111111" frame)
-  (set-face-foreground 'mode-line-inactive "#cccddd" frame)
-  (set-face-background 'default "#121212" frame)
-  (set-face-foreground 'default "#eeeeec" frame))
+  (set-face-foreground 'mode-line-inactive "#cccccc" frame)
+  (set-face-background 'default "#1a1a1a" frame)
+  (set-face-foreground 'default "#eeeeee" frame)
+  (set-face-background 'fringe "#1a1a1a" frame))
 
 (defun apply-settings-frame (frame)
-  "Applies GUI or terminal settings for frame depending on which one the frame is runned on."
+  "Applies GUI or terminal settings for frame depending on which
+one the frame is runned on."
   (with-selected-frame frame
     (if (not (display-graphic-p))
         (apply-settings-terminal frame)
@@ -140,13 +142,8 @@
 (if (fboundp 'iy-go-to-char)
     (global-set-key (kbd "M-L") 'iy-go-to-char))
 
-;; Theme
-(when (>= emacs-major-version 24)
-  (load-theme 'tango-2 t))
-
 ;; Theme per frame
 (add-hook 'after-make-frame-functions 'apply-settings-frame)
-
 (if (window-system)
     (apply-settings-gui)
     (apply-settings-terminal))
@@ -168,9 +165,6 @@
       show-paren-delay 0.0)
 (when (fboundp 'set-scroll-bar-mode) (set-scroll-bar-mode 'right))
 (set-input-mode t nil t)
-
-;; Winner mode
-(winner-mode 1)
 
 ;; Aliases
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -241,7 +235,7 @@
 
 ;; Undo tree
 (when (require 'undo-tree nil t)
-  (global-undo-tree-mode)
+  (global-undo-tree-mode 1)
   (global-set-key (kbd "M-?") 'undo-tree-redo))
 
 ;; Automode
@@ -348,4 +342,3 @@
 (setq locale-coding-system 'utf-8)
 (setq default-file-name-coding-system 'utf-8)
 (setq default-buffer-file-coding-system 'utf-8)
-

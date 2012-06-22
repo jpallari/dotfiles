@@ -103,7 +103,11 @@ alias er='emacsclient -n'
 # Local commands
 [[ -f $HOME/.shlocal ]] && source $HOME/.shlocal
 
-if [[ $TERM == "eterm-color" || $TERM == "dumb" || $EMACS != "" ]]; then
+# Emacs shells and terminals
+if [[ $TERM == "eterm-color" \
+   || $TERM == "dumb" \
+   || $EMACS != "" \
+   || $INSIDE_EMACS != "" ]]; then
     PS1='$ '
     unsetopt zle
     unsetopt prompt_cr

@@ -305,6 +305,7 @@ one the frame is runned on."
 ;; CoffeeScript
 (defun ft-coffee ()
   (make-local-variable 'tab-width)
+  (setenv "NODE_NO_READLINE" "1")
   (setq coffee-tab-width 2
         tab-width 2
         show-trailing-whitespace t)

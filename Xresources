@@ -71,7 +71,7 @@ URxvt.boldFont:
 URxvt.italicFont:
 URxvt.boldItalicFont:
 URxvt.perl-ext:         selection,url-select,-searchable-scrollback
-URxvt.keysym.M-u:       perl:url-select:select_next
+URxvt.keysym.C-2:       perl:url-select:select_next
 URxvt.underlineURLs:    false
 URxvt.urlLauncher:      chromium-browser
 URxvt.matcher.button:   1

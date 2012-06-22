@@ -73,7 +73,7 @@ URxvt.boldItalicFont:
 URxvt.perl-ext:         selection,url-select,-searchable-scrollback
 URxvt.keysym.M-u:       perl:url-select:select_next
 URxvt.underlineURLs:    false
-URxvt.urlLauncher:      firefox
+URxvt.urlLauncher:      chromium-browser
 URxvt.matcher.button:   1
 URxvt.letterSpace:      0
 URxvt.urgentOnBell:     true

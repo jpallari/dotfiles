@@ -16,12 +16,11 @@ The window manager I use these days.
 
 ## Emacs
 
-I run Emacs 24 (pre-release) on most of my computers, and already use some of
+I run Emacs 24 on most of my computers, and already use some of
 the new features it offers.
 
 - Package management using package.
 - Configurations for [Notmuch][] plugin.
-- [Evil][] with Emacs mode as insert mode.
 
 ## Vim
 

@@ -19,7 +19,7 @@ editor         = "emacs"
 filemanager    = "caja " .. os.getenv("HOME")
 screenlock     = "mate-screensaver-command -l"
 sleeplock      = "sleeplock"
-webbrowser     = "firefox"
+webbrowser     = "chromium-browser"
 monitorprefs   = "mate-display-properties"
 player_cmd     = "spotifyctrl"
 logout         = "mate-session-save --logout"
@@ -403,7 +403,8 @@ awful.rules.rules = {
       properties = { floating = true, ontop = false } },
     -- Tag 2
     { rule_any = { class = {
-        "Firefox"
+        "Firefox",
+        "Chromium-browser"
       } },
       properties = { floating = false, tag = tags[1][2] } },
     -- Tag 3

@@ -24,7 +24,7 @@
 (setq my-pkgs
   '(evil sws-mode evil surround magit lua-mode python iy-go-to-char
          haskell-mode jade-mode coffee-mode markdown-mode expand-region
-         stylus-mode js2-mode undo-tree auctex less-css-mode
+         stylus-mode js2-mode undo-tree auctex less-css-mode virtualenv
          flymake-coffee flymake-jslint))
 (require 'package)
 (package-initialize)
@@ -213,13 +213,9 @@ one the frame is runned on."
   (global-set-key (kbd "M-M") 'er/expand-region))
 
 ;; TRAMP
-;; (if window-system
-;;     (progn ;; For some strange reason, TRAMP doesn't work well with terminal.
-;;       (setq tramp-default-method "scp"
-;;             tramp-chunkzise 500
-;;             tramp-shell-prompt-pattern "^[^$>\n]*[#$%>] *\\(\[[0-9;]*[a-zA-Z] *\\)*"))
-;;   (setq tramp-mode nil))
-(setq tramp-mode nil)
+(setq tramp-default-method "sshx"
+      tramp-chunkzise 500
+      tramp-shell-prompt-pattern "^[^$>\n]*[#$%>] *\\(\[[0-9;]*[a-zA-Z] *\\)*")
 
 ;; Browser
 (when (not (getenv "DISPLAY"))

@@ -66,9 +66,12 @@
                   (get-char-property (point) 'face))))
     (if face (message "Face: %s" face) (message "No face at %d" pos))))
 
-(defun jump-to-last-mark ()
-  "Jumps to last set mark."
-  (interactive) (set-mark-command 1))
+(defun auto-fill ()
+  "Toggles auto fill mode and fill column indicator, if it exists."
+  (interactive)
+  (let ((val (if (symbol-value 'auto-fill-function) -1 1)))
+    (auto-fill-mode val)
+    (if (fboundp 'fci-mode) (fci-mode val))))
 
 (defun keybind-ret ()
   "Binds RET to either indent-new-comment-line or newline depending on the existing binding."
@@ -117,19 +120,17 @@ one the frame is runned on."
         (apply-settings-gui frame))))
 
 ;; Keybindings
-(global-set-key (kbd "M-`") 'jump-to-last-mark)
 (global-set-key (kbd "C-w") 'kr-or-bwkw)
 (global-set-key (kbd "C-k") 'kr-or-kl)
 (global-set-key (kbd "C-x C-k") 'kill-region)
-(global-set-key (kbd "C-c q") 'auto-fill-mode)
+(global-set-key (kbd "M-J") 'other-window)
+(global-set-key (kbd "M-K") '(lambda () (interactive) (other-window -1)))
 (global-set-key (kbd "M-P") 'previous-buffer)
 (global-set-key (kbd "M-N") 'next-buffer)
 (global-set-key (kbd "C-x C-p") 'previous-buffer)
 (global-set-key (kbd "C-x C-n") 'next-buffer)
 (global-set-key (kbd "C-x C-m") 'execute-extended-command)
 (global-set-key (kbd "C-z") 'keyboard-escape-quit)
-(global-set-key (kbd "M-J") 'other-window)
-(global-set-key (kbd "M-K") '(lambda () (interactive) (other-window -1)))
 (global-set-key (kbd "C-h") 'backward-delete-char-untabify)
 (global-set-key (kbd "C-x C-h") 'help-command)
 (global-set-key (kbd "RET") 'indent-new-comment-line)
@@ -137,6 +138,7 @@ one the frame is runned on."
 (global-set-key (kbd "C-x t") 'eshell)
 (global-set-key (kbd "C-x C-b") 'buffer-list-switch)
 (global-set-key (kbd "M-C") 'completion-at-point)
+(global-set-key (kbd "C-t") 'completion-at-point)
 (global-set-key [f5] 'shrink-window-horizontally)
 (global-set-key [f6] 'enlarge-window)
 (global-set-key [f7] 'shrink-window)
@@ -167,9 +169,13 @@ one the frame is runned on."
 (transient-mark-mode t)
 (setq inhibit-splash-screen t
       completion-cycle-threshold 10
-      show-paren-delay 0.0)
+      show-paren-delay 0.0
+      scroll-margin 0
+      scroll-conservatively 10000
+      scroll-preserve-screen-position 1)
 (when (fboundp 'set-scroll-bar-mode) (set-scroll-bar-mode 'right))
 (set-input-mode t nil t)
+(tool-bar-mode -1)
 
 ;; Aliases
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -224,8 +230,8 @@ one the frame is runned on."
 
 ;; Fill column indicator
 (setq fci-rule-width 1
-      fci-rule-color "color-89"
-      fci-rule-character-color "color-89")
+      fci-rule-color "#87005f"
+      fci-rule-character-color "#87005f")
 
 ;; TRAMP
 (setq tramp-default-method "sshx"
@@ -295,7 +301,7 @@ one the frame is runned on."
 (defun ft-python ()
   (turn-on-auto-fill)
   (eldoc-mode 1)
-  (when (fbound 'fci-mode) fci-mode)
+  (when (fboundp ('fci-mode)) fci-mode)
   (setq tab-width 4
         c-basic-offset 4
         py-indent-offset 4
@@ -318,7 +324,7 @@ one the frame is runned on."
 (defun ft-coffee ()
   (make-local-variable 'tab-width)
   (setenv "NODE_NO_READLINE" "1")
-  (when (fbound 'fci-mode) fci-mode)
+  (when (fboundp ('fci-mode)) fci-mode)
   (setq coffee-tab-width 2
         tab-width 2
         show-trailing-whitespace t)
@@ -332,6 +338,16 @@ one the frame is runned on."
   (c-toggle-auto-state 1)
   (define-key c-mode-base-map (kbd "RET") 'indent-new-comment-line))
 (add-hook 'c-mode-common-hook 'ft-c-common)
+
+;; CSS
+(defun ft-css-common ()
+  (setq css-indent-offset 2))
+(add-hook 'c-mode-hook 'ft-css-common)
+
+;; LESS
+(defun ft-less-common ()
+  (setq css-indent-offset 2))
+(add-hook 'c-mode-hook 'ft-less-common)
 
 ;; Email
 (setq message-send-mail-function 'message-send-mail-with-sendmail)

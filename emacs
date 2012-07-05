@@ -21,25 +21,29 @@
     (add-to-list 'load-path "~/.emacs.d/package/")))
 
 ;; Package management
-(setq my-pkgs
-  '(evil sws-mode evil surround magit lua-mode python iy-go-to-char
-         haskell-mode jade-mode coffee-mode markdown-mode expand-region
-         stylus-mode js2-mode undo-tree auctex less-css-mode virtualenv
-         flymake-coffee flymake-jslint))
+(setq my-pkgs-essential
+      '(iy-go-to-char fill-column-indicator expand-region undo-tree))
+(setq my-pkgs-apps
+      '(evil surround magit auctex))
+(setq my-pkgs-webdev
+      '(coffee-mode jade-mode markdown-mode stylus-mode
+        js2-mode less-css-mode flymake-coffee flymake-jslint))
+(setq my-pkgs-python '(python virtualenv))
+(setq my-pkgs-modes '(sws-mode lua-mode haskell-mode))
 (require 'package)
 (package-initialize)
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
 ;; Custom functions
-(defun install-missing-packages ()
+(defun install-missing-packages (pkg-list)
   "Installs all the missing packages"
   (interactive)
   (mapc (lambda (pkg)
           (or (package-installed-p pkg)
               (if (y-or-n-p (format "Package %s is missing. Install it? " pkg))
                   (package-install pkg))))
-        my-pkgs))
+        pkg-list))
 
 (defun kr-or-bwkw (&optional arg region)
   "`kill-region` if the region is active, otherwise `backward-kill-word`"
@@ -124,7 +128,8 @@ one the frame is runned on."
 (global-set-key (kbd "C-x C-n") 'next-buffer)
 (global-set-key (kbd "C-x C-m") 'execute-extended-command)
 (global-set-key (kbd "C-z") 'keyboard-escape-quit)
-(global-set-key (kbd "C-t") 'other-window)
+(global-set-key (kbd "M-J") 'other-window)
+(global-set-key (kbd "M-K") '(lambda () (interactive) (other-window -1)))
 (global-set-key (kbd "C-h") 'backward-delete-char-untabify)
 (global-set-key (kbd "C-x C-h") 'help-command)
 (global-set-key (kbd "RET") 'indent-new-comment-line)
@@ -179,6 +184,11 @@ one the frame is runned on."
 (defalias 'qr 'query-replace)
 (defalias 'rr 'replace-regexp)
 (defalias 'qrr 'query-replace-regexp)
+(defalias 'lml 'list-matching-lines)
+(defalias 'dml 'delete-matching-lines)
+(defalias 'dnml 'delete-non-matching-lines)
+(defalias 'sl 'sort-lines)
+(defalias 'snf 'sort-numeric-fields)
 
 ;; Some defaults
 (setq-default tab-width 4
@@ -211,6 +221,11 @@ one the frame is runned on."
 ;; Expand region
 (when (require 'expand-region nil t)
   (global-set-key (kbd "M-M") 'er/expand-region))
+
+;; Fill column indicator
+(setq fci-rule-width 1
+      fci-rule-color "color-89"
+      fci-rule-character-color "color-89")
 
 ;; TRAMP
 (setq tramp-default-method "sshx"
@@ -280,6 +295,7 @@ one the frame is runned on."
 (defun ft-python ()
   (turn-on-auto-fill)
   (eldoc-mode 1)
+  (when (fbound 'fci-mode) fci-mode)
   (setq tab-width 4
         c-basic-offset 4
         py-indent-offset 4
@@ -302,6 +318,7 @@ one the frame is runned on."
 (defun ft-coffee ()
   (make-local-variable 'tab-width)
   (setenv "NODE_NO_READLINE" "1")
+  (when (fbound 'fci-mode) fci-mode)
   (setq coffee-tab-width 2
         tab-width 2
         show-trailing-whitespace t)

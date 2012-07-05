@@ -7,3 +7,5 @@ emacs.d/ac-comphist.dat
 emacs.d/tramp
 *.elc
 pentadactyl/info
+/emacs.d/eshell/history
+/emacs.d/eshell/lastdir

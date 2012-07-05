@@ -1,8 +1,5 @@
 ;;;; jkpl's Emacs confs
 
-;; Common Lisp compatibility
-(require 'cl)
-
 ;; Disable backup and autosave
 (setq backup-inhibited t)
 (setq auto-save-default nil)
@@ -18,6 +15,7 @@
   (progn ;; Emacs 24 and newer
     nil)
   (progn ;; Emacs 23 and older
+    (require 'package)
     (add-to-list 'load-path "~/.emacs.d/package/")))
 
 ;; Package management
@@ -30,7 +28,6 @@
         js2-mode less-css-mode flymake-coffee flymake-jslint))
 (setq my-pkgs-python '(python virtualenv))
 (setq my-pkgs-modes '(sws-mode lua-mode haskell-mode))
-(require 'package)
 (package-initialize)
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
@@ -125,20 +122,26 @@ one the frame is runned on."
 (global-set-key (kbd "C-x C-k") 'kill-region)
 (global-set-key (kbd "M-J") 'other-window)
 (global-set-key (kbd "M-K") '(lambda () (interactive) (other-window -1)))
-(global-set-key (kbd "M-P") 'previous-buffer)
-(global-set-key (kbd "M-N") 'next-buffer)
 (global-set-key (kbd "C-x C-p") 'previous-buffer)
 (global-set-key (kbd "C-x C-n") 'next-buffer)
 (global-set-key (kbd "C-x C-m") 'execute-extended-command)
-(global-set-key (kbd "C-z") 'keyboard-escape-quit)
+(global-set-key (kbd "C-z") 'undo)
 (global-set-key (kbd "C-h") 'backward-delete-char-untabify)
 (global-set-key (kbd "C-x C-h") 'help-command)
 (global-set-key (kbd "RET") 'indent-new-comment-line)
-(global-set-key (kbd "C-x C-j") 'join-line)
 (global-set-key (kbd "C-x t") 'eshell)
+(global-set-key (kbd "C-x C-j") 'join-line)
 (global-set-key (kbd "C-x C-b") 'buffer-list-switch)
 (global-set-key (kbd "M-C") 'completion-at-point)
 (global-set-key (kbd "C-t") 'completion-at-point)
+(global-set-key (kbd "M-L") 'iy-go-to-char)
+(global-set-key (kbd "M-M") 'er/expand-region)
+(global-set-key (kbd "M-?")
+  '(lambda (&optional arg)
+     (interactive)
+     (if (fboundp 'undo-tree-redo)
+         (undo-tree-redo arg)
+         (undo-tree-mode))))
 (global-set-key [f5] 'shrink-window-horizontally)
 (global-set-key [f6] 'enlarge-window)
 (global-set-key [f7] 'shrink-window)
@@ -146,8 +149,6 @@ one the frame is runned on."
 (global-set-key [f9] 'keybind-ret)
 (global-set-key [f11] 'previous-buffer)
 (global-set-key [f12] 'next-buffer)
-(if (fboundp 'iy-go-to-char)
-    (global-set-key (kbd "M-L") 'iy-go-to-char))
 
 ;; Theme per frame
 (add-hook 'after-make-frame-functions 'apply-settings-frame)
@@ -214,19 +215,21 @@ one the frame is runned on."
 ;; EVIL
 (autoload 'evil-mode "~/.emacs.d/my-evil" "EVIL mode" t)
 
-;; IDO mode
-(when (require 'ido nil t)
-  (setq ido-enable-flex-matching t
-        ido-everywhere t
-        ido-case-fold t
-        ido-create-new-buffer 'always
-        ido-use-filename-at-point 'guess)
-  (ido-mode 1)
-  (define-key ido-common-completion-map (kbd "C-z") 'keyboard-escape-quit))
+;; EShell
+(setq eshell-prompt-function (lambda () "$ "))
+(defun eshell/clear ()
+  "Clear buffer"
+  (interactive)
+  (let ((inhibit-read-only t)) (erase-buffer)))
 
-;; Expand region
-(when (require 'expand-region nil t)
-  (global-set-key (kbd "M-M") 'er/expand-region))
+;; IDO mode
+(ido-mode 1)
+(setq ido-enable-flex-matching t
+      ido-everywhere t
+      ido-case-fold t
+      ido-create-new-buffer 'always
+      ido-use-filename-at-point 'guess)
+(define-key ido-common-completion-map (kbd "C-z") 'keyboard-escape-quit)
 
 ;; Fill column indicator
 (setq fci-rule-width 1
@@ -249,11 +252,6 @@ one the frame is runned on."
       w3m-input-coding-system 'utf-8
       w3m-output-coding-system 'utf-8
       w3m-terminal-coding-system 'utf-8)
-
-;; Undo tree
-(when (require 'undo-tree nil t)
-  (global-undo-tree-mode 1)
-  (global-set-key (kbd "M-?") 'undo-tree-redo))
 
 ;; Automode
 (add-to-list 'auto-mode-alist '("\\.markdown$" . markdown-mode))

@@ -1,5 +1,8 @@
 ;;;; jkpl's Emacs confs
 
+;; Common LISP compatibility
+(require 'cl)
+
 ;; Disable backup and autosave
 (setq backup-inhibited t)
 (setq auto-save-default nil)

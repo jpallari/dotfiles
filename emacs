@@ -9,6 +9,7 @@
 
 ;; Load paths
 (add-to-list 'load-path "~/.emacs.d/")
+(add-to-list 'load-path "~/.emacs.d/vendor")
 
 ;; Version specific settings
 (if (>= emacs-major-version 24)
@@ -70,17 +71,6 @@
     (auto-fill-mode val)
     (if (fboundp 'fci-mode) (fci-mode val))))
 
-(defun keybind-ret ()
-  "Binds RET to either indent-new-comment-line or newline depending on the existing binding."
-  (interactive)
-  (let ((rb (key-binding (kbd "RET")))
-        (set-ret (lambda (f)
-                   (global-set-key (kbd "RET") f)
-                   (message (format "RET binded to %s" f)))))
-    (cond ((eq rb 'newline) (funcall set-ret 'indent-new-comment-line))
-          ((eq rb 'indent-new-comment-line) (funcall set-ret 'newline))
-          ((eq rb 'newline-and-indent) (funcall set-ret 'indent-new-comment-line)))))
-
 (defun buffer-list-switch ()
   "Open buffer list and activate the window"
   (interactive)
@@ -128,7 +118,6 @@ one the frame is runned on."
 (global-set-key (kbd "C-z") 'undo)
 (global-set-key (kbd "C-h") 'backward-delete-char-untabify)
 (global-set-key (kbd "C-x C-h") 'help-command)
-(global-set-key (kbd "RET") 'indent-new-comment-line)
 (global-set-key (kbd "C-x t") 'eshell)
 (global-set-key (kbd "C-x C-j") 'join-line)
 (global-set-key (kbd "C-x C-b") 'buffer-list-switch)
@@ -136,19 +125,11 @@ one the frame is runned on."
 (global-set-key (kbd "C-t") 'completion-at-point)
 (global-set-key (kbd "M-L") 'iy-go-to-char)
 (global-set-key (kbd "M-M") 'er/expand-region)
-(global-set-key (kbd "M-?")
-  '(lambda (&optional arg)
-     (interactive)
-     (if (fboundp 'undo-tree-redo)
-         (undo-tree-redo arg)
-         (undo-tree-mode))))
+(global-set-key (kbd "M-?") 'undo-tree-redo)
 (global-set-key [f5] 'shrink-window-horizontally)
 (global-set-key [f6] 'enlarge-window)
 (global-set-key [f7] 'shrink-window)
 (global-set-key [f8] 'enlarge-window-horizontally)
-(global-set-key [f9] 'keybind-ret)
-(global-set-key [f11] 'previous-buffer)
-(global-set-key [f12] 'next-buffer)
 
 ;; Theme per frame
 (add-hook 'after-make-frame-functions 'apply-settings-frame)
@@ -299,7 +280,7 @@ one the frame is runned on."
 (defun ft-python ()
   (turn-on-auto-fill)
   (eldoc-mode 1)
-  (when (fboundp ('fci-mode)) fci-mode)
+  (when (fboundp 'fci-mode) (fci-mode))
   (setq tab-width 4
         c-basic-offset 4
         py-indent-offset 4
@@ -322,7 +303,7 @@ one the frame is runned on."
 (defun ft-coffee ()
   (make-local-variable 'tab-width)
   (setenv "NODE_NO_READLINE" "1")
-  (when (fboundp ('fci-mode)) fci-mode)
+  (when (fboundp 'fci-mode) (fci-mode))
   (setq coffee-tab-width 2
         tab-width 2
         show-trailing-whitespace t)
@@ -340,12 +321,7 @@ one the frame is runned on."
 ;; CSS
 (defun ft-css-common ()
   (setq css-indent-offset 2))
-(add-hook 'c-mode-hook 'ft-css-common)
-
-;; LESS
-(defun ft-less-common ()
-  (setq css-indent-offset 2))
-(add-hook 'c-mode-hook 'ft-less-common)
+(add-hook 'css-mode-hook 'ft-css-common)
 
 ;; Email
 (setq message-send-mail-function 'message-send-mail-with-sendmail)

@@ -29,7 +29,7 @@
 (defun notmuch-quick-search (key)
   "Quick search."
   (interactive "kQuick search:")
-  (notmuch-search (cdr (assoc key notmuch-quick-alist))))
+  (notmuch-search (cdr (assoc key notmuch-quick-search-alist))))
 
 (defun notmuch-show-toggle-delete-tag ()
   "Toggles deleted tag for the current message"

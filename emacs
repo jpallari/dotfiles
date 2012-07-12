@@ -12,7 +12,7 @@
 
 ;; Load paths
 (add-to-list 'load-path "~/.emacs.d/")
-(add-to-list 'load-path "~/.emacs.d/vendor")
+(add-to-list 'load-path "~/.emacs.d/vendor/")
 
 ;; Version specific settings
 (if (>= emacs-major-version 24)
@@ -185,7 +185,9 @@ one the frame is runned on."
 (setq-default tab-width 4
               c-basic-offset 4
               indent-tabs-mode nil
-              fill-column 79)
+              fill-column 79
+              whitespace-style '(face trailing)
+              whitespace-line-column 79)
 (setq confirm-nonexistent-file-or-buffer nil)
 
 ;; Enable disabled commands
@@ -276,7 +278,8 @@ one the frame is runned on."
   (turn-on-auto-fill)
   (setq tab-width 4
         c-basic-offset 4
-        fill-column 79))
+        fill-column 79
+        whitespace-line-column 79))
 (add-hook 'markdown-mode-hook 'ft-markdown)
 
 ;; Python
@@ -284,11 +287,12 @@ one the frame is runned on."
   (turn-on-auto-fill)
   (eldoc-mode 1)
   (when (fboundp 'fci-mode) (fci-mode))
+  (whitespace-mode 1)
   (setq tab-width 4
         c-basic-offset 4
         py-indent-offset 4
         python-indent-offset 4
-        show-trailing-whitespace t
+        whitespace-line-column 79
         fill-column 79))
 (add-hook 'python-mode-hook 'ft-python)
 
@@ -307,9 +311,9 @@ one the frame is runned on."
   (make-local-variable 'tab-width)
   (setenv "NODE_NO_READLINE" "1")
   (when (fboundp 'fci-mode) (fci-mode))
+  (whitespace-mode 1)
   (setq coffee-tab-width 2
-        tab-width 2
-        show-trailing-whitespace t)
+        tab-width 2)
   (define-key coffee-mode-map (kbd "C-c C-r") 'coffee-compile-buffer))
 (add-hook 'coffee-mode-hook 'ft-coffee)
 

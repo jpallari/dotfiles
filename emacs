@@ -26,7 +26,7 @@
 (setq my-pkgs-essential
       '(iy-go-to-char fill-column-indicator expand-region undo-tree))
 (setq my-pkgs-apps
-      '(evil surround magit auctex))
+      '(evil surround magit auctex w3m))
 (setq my-pkgs-webdev
       '(coffee-mode jade-mode markdown-mode stylus-mode
         js2-mode less-css-mode flymake-coffee flymake-jslint))

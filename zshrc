@@ -96,7 +96,7 @@ alias ..."cd ../.."
 alias jk="tmux attach -d"
 alias h="hostname"
 alias e='emacsclient -c -t --alternate-editor=""'
-alias em='emacs -nw'
+alias em='emacs -Q -nw -l ~/.emacs'
 alias er='emacsclient -n'
 [[ -f $HOME/.zshaliases ]] && source $HOME/.zshaliases
 

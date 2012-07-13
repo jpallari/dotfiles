@@ -16,20 +16,10 @@ The window manager I use these days.
 
 ## Emacs
 
-I run Emacs 24 on most of my computers, and already use some of
-the new features it offers.
+I run Emacs 24 on most of my computers.
 
-- Package management using package.
+- Package management using package.el.
 - Configurations for [Notmuch][] plugin.
-
-## Vim
-
-These days I use Vim mostly for smaller edits.
-
-- Color scheme: seanmod.vim (a variant of sean.vim)
-- Bunch of really nice mappings courtesy of [Vimbits][].
-- Some Emacs-like keybindings.
-- [Pathogen][] for managing Vim plugins.
 
 ## XKB
 
@@ -40,16 +30,14 @@ similar one used in [ArkkuDvorak][].
 
 ## Other stuff I have configurations for
 
-- ZSH
-- Tmux
-- Pentadactyl
+- [ZSH][]
+- [Tmux][]
 - Xresources
 
 [dwm]: http://dwm.suckless.org/
 [Vicious]: http://awesome.naquadah.org/wiki/Vicious
 [icons]: http://awesome.naquadah.org/wiki/Nice_Icons
 [Notmuch]: http://notmuchmail.org/
-[Evil]: http://emacswiki.org/emacs/Evil
-[Vimbits]: http://vimbits.com/
-[Pathogen]: https://github.com/tpope/vim-pathogen
 [ArkkuDvorak]: http://www.cs.helsinki.fi/u/kkuloves/dvorak.shtml
+[ZSH]: http://zsh.sourceforge.net/
+[Tmux]: http://tmux.sourceforge.net/

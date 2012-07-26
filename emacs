@@ -13,6 +13,7 @@
 ;; Load paths
 (add-to-list 'load-path "~/.emacs.d/")
 (add-to-list 'load-path "~/.emacs.d/vendor/")
+(add-to-list 'load-path "~/.emacs.d/vendor/circe/")
 
 ;; Version specific settings
 (if (>= emacs-major-version 24)
@@ -29,10 +30,12 @@
       '(evil surround magit auctex w3m))
 (setq my-pkgs-webdev
       '(coffee-mode jade-mode markdown-mode stylus-mode
-        js2-mode less-css-mode flymake-coffee flymake-jslint))
+        js2-mode less-css-mode flymake-coffee flymake-jshint))
 (setq my-pkgs-python '(python virtualenv))
 (setq my-pkgs-modes '(sws-mode lua-mode haskell-mode))
 (package-initialize)
+(add-to-list 'package-archives
+             '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
@@ -73,12 +76,6 @@
   (let ((val (if (symbol-value 'auto-fill-function) -1 1)))
     (auto-fill-mode val)
     (if (fboundp 'fci-mode) (fci-mode val))))
-
-(defun buffer-list-switch ()
-  "Open buffer list and activate the window"
-  (interactive)
-  (list-buffers)
-  (select-window (get-buffer-window "*Buffer List*" 0)))
 
 (defun apply-settings-terminal (&optional frame)
   "Applies terminal specific settings."
@@ -123,7 +120,7 @@ one the frame is runned on."
 (global-set-key (kbd "C-x C-h") 'help-command)
 (global-set-key (kbd "C-x t") 'eshell)
 (global-set-key (kbd "C-x C-j") 'join-line)
-(global-set-key (kbd "C-x C-b") 'buffer-list-switch)
+(global-set-key (kbd "C-x C-b") 'buffer-menu)
 (global-set-key (kbd "M-C") 'completion-at-point)
 (global-set-key (kbd "C-t") 'completion-at-point)
 (global-set-key (kbd "M-L") 'iy-go-to-char)
@@ -201,6 +198,9 @@ one the frame is runned on."
 ;; EVIL
 (autoload 'evil-mode "~/.emacs.d/my-evil" "EVIL mode" t)
 
+;; Circe
+(autoload 'circe "~/.emacs.d/my-circe" "circe irc" t)
+
 ;; EShell
 (setq eshell-prompt-function (lambda () "$ "))
 (defun eshell/clear ()
@@ -261,9 +261,11 @@ one the frame is runned on."
 (defun ft-js2 ()
   (setq tab-width 2
         c-basic-offset 2
+        jshint-configuration-path (concat (getenv "HOME") "/.jshint.json")
         js2-consistent-level-indent-inner-bracket-p t
         js2-pretty-multiline-decl-indentation-p t
-        js2-basic-offset 2))
+        js2-basic-offset 2)
+  (flymake-mode 1))
 (add-hook 'js-mode-hook 'ft-js)
 (add-hook 'js2-mode-hook 'ft-js2)
 

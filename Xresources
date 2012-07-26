@@ -5,11 +5,11 @@ emacs.pointerColor:     #ffffff
 emacs.menuBar:          on
 
 ! bg & fg
-*background:            #000000
+*background:            #060606
 *foreground:            #bbbbbb
 
 !black
-*color0:                #000000
+*color0:                #060606
 *color8:                #263033
 !red
 *color1:                #d4004c

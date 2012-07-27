@@ -5,7 +5,8 @@ emacs.d/auto-save-list
 emacs.d/abbrev_defs
 emacs.d/ac-comphist.dat
 emacs.d/tramp
+emacs.d/eshell/history
+emacs.d/eshell/lastdir
+*circe*
 *.elc
 pentadactyl/info
-/emacs.d/eshell/history
-/emacs.d/eshell/lastdir

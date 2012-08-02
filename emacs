@@ -12,8 +12,9 @@
 
 ;; Load paths
 (add-to-list 'load-path "~/.emacs.d/")
-(add-to-list 'load-path "~/.emacs.d/vendor/")
-(add-to-list 'load-path "~/.emacs.d/vendor/circe/")
+(let ((default-directory "~/.emacs.d/vendor"))
+  (normal-top-level-add-subdirs-to-load-path))
+(load-file "~/.emacs.d/vendor/loaddefs.el")
 
 ;; Version specific settings
 (if (>= emacs-major-version 24)
@@ -24,15 +25,12 @@
     (add-to-list 'load-path "~/.emacs.d/package/")))
 
 ;; Package management
-(setq my-pkgs-essential
-      '(iy-go-to-char fill-column-indicator expand-region undo-tree))
-(setq my-pkgs-apps
-      '(evil surround magit auctex w3m))
-(setq my-pkgs-webdev
-      '(coffee-mode jade-mode markdown-mode stylus-mode
-        js2-mode less-css-mode flymake-coffee flymake-jshint))
-(setq my-pkgs-python '(python virtualenv))
-(setq my-pkgs-modes '(sws-mode lua-mode haskell-mode))
+(setq my-pkgs-essential '(iy-go-to-char fill-column-indicator expand-region undo-tree)
+      my-pkgs-apps '(magit auctex w3m)
+      my-pkgs-webdev '(coffee-mode markdown-mode js2-mode
+                                   less-css-mode flymake-coffee flymake-jshint)
+      my-pkgs-python '(python virtualenv)
+      my-pkgs-modes '(lua-mode haskell-mode))
 (package-initialize)
 (add-to-list 'package-archives
              '("marmalade" . "http://marmalade-repo.org/packages/") t)
@@ -194,9 +192,6 @@ one the frame is runned on."
 
 ;; Notmuch
 (autoload 'notmuch "~/.emacs.d/my-notmuch" "notmuch mail" t)
-
-;; EVIL
-(autoload 'evil-mode "~/.emacs.d/my-evil" "EVIL mode" t)
 
 ;; Circe
 (autoload 'circe "~/.emacs.d/my-circe" "circe irc" t)

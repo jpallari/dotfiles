@@ -239,6 +239,9 @@ one the frame is runned on."
       w3m-output-coding-system 'utf-8
       w3m-terminal-coding-system 'utf-8)
 
+;; Whitespace
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
 ;; Automode
 (add-to-list 'auto-mode-alist '("\\.markdown$" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
@@ -316,7 +319,9 @@ one the frame is runned on."
   (whitespace-mode 1)
   (setq coffee-tab-width 2
         tab-width 2)
-  (define-key coffee-mode-map (kbd "C-c C-r") 'coffee-compile-buffer))
+  (define-key coffee-mode-map (kbd "C-c C-r") 'coffee-compile-buffer)
+  (define-key coffee-mode-map (kbd "C-j") 'coffee-newline-and-indent)
+  (define-key coffee-mode-map (kbd "C-m") 'newline))
 (add-hook 'coffee-mode-hook 'ft-coffee)
 
 ;; C

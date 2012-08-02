@@ -88,8 +88,8 @@ end
 -- {{{ Tags
 -- Define a tag table which hold all screen tags.
 tags = {
-	names = {"term", "main", "emacs", "docs", "@", "µ", "v", "music", "¬"},
-	layout = { layouts[1], layouts[1], layouts[1], layouts[1], layouts[1], layouts[1], layouts[1], layouts[1], layouts[1] }
+    names = {"one", "two", "three", "four"},
+	layout = { layouts[1], layouts[1], layouts[1], layouts[1] }
 }
 for s = 1, screen.count() do
     -- Each screen has its own tag table.
@@ -258,14 +258,14 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(layouts, -1) end),
 
     -- Prompt (use dmenu instead)
-    awful.key({ modkey }, "a", function () awful.util.spawn(
+    awful.key({ modkey }, "x", function () awful.util.spawn(
         "dmenu_run -nb '".. beautiful.bg_normal
         .."' -nf '".. beautiful.fg_normal
         .."' -sb '".. beautiful.bg_focus
         .."' -sf '".. beautiful.fg_focus
         .."' -fn '-*-terminus-medium-r-*-*-12-*-*-*-*-*-*-u'", false) end),
 
-    awful.key({ modkey }, "x",
+    awful.key({ modkey }, "a",
               function ()
                   awful.prompt.run({ prompt = "Run Lua code: " },
                   mypromptbox[mouse.screen].widget,
@@ -324,7 +324,7 @@ clientkeys = awful.util.table.join(
     awful.key({ modkey,           }, "t",      function (c) c.ontop = not c.ontop            end),
     awful.key({ modkey, "Shift"   }, "n", -- Move to last tag instead of minimize
         function (c)
-            awful.client.movetotag(tags[mouse.screen][9],c)
+            awful.client.movetotag(tags[mouse.screen][4],c)
         end),
     awful.key({ modkey,           }, "m",
         function (c)
@@ -404,19 +404,13 @@ awful.rules.rules = {
     -- Tag 2
     { rule_any = { class = {
         "Firefox",
-        "Chromium-browser"
       } },
       properties = { floating = false, tag = tags[1][2] } },
-    -- Tag 3
-    { rule_any = { class = {
-        "Emacs"
-      } },
-      properties = { floating = false, tag = tags[1][3] } },
-    -- Tag 8
+    -- Tag 4
     { rule_any = { class = {
         "Spotify"
       } },
-      properties = { floating = false, tag = tags[1][8] } },
+      properties = { floating = false, tag = tags[1][4] } },
     -- Firefox: float everything except the browser window
     { rule = { class = "Firefox" }, except = { instance = "Navigator" }, properties = { floating = true } }
 }

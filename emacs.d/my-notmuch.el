@@ -107,7 +107,7 @@
 (define-key notmuch-show-mode-map "d" 'notmuch-show-toggle-delete-tag)
 (define-key notmuch-show-mode-map " " 'notmuch-show-np-or-nt)
 (define-key notmuch-show-mode-map (kbd "M-n") 'notmuch-show-nt)
-(define-key notmuch-show-mode-map (kbd "M-p") 'notmuch-show-np)
+(define-key notmuch-show-mode-map (kbd "M-p") 'notmuch-show-pt)
 
 ;;;; Notmuch-address
 (when (require 'notmuch-address nil t)

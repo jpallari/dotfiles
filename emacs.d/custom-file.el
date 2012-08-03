@@ -3,12 +3,17 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
-)
+ )
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(region ((t (:background "#0000af"))))
- '(widget-field ((t (:background "#3a3a3a" :foreground "#d7ff5f"))))
-)
+ '(rst-level-1-face ((t (:background "grey85" :foreground "black"))) t)
+ '(rst-level-2-face ((t (:background "grey78" :foreground "black"))) t)
+ '(rst-level-3-face ((t (:background "grey71" :foreground "black"))) t)
+ '(rst-level-4-face ((t (:background "grey64" :foreground "black"))) t)
+ '(rst-level-5-face ((t (:background "grey57" :foreground "black"))) t)
+ '(rst-level-6-face ((t (:background "grey50" :foreground "black"))) t)
+ '(widget-field ((t (:background "#3a3a3a" :foreground "#d7ff5f")))))

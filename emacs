@@ -282,6 +282,15 @@ one the frame is runned on."
         whitespace-line-column 79))
 (add-hook 'markdown-mode-hook 'ft-markdown)
 
+;; RST
+(defun ft-rst ()
+  (turn-on-auto-fill)
+  (setq tab-width 4
+        c-basic-offset 4
+        fill-column 79
+        whitespace-line-column 79))
+(add-hook 'rst-mode-hook 'ft-rst)
+
 ;; Python
 (defun ft-python ()
   (turn-on-auto-fill)

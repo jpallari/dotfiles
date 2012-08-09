@@ -25,12 +25,11 @@
     (add-to-list 'load-path "~/.emacs.d/package/")))
 
 ;; Package management
-(setq my-pkgs-essential '(iy-go-to-char fill-column-indicator expand-region undo-tree)
-      my-pkgs-apps '(magit auctex w3m)
-      my-pkgs-webdev '(coffee-mode markdown-mode js2-mode
-                                   less-css-mode flymake-coffee flymake-jshint)
-      my-pkgs-python '(python virtualenv)
-      my-pkgs-modes '(lua-mode haskell-mode))
+(setq my-pkgs-alist
+      '(("essential" . (iy-go-to-char fill-column-indicator expand-region undo-tree))
+        ("apps" . (magit auctex w3m))
+        ("modes" . (lua-mode haskell-mode markdown-mode erlang))
+        ("webdev" . (js2-mode js-comint coffee-mode less-css-mode flymake-jshint flymake-coffee))))
 (package-initialize)
 (add-to-list 'package-archives
              '("marmalade" . "http://marmalade-repo.org/packages/") t)
@@ -39,13 +38,13 @@
 
 ;; Custom functions
 (defun install-missing-packages (pkg-list)
-  "Installs all the missing packages"
-  (interactive)
+  "Installs all the missing packages from selected list."
+  (interactive (list (completing-read "Choose a package group: " my-pkgs-alist)))
   (mapc (lambda (pkg)
           (or (package-installed-p pkg)
               (if (y-or-n-p (format "Package %s is missing. Install it? " pkg))
                   (package-install pkg))))
-        pkg-list))
+        (cdr (assoc pkg-list my-pkgs-alist))))
 
 (defun kr-or-bwkw (&optional arg region)
   "`kill-region` if the region is active, otherwise `backward-kill-word`"
@@ -245,6 +244,8 @@ one the frame is runned on."
 (add-to-list 'auto-mode-alist '("dotfiles\\/emacs$" . emacs-lisp-mode))
 (when (fboundp 'js2-mode)
   (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode)))
+(when (fboundp 'erlang-mode)
+  (add-to-list 'auto-mode-alist '("\\.\\(e\\|h\\)rl$" . erlang-mode)))
 
 ;; Emacs LISP
 (defun ft-elisp ()
@@ -262,10 +263,28 @@ one the frame is runned on."
         jshint-configuration-path (concat (getenv "HOME") "/.jshint.json")
         js2-consistent-level-indent-inner-bracket-p t
         js2-pretty-multiline-decl-indentation-p t
-        js2-basic-offset 2)
-  (flymake-mode 1))
+        js2-basic-offset 2
+        js2-strict-inconsistent-return-warning nil
+        inferior-js-program-command "node")
+  (flymake-mode 1)
+  (local-set-key (kbd "C-x C-e") 'js-send-last-sexp)
+  (local-set-key (kbd "C-M-x") 'js-send-last-sexp-and-go)
+  (local-set-key (kbd "C-c b") 'js-send-buffer)
+  (local-set-key (kbd "C-c b") 'js-send-buffer-and-go)
+  (local-set-key (kbd "C-c l") 'js-load-file-and-go))
 (add-hook 'js-mode-hook 'ft-js)
 (add-hook 'js2-mode-hook 'ft-js2)
+
+;; JS comint
+(defun ft-js-comint ()
+  (ansi-color-for-comint-mode-on)
+  (add-to-list
+   'comint-preoutput-filter-functions
+   (lambda (output)
+     (replace-regexp-in-string
+      ".*1G\.\.\..*5G" "..."
+      (replace-regexp-in-string ".*1G.*3G" "> " output)))))
+(setq inferior-js-mode-hook 'ft-js-comint)
 
 ;; Magit
 (defun ft-magit ()

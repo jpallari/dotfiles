@@ -195,9 +195,6 @@ one the frame is runned on."
 ;; Notmuch
 (autoload 'notmuch "~/.emacs.d/my-notmuch" "notmuch mail" t)
 
-;; Circe
-(autoload 'circe "~/.emacs.d/my-circe" "circe irc" t)
-
 ;; EShell
 (setq eshell-prompt-function (lambda () "$ "))
 (defun eshell/clear ()

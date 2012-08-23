@@ -123,6 +123,7 @@ one the frame is runned on."
 (global-set-key (kbd "M-L") 'iy-go-to-char)
 (global-set-key (kbd "M-M") 'er/expand-region)
 (global-set-key (kbd "M-?") 'undo-tree-redo)
+(global-set-key (kbd "M-/") 'hippie-expand)
 (global-set-key [f5] 'shrink-window-horizontally)
 (global-set-key [f6] 'enlarge-window)
 (global-set-key [f7] 'shrink-window)
@@ -151,7 +152,9 @@ one the frame is runned on."
       show-paren-delay 0.0
       scroll-margin 0
       scroll-conservatively 10000
-      scroll-preserve-screen-position 1)
+      scroll-preserve-screen-position 1
+      visible-bell nil
+      ring-bell-function 'ignore)
 (when (fboundp 'set-scroll-bar-mode) (set-scroll-bar-mode 'right))
 (set-input-mode t nil t)
 (tool-bar-mode -1)

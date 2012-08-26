@@ -26,7 +26,7 @@
 
 ;; Package management
 (setq my-pkgs-alist
-      '(("essential" . (iy-go-to-char fill-column-indicator expand-region undo-tree))
+      '(("essential" . (fill-column-indicator expand-region undo-tree))
         ("apps" . (magit auctex w3m))
         ("modes" . (lua-mode haskell-mode markdown-mode erlang))
         ("webdev" . (js2-mode js-comint coffee-mode less-css-mode flymake-jshint flymake-coffee))))
@@ -67,6 +67,25 @@
                   (get-char-property (point) 'face))))
     (if face (message "Face: %s" face) (message "No face at %d" pos))))
 
+(defun other-window-back ()
+  "Select another window backwards"
+  (interactive)
+  (other-window -1))
+
+(defun raw-indent (arg)
+  "Rigid indent and remain in region"
+  (interactive "p")
+  (save-excursion
+    (let ((deactivate-mark nil))
+      (indent-rigidly (region-beginning) (region-end) arg))))
+
+(defun raw-deindent (arg)
+  "Rigid deindent and remain in region"
+  (interactive "p")
+  (save-excursion
+    (let ((deactivate-mark nil))
+      (indent-rigidly (region-beginning) (region-end) (- arg)))))
+
 (defun auto-fill ()
   "Toggles auto fill mode and fill column indicator, if it exists."
   (interactive)
@@ -77,50 +96,52 @@
 (defun apply-settings-terminal (&optional frame)
   "Applies terminal specific settings."
   (set-frame-parameter frame 'menu-bar-lines 0)
-  (set-face-background 'mode-line "#0000ee" frame)
-  (set-face-foreground 'mode-line "#ffffff" frame)
-  (set-face-background 'mode-line-inactive "#00005f" frame)
-  (set-face-foreground 'mode-line-inactive "#767676" frame)
   (set-face-background 'default "#000000" frame)
   (set-face-foreground 'default "#dadada" frame))
 
 (defun apply-settings-gui (&optional frame)
   "Applies settings used in GUI environment."
   (set-frame-parameter frame 'menu-bar-lines 1)
-  (set-face-background 'mode-line "#2e3436" frame)
-  (set-face-foreground 'mode-line "#eeeeee" frame)
-  (set-face-background 'mode-line-inactive "#111111" frame)
-  (set-face-foreground 'mode-line-inactive "#cccccc" frame)
   (set-face-background 'default "#1a1a1a" frame)
   (set-face-foreground 'default "#eeeeee" frame)
   (set-face-background 'fringe "#1a1a1a" frame))
 
 (defun apply-settings-frame (frame)
-  "Applies GUI or terminal settings for frame depending on which
-one the frame is runned on."
+  "Apply GUI or terminal specific settings for frame."
   (with-selected-frame frame
     (if (not (display-graphic-p))
         (apply-settings-terminal frame)
         (apply-settings-gui frame))))
 
+;; Theme
+(set-face-background 'mode-line "#303030")
+(set-face-foreground 'mode-line "#ffffff")
+(set-face-background 'mode-line-inactive "#121212")
+(set-face-foreground 'mode-line-inactive "#767676")
+
+;; Frame settings
+(add-hook 'after-make-frame-functions 'apply-settings-frame)
+(if (window-system)
+    (apply-settings-gui)
+    (apply-settings-terminal))
+
 ;; Keybindings
 (global-set-key (kbd "C-w") 'kr-or-bwkw)
 (global-set-key (kbd "C-k") 'kr-or-kl)
 (global-set-key (kbd "C-x C-k") 'kill-region)
-(global-set-key (kbd "M-J") 'other-window)
-(global-set-key (kbd "M-K") '(lambda () (interactive) (other-window -1)))
-(global-set-key (kbd "C-x C-p") 'previous-buffer)
-(global-set-key (kbd "C-x C-n") 'next-buffer)
-(global-set-key (kbd "C-x C-m") 'execute-extended-command)
+(global-set-key (kbd "C-x O") 'other-window-back)
+(global-set-key (kbd "M-o") 'other-window)
+(global-set-key (kbd "M-O") 'other-window-back)
+(global-set-key (kbd "M-J") 'raw-deindent)
+(global-set-key (kbd "M-K") 'raw-indent)
 (global-set-key (kbd "C-z") 'undo)
 (global-set-key (kbd "C-h") 'backward-delete-char-untabify)
+(global-set-key (kbd "C-x C-m") 'execute-extended-command)
 (global-set-key (kbd "C-x C-h") 'help-command)
-(global-set-key (kbd "C-x t") 'eshell)
 (global-set-key (kbd "C-x C-j") 'join-line)
 (global-set-key (kbd "C-x C-b") 'buffer-menu)
 (global-set-key (kbd "M-C") 'completion-at-point)
 (global-set-key (kbd "C-t") 'completion-at-point)
-(global-set-key (kbd "M-L") 'iy-go-to-char)
 (global-set-key (kbd "M-M") 'er/expand-region)
 (global-set-key (kbd "M-?") 'undo-tree-redo)
 (global-set-key (kbd "M-/") 'hippie-expand)
@@ -128,12 +149,6 @@ one the frame is runned on."
 (global-set-key [f6] 'enlarge-window)
 (global-set-key [f7] 'shrink-window)
 (global-set-key [f8] 'enlarge-window-horizontally)
-
-;; Theme per frame
-(add-hook 'after-make-frame-functions 'apply-settings-frame)
-(if (window-system)
-    (apply-settings-gui)
-    (apply-settings-terminal))
 
 ;; Xterm mouse & selection
 (when (require 'mouse nil t)
@@ -148,7 +163,7 @@ one the frame is runned on."
 (global-font-lock-mode t)
 (transient-mark-mode t)
 (setq inhibit-splash-screen t
-      completion-cycle-threshold 10
+      completion-cycle-threshold 4
       show-paren-delay 0.0
       scroll-margin 0
       scroll-conservatively 10000

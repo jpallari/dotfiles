@@ -3,12 +3,13 @@
 # options
 setopt COMPLETE_IN_WORD
 setopt APPEND_HISTORY
-setopt MENU_COMPLETE
 setopt INC_APPEND_HISTORY
 setopt HIST_FIND_NO_DUPS
+setopt NO_BEEP
 setopt bash_autolist
 setopt autopushd pushdsilent
-setopt beep extendedglob nomatch
+setopt extendedglob nomatch
+unsetopt menucomplete
 unsetopt autocd notify
 
 # variables
@@ -19,17 +20,18 @@ WORDCHARS='*?_-[]~=&;!#$%^(){}<>'
 eval `dircolors -b`
 
 # zstyles
-zstyle ':completion:*' completer _expand _complete _approximate
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+zstyle ':completion:*' completer _expand _complete
 zstyle ':completion:*' expand prefix suffix
 zstyle ':completion:*' hosts off
 zstyle ':completion:*' ignore-parents pwd
 zstyle ':completion:*' last-prompt
-zstyle ':completion:*:*:kill:*' menu yes select
-zstyle ':completion:*:kill:*' force-list always
 zstyle ':completion:*' file-sort name
 zstyle ':completion:*' select-prompt %SMenu active. Location: %p %s
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
+zstyle ':completion:*:*:kill:*' menu yes select
+zstyle ':completion:*:kill:*' force-list always
 
 # Fix the annoying globbing issue with urls and scp
 autoload -U url-quote-magic
@@ -109,6 +111,7 @@ if [[ $TERM == "eterm-color" \
    || $EMACS != "" \
    || $INSIDE_EMACS != "" ]]; then
     PS1='$ '
+    PAGER=cat
     unsetopt zle
     unsetopt prompt_cr
     unsetopt prompt_subst

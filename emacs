@@ -231,6 +231,18 @@
       fci-rule-color "#87005f"
       fci-rule-character-color "#87005f")
 
+;; Hippie expand
+(setq hippie-expand-try-functions-list
+      '(try-complete-file-name-partially
+        try-complete-file-name
+        try-expand-line
+        try-expand-all-abbrevs
+        try-expand-dabbrev
+        try-expand-dabbrev-all-buffers
+        try-expand-dabbrev-from-kill
+        try-complete-lisp-symbol-partially
+        try-complete-lisp-symbol))
+
 ;; TRAMP
 (setq tramp-default-method "sshx"
       tramp-chunkzise 500

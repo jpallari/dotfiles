@@ -39,11 +39,23 @@
 
 (defun apply-gui-frame-settings (frame)
   (with-selected-frame frame
-    (when (display-graphic-p)
-      (set-frame-parameter frame 'menu-bar-lines 1)
-      (set-face-background 'default "#1a1a1a" frame)
-      (set-face-foreground 'default "#eeeeee" frame)
-      (set-face-background 'fringe "#1a1a1a" frame))))
+    (apply-color-theme frame)))
+
+(defun apply-color-theme (&optional frame)
+  (if (display-graphic-p)
+      (progn ; GUI
+        (set-frame-parameter frame 'menu-bar-lines 1)
+        (set-face-background 'default "#1a1a1a" frame)
+        (set-face-foreground 'default "#eeeeee" frame)
+        (set-face-background 'fringe "#1a1a1a" frame)
+        (set-face-background 'mode-line "#303030" frame)
+        (set-face-foreground 'mode-line "#ffffff" frame)
+        (set-face-background 'mode-line-inactive "#121212" frame)
+        (set-face-foreground 'mode-line-inactive "#767676" frame))
+    (progn ; terminal
+      (set-frame-parameter frame 'menu-bar-lines 0)
+      (set-face-background 'default "#000000" frame)
+      (set-face-foreground 'default "#dadada" frame))))
 
 ;; Keybindings
 (global-set-key (kbd "C-h") 'backward-delete-char-untabify)
@@ -90,6 +102,7 @@
 (show-paren-mode (column-number-mode t)) ; Enable show-paren-mode
 (tool-bar-mode -1)                       ; No toolbar
 (transient-mark-mode t)                  ; Transient mark
+(apply-color-theme)                      ; Color theme
 
 (setq backup-inhibited t                      ; disable backup
       auto-save-default nil                   ; disable autosave
@@ -116,14 +129,6 @@
 (put 'downcase-region 'disabled nil)    ; Enable downcase region
 (put 'set-goal-column 'disabled nil)    ; Enable set goal column
 (put 'narrow-to-region 'disabled nil)   ; Enable narrow to region
-
-;; Default color theme
-(set-face-background 'mode-line "#303030")
-(set-face-foreground 'mode-line "#ffffff")
-(set-face-background 'mode-line-inactive "#121212")
-(set-face-foreground 'mode-line-inactive "#767676")
-(set-face-background 'default "#000000")
-(set-face-foreground 'default "#dadada")
 
 ;; Notmuch
 (autoload 'notmuch "~/.emacs.d/my-notmuch" "notmuch mail" t)

@@ -1,27 +1,18 @@
 ;;;; jkpl's Emacs confs
 
-;; Common LISP compatibility
-(require 'cl)
-
-;; Disable backup and autosave
-(setq backup-inhibited t
-      auto-save-default nil)
-
-;; Custom envs
-(setenv "PAGER" "/bin/cat")
+(require 'cl)                           ; CommonLisp compatibility
+(setenv "PAGER" "/bin/cat")             ; custom envs
 
 ;; Load paths
 (add-to-list 'load-path "~/.emacs.d/")
 (when (file-accessible-directory-p "~/.emacs.d/vendor")
     (let ((default-directory "~/.emacs.d/vendor"))
-      (normal-top-level-add-subdirs-to-load-path))
-    (load "~/.emacs.d/vendor/loaddefs.el" t t t))
+      (normal-top-level-add-subdirs-to-load-path)))
 
-;; Version specific settings
-(when (<= emacs-major-version 23) ;; Emacs 23 and older
+(when (<= emacs-major-version 23)       ; Emacs 23 and older
   (menu-bar-mode -1))
 
-;; Custom functions
+;; Custom functions and commands
 (defun what-face (pos)
   "Displays the current face name under the cursor."
   (interactive "d")
@@ -46,37 +37,13 @@
     (auto-fill-mode val)
     (if (fboundp 'fci-mode) (fci-mode val))))
 
-(defun apply-settings-terminal (&optional frame)
-  "Applies terminal specific settings."
-  (set-frame-parameter frame 'menu-bar-lines 0)
-  (set-face-background 'default "#000000" frame)
-  (set-face-foreground 'default "#dadada" frame))
-
-(defun apply-settings-gui (&optional frame)
-  "Applies settings used in GUI environment."
-  (set-frame-parameter frame 'menu-bar-lines 1)
-  (set-face-background 'default "#1a1a1a" frame)
-  (set-face-foreground 'default "#eeeeee" frame)
-  (set-face-background 'fringe "#1a1a1a" frame))
-
-(defun apply-settings-frame (frame)
-  "Apply GUI or terminal specific settings for frame."
+(defun apply-gui-frame-settings (frame)
   (with-selected-frame frame
-    (if (not (display-graphic-p))
-        (apply-settings-terminal frame)
-        (apply-settings-gui frame))))
-
-;; Theme
-(set-face-background 'mode-line "#303030")
-(set-face-foreground 'mode-line "#ffffff")
-(set-face-background 'mode-line-inactive "#121212")
-(set-face-foreground 'mode-line-inactive "#767676")
-
-;; Frame settings
-(add-hook 'after-make-frame-functions 'apply-settings-frame)
-(if (window-system)
-    (apply-settings-gui)
-    (apply-settings-terminal))
+    (when (display-graphic-p)
+      (set-frame-parameter frame 'menu-bar-lines 1)
+      (set-face-background 'default "#1a1a1a" frame)
+      (set-face-foreground 'default "#eeeeee" frame)
+      (set-face-background 'fringe "#1a1a1a" frame))))
 
 ;; Keybindings
 (global-set-key (kbd "C-h") 'backward-delete-char-untabify)
@@ -97,54 +64,66 @@
 (global-set-key [f8] 'enlarge-window-horizontally)
 
 ;; Aliases
-(defalias 'yes-or-no-p 'y-or-n-p)
-(defalias 'sgc 'set-goal-column)
-(defalias 'git-st 'magit-status)
-(defalias 'sr 'replace-string)
-(defalias 'qr 'query-replace)
-(defalias 'rr 'replace-regexp)
-(defalias 'qrr 'query-replace-regexp)
-(defalias 'lml 'list-matching-lines)
 (defalias 'dml 'delete-matching-lines)
 (defalias 'dnml 'delete-non-matching-lines)
+(defalias 'git-st 'magit-status)
+(defalias 'lml 'list-matching-lines)
+(defalias 'qr 'query-replace)
+(defalias 'qrr 'query-replace-regexp)
+(defalias 'rr 'replace-regexp)
+(defalias 'sgc 'set-goal-column)
 (defalias 'sl 'sort-lines)
 (defalias 'snf 'sort-numeric-fields)
+(defalias 'sr 'replace-string)
+(defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; Xterm mouse & selection
 (when (require 'mouse nil t)
   (xterm-mouse-mode t)
   (defun track-mouse (e))
   (setq mouse-sel-mode t))
-(setq mouse-wheel-scroll-amount '(2 ((shift) . 5) ((control) . nil))
-      mouse-wheel-progressive-speed nil)
-(setq x-select-enable-clipboard t)
 
-;; UI settings
-(blink-cursor-mode 0)
-(show-paren-mode (column-number-mode t))
-(global-font-lock-mode t)
-(transient-mark-mode t)
-(setq inhibit-splash-screen t
-      completion-cycle-threshold 4
-      visible-bell nil
-      ring-bell-function 'ignore)
-(when (fboundp 'set-scroll-bar-mode) (set-scroll-bar-mode 'right))
-(set-input-mode t nil t)
-(tool-bar-mode -1)
+;; Settings
+(blink-cursor-mode 0)                    ; No blinking cursor
+(global-font-lock-mode t)                ; Syntax coloring
+(set-input-mode nil nil t)               ; No interrupt, no flow control
+(show-paren-mode (column-number-mode t)) ; Enable show-paren-mode
+(tool-bar-mode -1)                       ; No toolbar
+(transient-mark-mode t)                  ; Transient mark
 
-;; Some defaults
-(setq-default tab-width 4
-              c-basic-offset 4
-              indent-tabs-mode nil
-              fill-column 79
-              whitespace-style '(face trailing)
-              whitespace-line-column 79)
-(setq confirm-nonexistent-file-or-buffer nil)
+(setq backup-inhibited t                      ; disable backup
+      auto-save-default nil                   ; disable autosave
+      inhibit-splash-screen t                 ; No splash screen
+      completion-cycle-threshold 3            ; Cycle treshold: 3
+      visible-bell nil                        ; No visible bell
+      ring-bell-function 'ignore              ; No audible bell
+      custom-file "~/.emacs.d/custom-file.el" ; Custom file
+      x-select-enable-clipboard t             ; X clipboard
+      confirm-nonexistent-file-or-buffer nil  ; New on open
+      mouse-wheel-progressive-speed nil       ; No progressive mouse scroll
+      mouse-wheel-scroll-amount '(2 ((shift) . 5) ((control) . nil))
+      default-frame-alist '((vertical-scroll-bars . right)
+                            (menu-bar-lines . 0)))
 
-;; Enable disabled features
-(put 'downcase-region 'disabled nil)
-(put 'set-goal-column 'disabled nil)
-(put 'narrow-to-region 'disabled nil)
+(setq-default
+ tab-width 4                            ; Default tab width: 4
+ c-basic-offset 4                       ; ...same for C style languages
+ indent-tabs-mode nil                   ; Spaces instead of tabs
+ fill-column 79                         ; Fill column: 79
+ whitespace-style '(face trailing)      ; Trailing whitespace
+ whitespace-line-column 79)
+
+(put 'downcase-region 'disabled nil)    ; Enable downcase region
+(put 'set-goal-column 'disabled nil)    ; Enable set goal column
+(put 'narrow-to-region 'disabled nil)   ; Enable narrow to region
+
+;; Default color theme
+(set-face-background 'mode-line "#303030")
+(set-face-foreground 'mode-line "#ffffff")
+(set-face-background 'mode-line-inactive "#121212")
+(set-face-foreground 'mode-line-inactive "#767676")
+(set-face-background 'default "#000000")
+(set-face-foreground 'default "#dadada")
 
 ;; Notmuch
 (autoload 'notmuch "~/.emacs.d/my-notmuch" "notmuch mail" t)
@@ -182,51 +161,22 @@
       tramp-chunkzise 500
       tramp-shell-prompt-pattern "^[^$>\n]*[#$%>] *\\(\[[0-9;]*[a-zA-Z] *\\)*")
 
-;; Browser
-(when (not (getenv "DISPLAY"))
-  (setq browse-url-browser-function 'w3m-browse-url)
-  (autoload 'w3m-browse-url "w3m" "Ask a WWW browser to show a URL." t))
-(setq w3m-use-cookies t
-      w3m-coding-system 'utf-8
-      w3m-file-coding-system 'utf-8
-      w3m-file-name-coding-system 'utf-8
-      w3m-input-coding-system 'utf-8
-      w3m-output-coding-system 'utf-8
-      w3m-terminal-coding-system 'utf-8)
-
-;; Whitespace
+;; Hooks
+(add-hook 'after-make-frame-functions 'apply-gui-frame-settings)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
-;; Package management
-(load "~/.emacs.d/pkg-management.el" t t t)
-
-;; Automode
-(add-to-list 'auto-mode-alist '("dotfiles\\/emacs$" . emacs-lisp-mode))
-(when (fboundp 'markdown-mode)
-  (add-to-list 'auto-mode-alist '("\\.markdown$" . markdown-mode))
-  (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
-  (add-to-list 'auto-mode-alist '("\\.mdown$" . markdown-mode))
-  (add-to-list 'auto-mode-alist '("\\.text$" . markdown-mode)))
-(when (fboundp 'js2-mode)
-  (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode)))
-(when (fboundp 'erlang-mode)
-  (add-to-list 'auto-mode-alist '("\\.\\(e\\|h\\)rl$" . erlang-mode)))
-
-;; Mode settings
-(load "~/.emacs.d/modesettings.el" t t t)
-
-;; Customizations file
-(setq custom-file "~/.emacs.d/custom-file.el")
-(load custom-file t t t)
-
-;; Local settings
-(load "~/.emacs.local" t t t)
+;; Load custom elisp files
+(load "~/.emacs.d/pkg-management.el" t t t)  ; package management
+(load "~/.emacs.d/vendor/loaddefs.el" t t t) ; vendor
+(load "~/.emacs.d/modesettings.el" t t t)    ; mode settings
+(load custom-file t t t)                     ; customizations file
+(load "~/.emacs.local" t t t)                ; local customizations
 
 ;; Encoding
 (prefer-coding-system 'utf-8)
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 (set-selection-coding-system 'utf-8)
-(setq locale-coding-system 'utf-8)
-(setq default-file-name-coding-system 'utf-8)
-(setq default-buffer-file-coding-system 'utf-8)
+(setq locale-coding-system 'utf-8
+      default-file-name-coding-system 'utf-8
+      default-buffer-file-coding-system 'utf-8)

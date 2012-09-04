@@ -1,5 +1,17 @@
 ;;;; modesettings.el -- settings for different kinds of modes
 
+;; Automode
+(add-to-list 'auto-mode-alist '("dotfiles\\/emacs$" . emacs-lisp-mode))
+(when (fboundp 'markdown-mode)
+  (add-to-list 'auto-mode-alist '("\\.markdown$" . markdown-mode))
+  (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
+  (add-to-list 'auto-mode-alist '("\\.mdown$" . markdown-mode))
+  (add-to-list 'auto-mode-alist '("\\.text$" . markdown-mode)))
+(when (fboundp 'js2-mode)
+  (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode)))
+(when (fboundp 'erlang-mode)
+  (add-to-list 'auto-mode-alist '("\\.\\(e\\|h\\)rl$" . erlang-mode)))
+
 ;; Emacs LISP
 (defun ms-elisp ()
   (eldoc-mode 1))

@@ -96,6 +96,7 @@ alias grep='grep --color=auto'
 alias ..="cd .."
 alias ..."cd ../.."
 alias jk="tmux attach -d"
+alias sudo='sudo '
 alias h="hostname"
 alias e='emacsclient -c -t --alternate-editor=""'
 alias em='emacs -Q -nw -l ~/.emacs'

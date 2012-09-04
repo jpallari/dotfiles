@@ -78,7 +78,6 @@
 ;; Aliases
 (defalias 'dml 'delete-matching-lines)
 (defalias 'dnml 'delete-non-matching-lines)
-(defalias 'git-st 'magit-status)
 (defalias 'lml 'list-matching-lines)
 (defalias 'qr 'query-replace)
 (defalias 'qrr 'query-replace-regexp)

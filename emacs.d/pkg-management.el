@@ -8,7 +8,7 @@
 ;; Package list
 (setq my-pkgs-alist
       '(("essential" . (fill-column-indicator expand-region undo-tree))
-        ("apps" . (magit auctex w3m))
+        ("apps" . (magit monky auctex w3m))
         ("modes" . (lua-mode haskell-mode markdown-mode erlang))
         ("webdev" . (js2-mode js-comint coffee-mode less-css-mode flymake-jshint flymake-coffee))))
 
@@ -38,6 +38,10 @@
 ;; Keybindings
 (global-set-key (kbd "M-?") 'undo-tree-redo)
 (global-set-key (kbd "M-M") 'er/expand-region)
+
+;; Aliases
+(defalias 'git-st 'magit-status)
+(defalias 'hg-st 'monky-status)
 
 ;; Fill column indicator
 (setq fci-rule-width 1

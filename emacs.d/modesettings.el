@@ -1,4 +1,4 @@
-;; modesettings.el -- settings for different kinds of modes
+;;;; modesettings.el -- settings for different kinds of modes
 
 ;; Emacs LISP
 (defun ms-elisp ()

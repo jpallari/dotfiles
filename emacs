@@ -4,48 +4,24 @@
 (require 'cl)
 
 ;; Disable backup and autosave
-(setq backup-inhibited t)
-(setq auto-save-default nil)
+(setq backup-inhibited t
+      auto-save-default nil)
 
 ;; Custom envs
 (setenv "PAGER" "/bin/cat")
 
 ;; Load paths
 (add-to-list 'load-path "~/.emacs.d/")
-(let ((default-directory "~/.emacs.d/vendor"))
-  (normal-top-level-add-subdirs-to-load-path))
-(load "~/.emacs.d/vendor/loaddefs.el" t t t)
+(when (file-accessible-directory-p "~/.emacs.d/vendor")
+    (let ((default-directory "~/.emacs.d/vendor"))
+      (normal-top-level-add-subdirs-to-load-path))
+    (load "~/.emacs.d/vendor/loaddefs.el" t t t))
 
 ;; Version specific settings
-(if (>= emacs-major-version 24)
-  (progn ;; Emacs 24 and newer
-    nil)
-  (progn ;; Emacs 23 and older
-    (require 'package)
-    (add-to-list 'load-path "~/.emacs.d/package/")))
-
-;; Package management
-(setq my-pkgs-alist
-      '(("essential" . (fill-column-indicator expand-region undo-tree))
-        ("apps" . (magit auctex w3m))
-        ("modes" . (lua-mode haskell-mode markdown-mode erlang))
-        ("webdev" . (js2-mode js-comint coffee-mode less-css-mode flymake-jshint flymake-coffee))))
-(package-initialize)
-(add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/") t)
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(when (<= emacs-major-version 23) ;; Emacs 23 and older
+  (menu-bar-mode -1))
 
 ;; Custom functions
-(defun install-missing-packages (pkg-list)
-  "Installs all the missing packages from selected list."
-  (interactive (list (completing-read "Choose a package group: " my-pkgs-alist)))
-  (mapc (lambda (pkg)
-          (or (package-installed-p pkg)
-              (if (y-or-n-p (format "Package %s is missing. Install it? " pkg))
-                  (package-install pkg))))
-        (cdr (assoc pkg-list my-pkgs-alist))))
-
 (defun what-face (pos)
   "Displays the current face name under the cursor."
   (interactive "d")
@@ -111,38 +87,14 @@
 (global-set-key (kbd "C-x C-k") 'backward-kill-word)
 (global-set-key (kbd "C-x O") 'other-window-back)
 (global-set-key (kbd "M-/") 'hippie-expand)
-(global-set-key (kbd "M-?") 'undo-tree-redo)
 (global-set-key (kbd "M-J") 'deindent-rigidly)
 (global-set-key (kbd "M-K") 'indent-rigidly)
-(global-set-key (kbd "M-M") 'er/expand-region)
 (global-set-key (kbd "M-O") 'other-window-back)
 (global-set-key (kbd "M-o") 'other-window)
 (global-set-key [f5] 'shrink-window-horizontally)
 (global-set-key [f6] 'enlarge-window)
 (global-set-key [f7] 'shrink-window)
 (global-set-key [f8] 'enlarge-window-horizontally)
-
-;; Xterm mouse & selection
-(when (require 'mouse nil t)
-  (xterm-mouse-mode t)
-  (defun track-mouse (e))
-  (setq mouse-sel-mode t))
-(setq mouse-wheel-scroll-amount '(2 ((shift) . 5) ((control) . nil))
-      mouse-wheel-progressive-speed nil)
-(setq x-select-enable-clipboard t)
-
-;; Other UI settings
-(blink-cursor-mode 0)
-(show-paren-mode (column-number-mode t))
-(global-font-lock-mode t)
-(transient-mark-mode t)
-(setq inhibit-splash-screen t
-      completion-cycle-threshold 4
-      visible-bell nil
-      ring-bell-function 'ignore)
-(when (fboundp 'set-scroll-bar-mode) (set-scroll-bar-mode 'right))
-(set-input-mode t nil t)
-(tool-bar-mode -1)
 
 ;; Aliases
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -157,6 +109,28 @@
 (defalias 'dnml 'delete-non-matching-lines)
 (defalias 'sl 'sort-lines)
 (defalias 'snf 'sort-numeric-fields)
+
+;; Xterm mouse & selection
+(when (require 'mouse nil t)
+  (xterm-mouse-mode t)
+  (defun track-mouse (e))
+  (setq mouse-sel-mode t))
+(setq mouse-wheel-scroll-amount '(2 ((shift) . 5) ((control) . nil))
+      mouse-wheel-progressive-speed nil)
+(setq x-select-enable-clipboard t)
+
+;; UI settings
+(blink-cursor-mode 0)
+(show-paren-mode (column-number-mode t))
+(global-font-lock-mode t)
+(transient-mark-mode t)
+(setq inhibit-splash-screen t
+      completion-cycle-threshold 4
+      visible-bell nil
+      ring-bell-function 'ignore)
+(when (fboundp 'set-scroll-bar-mode) (set-scroll-bar-mode 'right))
+(set-input-mode t nil t)
+(tool-bar-mode -1)
 
 ;; Some defaults
 (setq-default tab-width 4
@@ -183,17 +157,13 @@
   (let ((inhibit-read-only t)) (erase-buffer)))
 
 ;; IDO mode
-(ido-mode 1)
-(setq ido-enable-flex-matching t
-      ido-everywhere t
-      ido-case-fold t
-      ido-create-new-buffer 'always
-      ido-use-filename-at-point 'guess)
-
-;; Fill column indicator
-(setq fci-rule-width 1
-      fci-rule-color "#87005f"
-      fci-rule-character-color "#87005f")
+(when (fboundp 'ido-mode)
+  (ido-mode 1)
+  (setq ido-enable-flex-matching t
+        ido-everywhere t
+        ido-case-fold t
+        ido-create-new-buffer 'always
+        ido-use-filename-at-point 'guess))
 
 ;; Hippie expand
 (setq hippie-expand-try-functions-list
@@ -226,6 +196,9 @@
 
 ;; Whitespace
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+;; Package management
+(load "~/.emacs.d/pkg-management.el" t t t)
 
 ;; Automode
 (add-to-list 'auto-mode-alist '("dotfiles\\/emacs$" . emacs-lisp-mode))

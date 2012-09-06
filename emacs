@@ -64,12 +64,12 @@
 (global-set-key (kbd "C-x C-h") 'help-command)
 (global-set-key (kbd "C-x C-j") 'join-line)
 (global-set-key (kbd "C-x C-k") 'backward-kill-word)
+(global-set-key (kbd "C-x C-n") 'other-window)
+(global-set-key (kbd "C-x C-p") 'other-window-back)
 (global-set-key (kbd "C-x O") 'other-window-back)
 (global-set-key (kbd "M-/") 'hippie-expand)
 (global-set-key (kbd "M-J") 'deindent-rigidly)
 (global-set-key (kbd "M-K") 'indent-rigidly)
-(global-set-key (kbd "M-O") 'other-window-back)
-(global-set-key (kbd "M-o") 'other-window)
 (global-set-key [f5] 'shrink-window-horizontally)
 (global-set-key [f6] 'enlarge-window)
 (global-set-key [f7] 'shrink-window)
@@ -106,7 +106,7 @@
 (setq backup-inhibited t                      ; disable backup
       auto-save-default nil                   ; disable autosave
       inhibit-splash-screen t                 ; No splash screen
-      completion-cycle-threshold 3            ; Cycle treshold: 3
+      completion-cycle-threshold 0            ; No cycle threshold
       visible-bell nil                        ; No visible bell
       ring-bell-function 'ignore              ; No audible bell
       custom-file "~/.emacs.d/custom-file.el" ; Custom file

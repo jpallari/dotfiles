@@ -6,11 +6,13 @@
   (add-to-list 'load-path "~/.emacs.d/package/"))
 
 ;; Package list
-(setq my-pkgs-alist
-      '(("essential" . (fill-column-indicator expand-region undo-tree))
-        ("apps" . (magit monky auctex w3m))
-        ("modes" . (lua-mode haskell-mode markdown-mode erlang))
-        ("webdev" . (js2-mode js-comint coffee-mode less-css-mode flymake-jshint flymake-coffee))))
+(defconst my-pkgs-alist
+  '(("essential" fill-column-indicator expand-region undo-tree)
+    ("apps" magit monky auctex w3m)
+    ("modes" lua-mode haskell-mode markdown-mode erlang)
+    ("clojure" clojure-mode nrepl)
+    ("python" python virtualenv flymake-python-pyflakes)
+    ("webdev" js2-mode js-comint coffee-mode less-css-mode flymake-jshint flymake-coffee)))
 
 ;; Initialize
 (when (fboundp 'package-initialize)
@@ -21,19 +23,20 @@
                '("melpa" . "http://melpa.milkbox.net/packages/") t))
 
 ;; Package management functions
+(defun ask-to-install (pkg)
+  (and (not (package-installed-p pkg))
+       (y-or-n-p (format "Package %s is not installed. Install it? " pkg))
+       (package-install pkg)))
+
 (defun install-missing-packages (pkg-list)
   "Installs all the missing packages from selected list."
   (interactive (list (completing-read "Choose a package group: " my-pkgs-alist)))
-  (mapc (lambda (pkg)
-          (or (package-installed-p pkg)
-              (if (y-or-n-p (format "Package %s is missing. Install it? " pkg))
-                  (package-install pkg))))
-        (cdr (assoc pkg-list my-pkgs-alist))))
+  (mapc 'ask-to-install (cdr (assoc pkg-list my-pkgs-alist))))
 
 (defun install-missing-packages-all ()
   "Installs all the missing packages from every package list."
   (interactive)
-  (mapc 'install-missing-packages (mapcar 'car my-pkgs-alist)))
+  (mapc (lambda (pkglist) (mapc 'ask-to-install (cdr pkglist))) my-pkgs-alist))
 
 ;; Keybindings
 (global-set-key (kbd "M-?") 'undo-tree-redo)
@@ -49,7 +52,7 @@
       fci-rule-character-color "#87005f")
 
 ;; W3M
-(when (not (getenv "DISPLAY"))
+(unless (getenv "DISPLAY")
   (setq browse-url-browser-function 'w3m-browse-url
         w3m-use-cookies t
         w3m-coding-system 'utf-8

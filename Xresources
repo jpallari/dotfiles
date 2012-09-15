@@ -1,8 +1,5 @@
 ! Emacs
-emacs.font:             Monaco-9
-emacs.cursorColor:      #ffcc22
-emacs.pointerColor:     #ffffff
-emacs.menuBar:          on
+emacs.font:             Monaco-10
 
 ! bg & fg
 *background:            #060606

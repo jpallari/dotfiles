@@ -1,5 +1,8 @@
 ;;;; modesettings.el -- settings for different kinds of modes
 
+;; Autoloads
+(autoload 'notmuch "~/.emacs.d/my-notmuch" "notmuch mail" t)
+
 ;; Automode
 (add-to-list 'auto-mode-alist '("dotfiles\\/emacs$" . emacs-lisp-mode))
 (when (fboundp 'markdown-mode)
@@ -11,11 +14,22 @@
   (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode)))
 (when (fboundp 'erlang-mode)
   (add-to-list 'auto-mode-alist '("\\.\\(e\\|h\\)rl$" . erlang-mode)))
+(when (fboundp 'clojure-mode)
+  (add-to-list 'auto-mode-alist '("\\.clj$" . clojure-mode)))
 
 ;; Emacs LISP
 (defun ms-elisp ()
   (eldoc-mode 1))
 (add-hook 'emacs-lisp-mode-hook 'ms-elisp)
+
+;; LISP
+(defun ms-lisp ()
+  (when (not (featurep 'slime))
+    (require 'slime)))
+(add-hook 'lisp-mode-hook 'ms-lisp)
+
+;; nREPL
+(add-hook 'nrepl-interaction-mode-hook 'nrepl-turn-on-eldoc-mode)
 
 ;; JavaScript
 (defun ms-js ()
@@ -91,6 +105,7 @@
   (eldoc-mode 1)
   (when (fboundp 'fci-mode) (fci-mode))
   (whitespace-mode 1)
+  (local-set-key (kbd "RET") 'newline)
   (setq tab-width 4
         c-basic-offset 4
         py-indent-offset 4

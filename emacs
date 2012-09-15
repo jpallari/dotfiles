@@ -3,14 +3,19 @@
 (require 'cl)                           ; CommonLisp compatibility
 (setenv "PAGER" "/bin/cat")             ; custom envs
 
-;; Load paths
+;; Load paths and files
 (add-to-list 'load-path "~/.emacs.d/")
 (when (file-accessible-directory-p "~/.emacs.d/vendor")
-    (let ((default-directory "~/.emacs.d/vendor"))
-      (normal-top-level-add-subdirs-to-load-path)))
-
-(when (<= emacs-major-version 23)       ; Emacs 23 and older
-  (menu-bar-mode -1))
+  (let ((default-directory "~/.emacs.d/vendor"))
+    (normal-top-level-add-subdirs-to-load-path)))
+(setq custom-file "~/.emacs.d/custom-file.el")
+(defconst my-load-files
+  (list "~/.emacs.d/pkg-management.el"      ; package management
+        "~/.emacs.d/vendor/loaddefs.el"     ; vendor
+        "~/.emacs.d/modesettings.el"        ; mode settings
+        "~/.emacs.d/slime.el"               ; slime
+        custom-file                         ; customizations file
+        "~/.emacs.local"))                  ; local customizations
 
 ;; Custom functions and commands
 (defun what-face (pos)
@@ -18,7 +23,8 @@
   (interactive "d")
   (let ((face (or (get-char-property (point) 'read-face-name)
                   (get-char-property (point) 'face))))
-    (if face (message "Face: %s" face) (message "No face at %d" pos))))
+    (if face (message "Face: %s" face)
+      (message "No face at %d" pos))))
 
 (defun other-window-back ()
   "Select another window backwards"
@@ -45,13 +51,11 @@
   (if (display-graphic-p)
       (progn ; GUI
         (set-frame-parameter frame 'menu-bar-lines 1)
-        (set-face-background 'default "#1a1a1a" frame)
-        (set-face-foreground 'default "#eeeeee" frame)
-        (set-face-background 'fringe "#1a1a1a" frame)
-        (set-face-background 'mode-line "#303030" frame)
-        (set-face-foreground 'mode-line "#ffffff" frame)
-        (set-face-background 'mode-line-inactive "#121212" frame)
-        (set-face-foreground 'mode-line-inactive "#767676" frame))
+        (set-face-background 'default "white smoke" frame)
+        (set-face-foreground 'default "#000000" frame)
+        (set-face-background 'fringe "white smoke" frame)
+        (set-face-background 'cursor "#000000" frame)
+        (set-face-foreground 'cursor "#ffffff" frame))
     (progn ; terminal
       (set-frame-parameter frame 'menu-bar-lines 0)
       (set-face-background 'default "#000000" frame)
@@ -94,6 +98,9 @@
   (defun track-mouse (e))
   (setq mouse-sel-mode t))
 
+(when (<= emacs-major-version 23)       ; Emacs 23 and older
+  (menu-bar-mode -1))
+
 ;; Settings
 (blink-cursor-mode 0)                    ; No blinking cursor
 (global-font-lock-mode t)                ; Syntax coloring
@@ -109,13 +116,11 @@
       completion-cycle-threshold 0            ; No cycle threshold
       visible-bell nil                        ; No visible bell
       ring-bell-function 'ignore              ; No audible bell
-      custom-file "~/.emacs.d/custom-file.el" ; Custom file
       x-select-enable-clipboard t             ; X clipboard
       confirm-nonexistent-file-or-buffer nil  ; New on open
       mouse-wheel-progressive-speed nil       ; No progressive mouse scroll
       mouse-wheel-scroll-amount '(2 ((shift) . 5) ((control) . nil))
-      default-frame-alist '((vertical-scroll-bars . right)
-                            (menu-bar-lines . 0)))
+      default-frame-alist '((vertical-scroll-bars . right)))
 
 (setq-default
  tab-width 4                            ; Default tab width: 4
@@ -128,9 +133,6 @@
 (put 'downcase-region 'disabled nil)    ; Enable downcase region
 (put 'set-goal-column 'disabled nil)    ; Enable set goal column
 (put 'narrow-to-region 'disabled nil)   ; Enable narrow to region
-
-;; Notmuch
-(autoload 'notmuch "~/.emacs.d/my-notmuch" "notmuch mail" t)
 
 ;; EShell
 (setq eshell-prompt-function (lambda () "$ "))
@@ -170,11 +172,7 @@
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; Load custom elisp files
-(load "~/.emacs.d/pkg-management.el" t t t)  ; package management
-(load "~/.emacs.d/vendor/loaddefs.el" t t t) ; vendor
-(load "~/.emacs.d/modesettings.el" t t t)    ; mode settings
-(load custom-file t t t)                     ; customizations file
-(load "~/.emacs.local" t t t)                ; local customizations
+(mapc (lambda (filename) (load filename t t t)) my-load-files)
 
 ;; Encoding
 (prefer-coding-system 'utf-8)

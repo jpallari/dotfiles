@@ -68,12 +68,12 @@ function volctrl(cmd)
 
     local volu, mute = string.match(mixer, "([%d]+)%%.*%[([%l]*)")
     if volu == nil then
-       volu = 0
+        volu = 0
     end
     if mute == nil then
-       mute = mixer_state["on"]
+        mute = mixer_state["on"]
     else
-       mute = mixer_state[mute]
+        mute = mixer_state[mute]
     end
 
     volinfo.text = " <span color='".. beautiful.volume .."'>VOL " .. volu .. " " .. mute .. "</span> "
@@ -81,19 +81,16 @@ end
 
 -- Command for controlling music player
 function musicplayer (cmd)
-   awful.util.spawn_with_shell(player_cmd .. " " .. cmd)
+    awful.util.spawn_with_shell(player_cmd .. " " .. cmd)
 end
 -- }}}
 
 -- {{{ Tags
 -- Define a tag table which hold all screen tags.
-tags = {
-    names = {"one", "two", "three", "four"},
-	layout = { layouts[1], layouts[1], layouts[1], layouts[1] }
-}
+tags = {}
 for s = 1, screen.count() do
     -- Each screen has its own tag table.
-    tags[s] = awful.tag(tags.names, s, tags.layout)
+    tags[s] = awful.tag({"1", "2", "3", "4", "5", "6", "7", "8", "9"}, s, layouts[1])
 end
 -- }}}
 
@@ -108,14 +105,10 @@ myawesomemenu = {
     { "shutdown", shutdown }
 }
 
-myprefsmenu = {
-    { "monitor", monitorprefs },
-    { "lock", screenlock },
-}
-
 mymainmenu = awful.menu({ items = {
     { "awesome", myawesomemenu, beautiful.awesome_icon },
-    { "preferences", myprefsmenu },
+    { "monitor", monitorprefs },
+    { "lock", screenlock },
     { "editor", editor },
     { "terminal", terminal },
     { "browser", webbrowser },
@@ -254,8 +247,12 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey,           }, "d",     function () awful.tag.incnmaster(-1)      end),
     awful.key({ modkey, "Shift"   }, "i",     function () awful.tag.incncol( 1)         end),
     awful.key({ modkey, "Shift"   }, "d",     function () awful.tag.incncol(-1)         end),
-    awful.key({ modkey,           }, "space", function () awful.layout.inc(layouts,  1) end),
-    awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(layouts, -1) end),
+
+    -- Layouts
+    awful.key({ modkey,           }, "s", function () awful.layout.set(layouts[1]) end),
+    awful.key({ modkey, "Shift"   }, "m", function () awful.layout.set(layouts[2]) end),
+    awful.key({ modkey,           }, "u", function () awful.layout.set(layouts[3]) end),
+    awful.key({ modkey,           }, "f", function () awful.layout.set(layouts[4]) end),
 
     -- Prompt (use dmenu instead)
     awful.key({ modkey }, "x", function () awful.util.spawn(
@@ -277,10 +274,10 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey, "Control" }, "n",
         function()
             local tagi = awful.tag.selected()
-                for i=1, #tag:clients() do
-                    tag:clients()[i].minimized=false
-                    tag:clients()[i]:redraw()
-                end
+            for i=1, #tag:clients() do
+                tag:clients()[i].minimized=false
+                tag:clients()[i]:redraw()
+            end
         end),
 
     -- Volume keys
@@ -306,9 +303,8 @@ globalkeys = awful.util.table.join(
 )
 
 clientkeys = awful.util.table.join(
-    awful.key({ modkey,           }, "f",      function (c) c.fullscreen = not c.fullscreen  end),
     awful.key({ modkey, "Shift"   }, "c",      function (c) c:kill()                         end),
-    awful.key({ modkey, "Control" }, "space",  awful.client.floating.toggle                     ),
+    awful.key({ modkey,           }, "space",  awful.client.floating.toggle                     ),
     awful.key({ modkey,           }, "Return",
         function (c)
             local mestari = awful.client.getmaster()
@@ -391,14 +387,14 @@ awful.rules.rules = {
     -- Float
     { rule_any = { class = {
         "MPlayer",
-        "feh",
-        "Wicd-client.py"
+        "feh"
       } },
       properties = { floating = true, ontop = true } },
     -- Float (not on top)
     { rule_any = { class = {
         "pinentry",
-        "Gimp"
+        "Gimp",
+        "stalonetray"
       } },
       properties = { floating = true, ontop = false } },
     -- Tag 2

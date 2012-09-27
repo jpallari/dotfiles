@@ -28,6 +28,11 @@
     (require 'slime)))
 (add-hook 'lisp-mode-hook 'ms-lisp)
 
+;; SLIME REPL
+(defun ms-slime-repl ()
+  (local-set-key (kbd "C-t") 'slime-complete-symbol))
+(add-hook 'slime-repl-mode-hook 'ms-slime-repl)
+
 ;; nREPL
 (add-hook 'nrepl-interaction-mode-hook 'nrepl-turn-on-eldoc-mode)
 
@@ -145,6 +150,11 @@
   (c-toggle-auto-state 1)
   (define-key c-mode-base-map (kbd "RET") 'indent-new-comment-line))
 (add-hook 'c-mode-common-hook 'ms-c-common)
+
+;; Lua
+(defun ms-lua ()
+  (setq lua-indent-level 4))
+(add-hook 'lua-mode-hook 'ms-lua)
 
 ;; CSS
 (defun ms-css-common ()

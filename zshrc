@@ -42,8 +42,29 @@ zstyle -e :urlglobber url-other-schema \
 autoload -Uz compinit
 compinit
 
+# Functions
+function copy-region-as-kill-deactive-mark () {
+    zle copy-region-as-kill
+    zle set-mark-command -n -1
+}
+function zle-line-init () {
+    echoti smkx
+}
+function zle-line-finish () {
+    echoti rmkx
+}
+zle -N zle-line-init
+zle -N zle-keymap-select
+zle -N zle-line-finish
+zle -N copy-region-as-kill-deactive-mark
+
 # Emacs mode
 bindkey -e # Emacs mode
+
+# Custom keybindings
+bindkey "^W" kill-region
+bindkey "^U" universal-argument
+bindkey "\ew" copy-region-as-kill-deactive-mark
 
 # http://zshwiki.org/home/zle/bindkeys
 typeset -A key
@@ -67,16 +88,6 @@ key[PageDown]=${terminfo[knp]}
 [[ -n "${key[Down]}"    ]]  && bindkey  "${key[Down]}"    down-line-or-history
 [[ -n "${key[Left]}"    ]]  && bindkey  "${key[Left]}"    backward-char
 [[ -n "${key[Right]}"   ]]  && bindkey  "${key[Right]}"   forward-char
-
-function zle-line-init () {
-    echoti smkx
-}
-function zle-line-finish () {
-    echoti rmkx
-}
-zle -N zle-line-init
-zle -N zle-keymap-select
-zle -N zle-line-finish
 
 # Prompt
 autoload -U colors && colors

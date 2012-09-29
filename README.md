@@ -30,8 +30,10 @@ similar one used in [ArkkuDvorak][].
 
 ## Other stuff I have configurations for
 
+- [Bash][]
 - [ZSH][]
 - [Tmux][]
+- [Readline][]
 - Xresources
 
 [dwm]: http://dwm.suckless.org/
@@ -39,5 +41,7 @@ similar one used in [ArkkuDvorak][].
 [icons]: http://awesome.naquadah.org/wiki/Nice_Icons
 [Notmuch]: http://notmuchmail.org/
 [ArkkuDvorak]: http://www.cs.helsinki.fi/u/kkuloves/dvorak.shtml
+[Bash]: http://www.gnu.org/software/bash/
 [ZSH]: http://zsh.sourceforge.net/
 [Tmux]: http://tmux.sourceforge.net/
+[Readline]: http://www.gnu.org/software/readline/

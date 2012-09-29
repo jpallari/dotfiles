@@ -36,7 +36,7 @@ alias er='emacsclient -n'
 [[ -f ~/.bash_aliases ]] && source ~/.bash_aliases
 
 # prompt
-export PS1="\[\e[1;31m\]\$\[\e[0m\] "
+export PS1="\[\e[1;32m\]\h \[\e[1;31m\]\$\[\e[0m\] "
 
 # exports
 export PAGER=less

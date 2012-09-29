@@ -31,7 +31,6 @@ similar one used in [ArkkuDvorak][].
 ## Other stuff I have configurations for
 
 - [Bash][]
-- [ZSH][]
 - [Tmux][]
 - [Readline][]
 - Xresources
@@ -42,6 +41,5 @@ similar one used in [ArkkuDvorak][].
 [Notmuch]: http://notmuchmail.org/
 [ArkkuDvorak]: http://www.cs.helsinki.fi/u/kkuloves/dvorak.shtml
 [Bash]: http://www.gnu.org/software/bash/
-[ZSH]: http://zsh.sourceforge.net/
 [Tmux]: http://tmux.sourceforge.net/
 [Readline]: http://www.gnu.org/software/readline/

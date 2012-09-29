@@ -91,7 +91,7 @@ key[PageDown]=${terminfo[knp]}
 
 # Prompt
 autoload -U colors && colors
-PROMPT="%{$fg_bold[red]%}\$ %{$reset_color%}"
+PROMPT="%{$fg_bold[red]%}\$%{$reset_color%} "
 RPROMPT=""
 
 # Disable flow control
@@ -105,7 +105,7 @@ alias ls="ls --color=auto -F"
 alias ll="ls -lh"
 alias grep='grep --color=auto'
 alias ..="cd .."
-alias ..."cd ../.."
+alias ...="cd ../.."
 alias jk="tmux attach -d"
 alias sudo='sudo '
 alias h="hostname"

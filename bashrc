@@ -42,7 +42,7 @@ export PS1="\[\e[1;32m\]\h \[\e[1;31m\]\$\[\e[0m\] "
 export PAGER=less
 
 # local configurations
-[[ -f ~/.bashrc.local ]] && source ~/.bashrc.local
+[[ -f ~/.shlocal ]] && source ~/.shlocal
 
 # Show the current host and path when the shell starts
 echo "Host: $(hostname)"

@@ -6,14 +6,6 @@ these configurations for your own use.
 
 Here are a couple of highlights on what I have in my dotfiles.
 
-## Awesome WM
-
-The window manager I use these days.
-
-- Some keymappings are similar to ones used in [dwm][].
-- Volume control widget mostly ripped from [Vicious][].
-- [Icon theme][icons] by anrxc.
-
 ## Emacs
 
 I run Emacs 24 on most of my computers.
@@ -35,9 +27,6 @@ similar one used in [ArkkuDvorak][].
 - [Readline][]
 - Xresources
 
-[dwm]: http://dwm.suckless.org/
-[Vicious]: http://awesome.naquadah.org/wiki/Vicious
-[icons]: http://awesome.naquadah.org/wiki/Nice_Icons
 [Notmuch]: http://notmuchmail.org/
 [ArkkuDvorak]: http://www.cs.helsinki.fi/u/kkuloves/dvorak.shtml
 [Bash]: http://www.gnu.org/software/bash/

@@ -61,6 +61,13 @@
   (interactive)
   (notmuch-show-previous-thread t))
 
+(defun notmuch-show-subject-tabs-to-spaces ()
+  "Replace tabs with spaces in subject line."
+  (goto-char (point-min))
+  (when (re-search-forward "^Subject:" nil t)
+    (while (re-search-forward "\t" (line-end-position) t)
+      (replace-match " " nil nil))))
+
 ;;;; Settings
 (setq message-kill-buffer-on-exit 1
       user-mail-address (notmuch-user-primary-email)
@@ -90,7 +97,12 @@
        '("j" . "tag:jyu")
        '("r" . "tag:rss")))
 (setq gnus-inhibit-images t
-      mm-text-html-renderer 'w3m)
+      mm-text-html-renderer 'w3m
+      mail-specify-envelope-from t
+      message-sendmail-envelope-from header
+      mail-envelope-from header)
+(setq notmuch-search-line-faces
+      '(("unread" . (:foreground "white"))))
 
 ;;;; Keybindings
 
@@ -104,6 +116,10 @@
 (define-key notmuch-search-mode-map "d" 'notmuch-search-toggle-delete-tag)
 
 ;; show
+(define-key notmuch-show-mode-map "n" 'notmuch-show-next-message)
+(define-key notmuch-show-mode-map "p" 'notmuch-show-previous-message)
+(define-key notmuch-show-mode-map "N" 'notmuch-show-next-open-message)
+(define-key notmuch-show-mode-map "P" 'notmuch-show-previous-open-message)
 (define-key notmuch-show-mode-map "d" 'notmuch-show-toggle-delete-tag)
 (define-key notmuch-show-mode-map " " 'notmuch-show-np-or-nt)
 (define-key notmuch-show-mode-map (kbd "M-n") 'notmuch-show-nt)
@@ -113,3 +129,7 @@
 (when (require 'notmuch-address nil t)
   (setq notmuch-address-command (concat (getenv "HOME") "/bin/nottoomuch-addresses.sh"))
   (notmuch-address-message-insinuate))
+
+;;;; Hooks
+
+(add-hook 'notmuch-show-markup-headers-hook 'notmuch-show-subject-tabs-to-spaces)

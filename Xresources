@@ -2,8 +2,10 @@
 emacs.font:             Monaco-10
 
 ! bg & fg
-*background:            #060606
-*foreground:            #bbbbbb
+xterm*background:       #060606
+xterm*foreground:       #bbbbbb
+URxvt*background:       #060606
+URxvt*foreground:       #bbbbbb
 
 !black
 *color0:                #060606
@@ -68,9 +70,10 @@ URxvt.boldFont:
 URxvt.italicFont:
 URxvt.boldItalicFont:
 URxvt.perl-ext:         selection,url-select,-searchable-scrollback
-URxvt.keysym.C-2:       perl:url-select:select_next
-URxvt.underlineURLs:    false
-URxvt.urlLauncher:      google-chrome
+URxvt.keysym.C-3:       perl:url-select:select_next
+URxvt.url-select.underline: false
+URxvt.url-select.launcher: google-chrome
+URxvt.url-select.button: 2
 URxvt.matcher.button:   1
 URxvt.letterSpace:      0
 URxvt.urgentOnBell:     true

@@ -21,4 +21,7 @@
  '(rst-level-4-face ((t (:background "grey64" :foreground "black"))) t)
  '(rst-level-5-face ((t (:background "grey57" :foreground "black"))) t)
  '(rst-level-6-face ((t (:background "grey50" :foreground "black"))) t)
- '(widget-field ((t (:background "#3a3a3a" :foreground "#d7ff5f")))))
+ '(widget-field ((t (:background "#3a3a3a" :foreground "#d7ff5f"))))
+ '(notmuch-search-count ((t (:foreground "brightcyan"))))
+ '(notmuch-search-date ((t (:foreground "brightmagenta"))))
+ '(notmuch-search-matching-authors ((t (:foreground "brightyellow")))))

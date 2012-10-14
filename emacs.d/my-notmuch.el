@@ -99,8 +99,8 @@
 (setq gnus-inhibit-images t
       mm-text-html-renderer 'w3m
       mail-specify-envelope-from t
-      message-sendmail-envelope-from header
-      mail-envelope-from header)
+      message-sendmail-envelope-from 'header
+      mail-envelope-from 'header)
 (setq notmuch-search-line-faces
       '(("unread" . (:foreground "white"))))
 

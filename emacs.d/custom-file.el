@@ -24,4 +24,7 @@
  '(widget-field ((t (:background "#3a3a3a" :foreground "#d7ff5f"))))
  '(notmuch-search-count ((t (:foreground "brightcyan"))))
  '(notmuch-search-date ((t (:foreground "brightmagenta"))))
- '(notmuch-search-matching-authors ((t (:foreground "brightyellow")))))
+ '(notmuch-search-matching-authors ((t (:foreground "brightyellow"))))
+ '(notmuch-tag-face ((((class color) (background dark)) (:foreground "brightgreen"))
+                     (((class color) (background light)) (:foreground "blue"))
+                     (t (:bold t)))))

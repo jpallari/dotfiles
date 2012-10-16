@@ -76,7 +76,8 @@
       notmuch-search-oldest-first nil
       notmuch-search-oldest-first nil
       notmuch-show-all-multipart/alternative-parts nil
-      notmuch-show-part-button-default-action 'notmuch-show-browser-browse-part)
+      notmuch-show-part-button-default-action 'notmuch-show-browser-browse-part
+      notmuch-search-line-faces nil)
 (setq notmuch-saved-searches
       '(("inbox" . "tag:inbox")
         ("unread" . "tag:unread")
@@ -92,17 +93,15 @@
         notmuch-hello-insert-alltags
         notmuch-hello-insert-footer))
 (setq notmuch-quick-search-alist
-      (list
-       '("s" . "tag:unread or tag:inbox")
-       '("j" . "tag:jyu")
-       '("r" . "tag:rss")))
+      (list '("s" . "tag:unread or tag:inbox")
+            '("j" . "tag:jyu")
+            '("r" . "tag:rss")
+            '("m" . "tag:me")))
 (setq gnus-inhibit-images t
       mm-text-html-renderer 'w3m
       mail-specify-envelope-from t
       message-sendmail-envelope-from 'header
       mail-envelope-from 'header)
-(setq notmuch-search-line-faces
-      '(("unread" . (:foreground "white"))))
 
 ;;;; Keybindings
 

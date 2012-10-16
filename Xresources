@@ -1,66 +1,63 @@
-! Emacs
+! Emacs ---------------------------------------------------------
 emacs.font:             Monaco-10
 
+! colors --------------------------------------------------------
 ! bg & fg
-xterm*background:       #060606
-xterm*foreground:       #bbbbbb
-URxvt*background:       #060606
-URxvt*foreground:       #bbbbbb
+xterm*background:       black
+xterm*foreground:       gray
+URxvt.background:       black
+URxvt.foreground:       gray
 
-!black
-*color0:                #060606
-*color8:                #263033
-!red
-*color1:                #d4004c
-*color9:                #f92672
-!green
-*color2:                #86c20e
-*color10:               #a6e22e
-!yellow
-*color3:                #d6cb14
-*color11:               #f6eb34
-!blue
-*color4:                #3045D8
-*color12:               #6070ef
-!magenta
-*color5:                #ae31df
-*color13:               #de51ff
-!cyan
-*color6:                #46b9cf
-*color14:               #66d9ef
-!white
-*color7:                #E3E3E3
-*color15:               #FFFFFF
+! black
+*color0:                black
+*color8:                #333333
+! red
+*color1:                #aa0000
+*color9:                #ff4444
+! green
+*color2:                #00aa00
+*color10:               #44ff44
+! yellow
+*color3:                #aaaa00
+*color11:               #ffff44
+! blue
+*color4:                #4444ee
+*color12:               #5555ff
+! magenta
+*color5:                #aa00aa
+*color13:               #ff44ff
+! cyan
+*color6:                #00aaaa
+*color14:               #44ffff
+! white
+*color7:                gray
+*color15:               #ffffff
 
-!cursor
-*cursorColor:           #ffcc22
+! cursor
+*cursorColor:           #00ff00
 
 ! xterm ---------------------------------------------------------
 xterm*termName:         xterm-256color
 xterm*metaSendsEscape:  true
 xterm*eightBitInput:    false
-xterm*title:            xterm
 xterm*scrollBar:        false
 xterm*renderFont:       true
 xterm*font:             xft:Terminus:size=9
 xterm*faceName:         Terminus
 xterm*faceSize:         9
 xterm*boldMode:         false
-xterm*highlightSelection:false
+xterm*highlightSelection: false
 xterm*bellIsUrgent:     true
 xterm*ttyModes:         erase ^?
-xterm*VT100*translations:#override <Key>BackSpace: string(0x7f)
-xterm*backarrowKeyIsErase:true
+xterm*VT100*translations: #override <Key>BackSpace: string(0x7f)
+xterm*backarrowKeyIsErase: true
 xterm*pointerMode:      0
 xterm*fullscreen:       never
 xterm*omitTranslation:  fullscreen
 
 ! rxvt-unicode --------------------------------------------------
 URxvt.termName:         xterm-256color
-URxvt.title:            urxvt
 URxvt.loginShell:       false
-URxvt.transparent:      false
-URxvt.geometry:         90x30
 URxvt.scrollBar:        false
 URxvt.colorBD:          #ffffff
 URxvt.colorIT:          #a0cafa
@@ -75,5 +72,4 @@ URxvt.url-select.underline: false
 URxvt.url-select.launcher: google-chrome
 URxvt.url-select.button: 2
 URxvt.matcher.button:   1
-URxvt.letterSpace:      0
 URxvt.urgentOnBell:     true

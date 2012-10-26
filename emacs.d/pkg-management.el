@@ -7,7 +7,7 @@
 
 ;; Package list
 (defconst my-pkgs-alist
-  '(("essential" fill-column-indicator expand-region undo-tree)
+  '(("essential" fill-column-indicator expand-region undo-tree win-switch)
     ("apps" magit monky auctex w3m)
     ("modes" lua-mode haskell-mode markdown-mode erlang)
     ("clojure" clojure-mode nrepl)
@@ -41,6 +41,8 @@
 ;; Keybindings
 (global-set-key (kbd "M-?") 'undo-tree-redo)
 (global-set-key (kbd "M-M") 'er/expand-region)
+(when (fboundp 'win-switch-dispatch)
+  (global-set-key (kbd "C-x o") 'win-switch-dispatch))
 
 ;; Aliases
 (defalias 'git-st 'magit-status)
@@ -50,6 +52,20 @@
 (setq fci-rule-width 1
       fci-rule-color "#87005f"
       fci-rule-character-color "#87005f")
+
+;; win-switch
+(setq win-switch-idle-time 1)
+(win-switch-delete-key "i" 'up)
+(win-switch-delete-key "I" 'enlarge-vertically)
+(win-switch-delete-key "o" 'next-window)
+(win-switch-add-key "n" 'next-window)
+(win-switch-add-key "h" 'left)
+(win-switch-add-key "j" 'down)
+(win-switch-add-key "k" 'up)
+(win-switch-add-key "H" 'shrink-horizontally)
+(win-switch-add-key "J" 'shrink-vertically)
+(win-switch-add-key "K" 'enlarge-vertically)
+(win-switch-add-key "i" 'split-horizontally)
 
 ;; W3M
 (unless (getenv "DISPLAY")

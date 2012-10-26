@@ -81,11 +81,12 @@
 (setq notmuch-saved-searches
       '(("inbox" . "tag:inbox")
         ("unread" . "tag:unread")
-        ("jyu" . "tag:jyu AND tag:unread")
-        ("linkki" . "tag:linkki AND tag:unread")
-        ("gmail" . "tag:gmail AND tag:unread")
-        ("rss" . "tag:rss AND tag:unread")
-        ("facebook" . "tag:facebook AND tag:unread")))
+        ("mlists" . "tag:mlists")
+        ("jyu" . "tag:jyu")
+        ("linkki" . "tag:linkki")
+        ("gmail" . "tag:gmail")
+        ("rss" . "tag:rss")
+        ("facebook" . "tag:facebook")))
 (setq notmuch-hello-sections
       '(notmuch-hello-insert-header
         notmuch-hello-insert-saved-searches
@@ -93,10 +94,12 @@
         notmuch-hello-insert-alltags
         notmuch-hello-insert-footer))
 (setq notmuch-quick-search-alist
-      (list '("s" . "tag:unread or tag:inbox")
-            '("j" . "tag:jyu")
-            '("r" . "tag:rss")
-            '("m" . "tag:me")))
+      '(("i" . "tag:inbox")
+        ("u" . "tag:unread")
+        ("l" . "tag:mlists")
+        ("j" . "tag:jyu")
+        ("r" . "tag:rss")
+        ("m" . "tag:me")))
 (setq gnus-inhibit-images t
       mm-text-html-renderer 'w3m
       mail-specify-envelope-from t

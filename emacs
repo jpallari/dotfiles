@@ -18,6 +18,13 @@
         "~/.emacs.local"))                  ; local customizations
 
 ;; Custom functions and commands
+(defun filtr (condp lst)
+  (delq nil
+        (mapcar
+         (lambda (x)
+           (and (funcall condp x) x))
+         lst)))
+
 (defun what-face (pos)
   "Displays the current face name under the cursor."
   (interactive "d")
@@ -26,10 +33,10 @@
     (if face (message "Face: %s" face)
       (message "No face at %d" pos))))
 
-(defun other-window-back ()
+(defun other-window-back (count &optional all-frames)
   "Select another window backwards"
-  (interactive)
-  (other-window -1))
+  (interactive "p")
+  (other-window (* -1 count) all-frames))
 
 (defun deindent-rigidly (start end arg)
   "Same as indent-rigidly but with negative argument."
@@ -58,7 +65,7 @@
         (set-face-foreground 'cursor "#ffffff" frame))
     (progn ; terminal
       (set-frame-parameter frame 'menu-bar-lines 0)
-      (set-face-background 'default "#000000" frame)
+      (set-face-background 'default nil frame)
       (set-face-foreground 'default "#dadada" frame))))
 
 ;; Keybindings
@@ -74,6 +81,8 @@
 (global-set-key (kbd "M-/") 'hippie-expand)
 (global-set-key (kbd "M-J") 'deindent-rigidly)
 (global-set-key (kbd "M-K") 'indent-rigidly)
+(global-set-key (kbd "M-N") 'other-window)
+(global-set-key (kbd "M-P") 'other-window-back)
 (global-set-key [f5] 'shrink-window-horizontally)
 (global-set-key [f6] 'enlarge-window)
 (global-set-key [f7] 'shrink-window)
@@ -118,6 +127,7 @@
       ring-bell-function 'ignore              ; No audible bell
       x-select-enable-clipboard t             ; X clipboard
       confirm-nonexistent-file-or-buffer nil  ; New on open
+      sentence-end-double-space nil           ; Single space sentences
       mouse-wheel-progressive-speed nil       ; No progressive mouse scroll
       mouse-wheel-scroll-amount '(2 ((shift) . 5) ((control) . nil))
       default-frame-alist '((vertical-scroll-bars . right)))

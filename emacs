@@ -17,14 +17,7 @@
         custom-file                         ; customizations file
         "~/.emacs.local"))                  ; local customizations
 
-;; Custom functions and commands
-(defun filtr (condp lst)
-  (delq nil
-        (mapcar
-         (lambda (x)
-           (and (funcall condp x) x))
-         lst)))
-
+;; Commands
 (defun what-face (pos)
   "Displays the current face name under the cursor."
   (interactive "d")
@@ -36,19 +29,28 @@
 (defun other-window-back (count &optional all-frames)
   "Select another window backwards"
   (interactive "p")
-  (other-window (* -1 count) all-frames))
+  (other-window (- count) all-frames))
 
 (defun deindent-rigidly (start end arg)
   "Same as indent-rigidly but with negative argument."
   (interactive "r\np")
   (indent-rigidly start end (- arg)))
 
-(defun auto-fill ()
-  "Toggles auto fill mode and fill column indicator, if it exists."
-  (interactive)
-  (let ((val (if (symbol-value 'auto-fill-function) -1 1)))
-    (auto-fill-mode val)
-    (if (fboundp 'fci-mode) (fci-mode val))))
+(defun region-to-clipboard (start end)
+  (interactive "r")
+  (if (region-active-p)
+      (progn
+        (shell-command-on-region start end "xsel -i -b")
+        (message "Yanked to clipboard!"))
+    (message "No region active.")))
+
+;; Functions
+(defun filtr (condp lst)
+  (delq nil
+        (mapcar
+         (lambda (x)
+           (and (funcall condp x) x))
+         lst)))
 
 (defun apply-gui-frame-settings (frame)
   (with-selected-frame frame
@@ -79,10 +81,9 @@
 (global-set-key (kbd "C-x C-p") 'other-window-back)
 (global-set-key (kbd "C-x O") 'other-window-back)
 (global-set-key (kbd "M-/") 'hippie-expand)
+(global-set-key (kbd "M-C") 'region-to-clipboard)
 (global-set-key (kbd "M-J") 'deindent-rigidly)
 (global-set-key (kbd "M-K") 'indent-rigidly)
-(global-set-key (kbd "M-N") 'other-window)
-(global-set-key (kbd "M-P") 'other-window-back)
 (global-set-key [f5] 'shrink-window-horizontally)
 (global-set-key [f6] 'enlarge-window)
 (global-set-key [f7] 'shrink-window)
@@ -104,10 +105,11 @@
 ;; Xterm mouse & selection
 (when (require 'mouse nil t)
   (xterm-mouse-mode t)
-  (defun track-mouse (e))
-  (setq mouse-sel-mode t))
+  (setq track-mouse nil
+        mouse-sel-mode t))
 
-(when (<= emacs-major-version 23)       ; Emacs 23 and older
+; Emacs 23 and older
+(when (<= emacs-major-version 23)
   (menu-bar-mode -1))
 
 ;; Settings
@@ -137,7 +139,9 @@
  c-basic-offset 4                       ; ...same for C style languages
  indent-tabs-mode nil                   ; Spaces instead of tabs
  fill-column 79                         ; Fill column: 79
- whitespace-style '(face trailing)      ; Trailing whitespace
+ whitespace-style '(face                ; WP: use faces
+                    trailing            ; WP: trailing blanks
+                    lines-tail)         ; WP: long lines (tail)
  whitespace-line-column 79)
 
 (put 'downcase-region 'disabled nil)    ; Enable downcase region

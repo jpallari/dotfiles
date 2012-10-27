@@ -7,7 +7,7 @@
 
 ;; Package list
 (defconst my-pkgs-alist
-  '(("essential" fill-column-indicator expand-region undo-tree win-switch)
+  '(("essential" expand-region win-switch)
     ("apps" magit monky auctex w3m)
     ("modes" lua-mode haskell-mode markdown-mode erlang)
     ("clojure" clojure-mode nrepl)
@@ -39,7 +39,6 @@
   (mapc (lambda (pkglist) (mapc 'ask-to-install (cdr pkglist))) my-pkgs-alist))
 
 ;; Keybindings
-(global-set-key (kbd "M-?") 'undo-tree-redo)
 (global-set-key (kbd "M-M") 'er/expand-region)
 (when (fboundp 'win-switch-dispatch)
   (global-set-key (kbd "C-x o") 'win-switch-dispatch))
@@ -47,11 +46,6 @@
 ;; Aliases
 (defalias 'git-st 'magit-status)
 (defalias 'hg-st 'monky-status)
-
-;; Fill column indicator
-(setq fci-rule-width 1
-      fci-rule-color "#87005f"
-      fci-rule-character-color "#87005f")
 
 ;; win-switch
 (when (fboundp 'win-switch-dispatch)

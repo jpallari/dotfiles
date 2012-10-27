@@ -108,7 +108,6 @@
              (buffer-file-name (get-buffer buffer)))))
   (turn-on-auto-fill)
   (eldoc-mode 1)
-  (when (fboundp 'fci-mode) (fci-mode))
   (whitespace-mode 1)
   (local-set-key (kbd "RET") 'newline)
   (setq tab-width 4
@@ -134,7 +133,6 @@
 (defun ms-coffee ()
   (make-local-variable 'tab-width)
   (setenv "NODE_NO_READLINE" "1")
-  (when (fboundp 'fci-mode) (fci-mode))
   (whitespace-mode 1)
   (setq coffee-tab-width 2
         tab-width 2)

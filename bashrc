@@ -29,7 +29,7 @@ alias ..="cd .."
 alias ...="cd ../.."
 alias jk="tmux attach -d"
 alias sudo='sudo '
-alias h="hostname"
+alias h="echo $HOSTNAME"
 alias e='emacsclient -c -t --alternate-editor=""'
 alias em='emacs -Q -nw -l ~/.emacs'
 alias er='emacsclient -n'
@@ -37,6 +37,7 @@ alias er='emacsclient -n'
 
 # prompt
 export PS1="\[\e[1;32m\]\h \[\e[1;31m\]\$\[\e[0m\] "
+export PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}\007"'
 
 # exports
 export PAGER=less
@@ -44,6 +45,6 @@ export PAGER=less
 # local configurations
 [[ -f ~/.shlocal ]] && source ~/.shlocal
 
-# Show the current host and path when the shell starts
-echo "Host: $(hostname)"
-echo "Path: $(pwd)"
+# Show the current host and path when the shell starts.
+echo "Host: ${HOSTNAME}"
+echo "Path: ${PWD}"

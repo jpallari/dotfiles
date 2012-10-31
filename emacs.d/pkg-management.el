@@ -1,16 +1,17 @@
 ;;;; pkg-management.el -- package management and package specific settings
 
 ;; Version specific settings
-(when (and (<= emacs-major-version 23) ;; Emacs 23 and older
-           (require 'package nil t))
-  (add-to-list 'load-path "~/.emacs.d/package/"))
+(when (<= emacs-major-version 23) ;; Emacs 23 and older
+  (add-to-list 'load-path "~/.emacs.d/package/")
+  (require 'package nil t))
 
 ;; Package list
 (defconst my-pkgs-alist
   '(("essential" expand-region win-switch)
     ("apps" magit monky auctex w3m)
-    ("modes" lua-mode haskell-mode markdown-mode erlang)
+    ("modes" lua-mode markdown-mode erlang)
     ("clojure" clojure-mode nrepl)
+    ("haskell" haskell-mode ghci-completion)
     ("python" python virtualenv flymake-python-pyflakes)
     ("webdev" js2-mode js-comint coffee-mode less-css-mode flymake-jshint flymake-coffee)))
 
@@ -48,28 +49,25 @@
 (defalias 'hg-st 'monky-status)
 
 ;; win-switch
-(when (fboundp 'win-switch-dispatch)
-  (setq win-switch-idle-time 1)
-  (win-switch-delete-key "i" 'up)
-  (win-switch-delete-key "I" 'enlarge-vertically)
-  (win-switch-delete-key "o" 'next-window)
-  (win-switch-add-key "n" 'next-window)
-  (win-switch-add-key "h" 'left)
-  (win-switch-add-key "j" 'down)
-  (win-switch-add-key "k" 'up)
-  (win-switch-add-key "H" 'shrink-horizontally)
-  (win-switch-add-key "J" 'shrink-vertically)
-  (win-switch-add-key "K" 'enlarge-vertically)
-  (win-switch-add-key "i" 'split-horizontally))
+(eval-after-load "win-switch"
+  '(progn
+     (setq win-switch-idle-time 1)
+     (win-switch-delete-key "i" 'up)
+     (win-switch-delete-key "I" 'enlarge-vertically)
+     (win-switch-delete-key "o" 'next-window)
+     (win-switch-add-key "n" 'next-window)
+     (win-switch-add-key "h" 'left)
+     (win-switch-add-key "j" 'down)
+     (win-switch-add-key "k" 'up)
+     (win-switch-add-key "H" 'shrink-horizontally)
+     (win-switch-add-key "J" 'shrink-vertically)
+     (win-switch-add-key "K" 'enlarge-vertically)
+     (win-switch-add-key "i" 'split-horizontally)))
 
 ;; W3M
 (unless (getenv "DISPLAY")
-  (setq browse-url-browser-function 'w3m-browse-url
-        w3m-use-cookies t
-        w3m-coding-system 'utf-8
-        w3m-file-coding-system 'utf-8
-        w3m-file-name-coding-system 'utf-8
-        w3m-input-coding-system 'utf-8
-        w3m-output-coding-system 'utf-8
-        w3m-terminal-coding-system 'utf-8)
+  (eval-after-load "w3m"
+    '(progn
+       (setq browse-url-browser-function 'w3m-browse-url
+             w3m-use-cookies t)))
   (autoload 'w3m-browse-url "w3m" "Ask a WWW browser to show a URL." t))

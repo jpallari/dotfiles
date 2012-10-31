@@ -1,8 +1,5 @@
 ;;;; jkpl's Emacs confs
 
-(require 'cl)                           ; CommonLisp compatibility
-(setenv "PAGER" "/bin/cat")             ; custom envs
-
 ;; Load paths and files
 (add-to-list 'load-path "~/.emacs.d/")
 (when (file-accessible-directory-p "~/.emacs.d/vendor")
@@ -10,39 +7,11 @@
     (normal-top-level-add-subdirs-to-load-path)))
 (setq custom-file "~/.emacs.d/custom-file.el")
 (defconst my-load-files
-  (list "~/.emacs.d/pkg-management.el"      ; package management
-        "~/.emacs.d/vendor/loaddefs.el"     ; vendor
-        "~/.emacs.d/modesettings.el"        ; mode settings
-        "~/.emacs.d/slime.el"               ; slime
-        custom-file                         ; customizations file
-        "~/.emacs.local"))                  ; local customizations
-
-;; Commands
-(defun what-face (pos)
-  "Displays the current face name under the cursor."
-  (interactive "d")
-  (let ((face (or (get-char-property (point) 'read-face-name)
-                  (get-char-property (point) 'face))))
-    (if face (message "Face: %s" face)
-      (message "No face at %d" pos))))
-
-(defun other-window-back (count &optional all-frames)
-  "Select another window backwards"
-  (interactive "p")
-  (other-window (- count) all-frames))
-
-(defun deindent-rigidly (start end arg)
-  "Same as indent-rigidly but with negative argument."
-  (interactive "r\np")
-  (indent-rigidly start end (- arg)))
-
-(defun region-to-clipboard (start end)
-  (interactive "r")
-  (if (region-active-p)
-      (progn
-        (shell-command-on-region start end "xsel -i -b")
-        (message "Yanked to clipboard!"))
-    (message "No region active.")))
+  (list "~/.emacs.d/pkg-management.el"  ; package management
+        "~/.emacs.d/vendor/loaddefs.el" ; vendor
+        "~/.emacs.d/modesettings.el"    ; mode settings
+        custom-file                     ; customizations file
+        "~/.emacs.local"))              ; local customizations
 
 ;; Functions
 (defun filtr (condp lst)
@@ -70,9 +39,31 @@
       (set-face-background 'default nil frame)
       (set-face-foreground 'default "#dadada" frame))))
 
+;; Commands
+(defun what-face (pos)
+  "Displays the current face name under the cursor."
+  (interactive "d")
+  (let ((face (or (get-char-property (point) 'read-face-name)
+                  (get-char-property (point) 'face))))
+    (if face (message "Face: %s" face)
+      (message "No face at %d" pos))))
+
+(defun other-window-back (count &optional all-frames)
+  "Select another window backwards"
+  (interactive "p")
+  (other-window (- count) all-frames))
+
+(defun deindent-rigidly (start end arg)
+  "Same as indent-rigidly but with negative argument."
+  (interactive "r\np")
+  (indent-rigidly start end (- arg)))
+
+(defun region-to-clipboard (start end)
+  (interactive "r")
+  (shell-command-on-region start end "xsel -i -b"))
+
 ;; Keybindings
 (global-set-key (kbd "C-h") 'backward-delete-char-untabify)
-(global-set-key (kbd "C-t") 'completion-at-point)
 (global-set-key (kbd "C-x C-b") 'buffer-menu)
 (global-set-key (kbd "C-x C-h") 'help-command)
 (global-set-key (kbd "C-x C-j") 'join-line)
@@ -112,6 +103,9 @@
 (when (<= emacs-major-version 23)
   (menu-bar-mode -1))
 
+; Custom environment variables
+(setenv "PAGER" "/bin/cat")
+
 ;; Settings
 (blink-cursor-mode 0)                    ; No blinking cursor
 (global-font-lock-mode t)                ; Syntax coloring
@@ -130,9 +124,13 @@
       x-select-enable-clipboard t             ; X clipboard
       confirm-nonexistent-file-or-buffer nil  ; New on open
       sentence-end-double-space nil           ; Single space sentences
+      compilation-ask-about-save nil          ; Don't prompt for save on compile
       mouse-wheel-progressive-speed nil       ; No progressive mouse scroll
       mouse-wheel-scroll-amount '(2 ((shift) . 5) ((control) . nil))
-      default-frame-alist '((vertical-scroll-bars . right)))
+      compilation-save-buffers-predicate '(lambda () nil)
+      default-frame-alist '((vertical-scroll-bars . right))
+      message-send-mail-function 'message-send-mail-with-sendmail
+      sendmail-program "/usr/bin/msmtp")
 
 (setq-default
  tab-width 4                            ; Default tab width: 4
@@ -168,11 +166,11 @@
 (setq hippie-expand-try-functions-list
       '(try-complete-file-name-partially
         try-complete-file-name
-        try-expand-line
-        try-expand-all-abbrevs
         try-expand-dabbrev
         try-expand-dabbrev-all-buffers
         try-expand-dabbrev-from-kill
+        try-expand-line
+        try-expand-all-abbrevs
         try-complete-lisp-symbol-partially
         try-complete-lisp-symbol))
 
@@ -195,4 +193,4 @@
 (set-selection-coding-system 'utf-8)
 (setq locale-coding-system 'utf-8
       default-file-name-coding-system 'utf-8
-      default-buffer-file-coding-system 'utf-8)
+      buffer-file-coding-system 'utf-8)

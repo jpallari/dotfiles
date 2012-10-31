@@ -1,15 +1,21 @@
 ;;;; modesettings.el -- settings for different kinds of modes
 
 ;; Autoloads
-(autoload 'notmuch "~/.emacs.d/my-notmuch" "notmuch mail" t)
+(autoload 'notmuch "my-notmuch" "notmuch mail" t)
+(autoload 'ghc-init "ghc" "GHC completion." t)
+(autoload 'slime "my-slime" "Slime mode." t)
+(autoload 'slime-mode "my-slime" "Slime mode." t)
 
 ;; Automode
 (add-to-list 'auto-mode-alist '("dotfiles\\/emacs$" . emacs-lisp-mode))
 (when (fboundp 'markdown-mode)
-  (add-to-list 'auto-mode-alist '("\\.markdown$" . markdown-mode))
-  (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
-  (add-to-list 'auto-mode-alist '("\\.mdown$" . markdown-mode))
-  (add-to-list 'auto-mode-alist '("\\.text$" . markdown-mode)))
+  (setq auto-mode-alist
+        (append
+         '(("\\.markdown$" . markdown-mode)
+           ("\\.md$" . markdown-mode)
+           ("\\.mdown$" . markdown-mode)
+           ("\\.text$" . markdown-mode))
+         auto-mode-alist)))
 (when (fboundp 'js2-mode)
   (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode)))
 (when (fboundp 'erlang-mode)
@@ -17,31 +23,11 @@
 (when (fboundp 'clojure-mode)
   (add-to-list 'auto-mode-alist '("\\.clj$" . clojure-mode)))
 
-;; Emacs LISP
-(defun ms-elisp ()
-  (eldoc-mode 1))
-(add-hook 'emacs-lisp-mode-hook 'ms-elisp)
 
-;; LISP
-(defun ms-lisp ()
-  (when (not (featurep 'slime))
-    (require 'slime)))
-(add-hook 'lisp-mode-hook 'ms-lisp)
+;; Hook functions
 
-;; SLIME REPL
-(defun ms-slime-repl ()
-  (local-set-key (kbd "C-t") 'slime-complete-symbol))
-(add-hook 'slime-repl-mode-hook 'ms-slime-repl)
-
-;; nREPL
-(add-hook 'nrepl-interaction-mode-hook 'nrepl-turn-on-eldoc-mode)
-
-;; JavaScript
-(defun ms-js ()
-  (setq js-indent-level 2
-        tab-width 2
-        c-basic-offset 2))
 (defun ms-js2 ()
+  "JavaScript (JS2) hook function."
   (setq tab-width 2
         c-basic-offset 2
         jshint-configuration-path (concat (getenv "HOME") "/.jshint.json")
@@ -56,11 +42,9 @@
   (local-set-key (kbd "C-c b") 'js-send-buffer)
   (local-set-key (kbd "C-c b") 'js-send-buffer-and-go)
   (local-set-key (kbd "C-c l") 'js-load-file-and-go))
-(add-hook 'js-mode-hook 'ms-js)
-(add-hook 'js2-mode-hook 'ms-js2)
 
-;; JS comint
 (defun ms-js-comint ()
+  "JS comint hook function."
   (ansi-color-for-comint-mode-on)
   (add-to-list
    'comint-preoutput-filter-functions
@@ -68,34 +52,30 @@
      (replace-regexp-in-string
       ".*1G\.\.\..*5G" "..."
       (replace-regexp-in-string ".*1G.*3G" "> " output)))))
-(setq inferior-js-mode-hook 'ms-js-comint)
 
-;; Magit
 (defun ms-magit ()
+  "Magit hook function."
   (setq fill-column 72)
   (turn-on-auto-fill))
-(add-hook 'magit-log-edit-mode-hook 'ms-magit)
 
-;; Markdown
 (defun ms-markdown ()
+  "Markdown hook function."
   (turn-on-auto-fill)
   (setq tab-width 4
         c-basic-offset 4
         fill-column 79
         whitespace-line-column 79))
-(add-hook 'markdown-mode-hook 'ms-markdown)
 
-;; RST
 (defun ms-rst ()
+  "RST hook function."
   (turn-on-auto-fill)
   (setq tab-width 4
         c-basic-offset 4
         fill-column 79
         whitespace-line-column 79))
-(add-hook 'rst-mode-hook 'ms-rst)
 
-;; Python
 (defun ms-python ()
+  "Python hook function."
   (defun pep8 (&optional buffer)
     (interactive "bPEP8 buffer: ")
     (python-check
@@ -116,21 +96,29 @@
         python-indent-offset 4
         whitespace-line-column 79
         fill-column 79))
-(add-hook 'python-mode-hook 'ms-python)
 
-;; Haskell
 (defun ms-haskell ()
+  "Haskell hook function."
   (setq tab-width 2
         haskell-indent-offset 2
         c-basic-offset 2)
   (define-key haskell-mode-map (kbd "C-c =") 'haskell-indent-insert-equal)
   (define-key haskell-mode-map (kbd "C-c |") 'haskell-indent-insert-guard)
   (define-key haskell-mode-map (kbd "C-c .") 'haskell-mode-format-imports)
-  (turn-on-haskell-indent))
-(add-hook 'haskell-mode-hook 'ms-haskell)
+  (turn-on-haskell-indentation)
+  (turn-on-haskell-doc-mode)
+  (when (fboundp 'ghc-init) (ghc-init)))
 
-;; CoffeeScript
+(defun ms-haskell-ghci ()
+  "Haskell GHCI hook function."
+  (when (require 'ghci-completion nil t)
+    (turn-on-ghci-completion)
+    (when (boundp 'ghc-merged-keyword)
+      (setq pcomplete-command-completion-function
+            (lambda () (pcomplete-here* ghc-merged-keyword))))))
+
 (defun ms-coffee ()
+  "CoffeeScript hook function."
   (make-local-variable 'tab-width)
   (setenv "NODE_NO_READLINE" "1")
   (whitespace-mode 1)
@@ -139,30 +127,34 @@
   (define-key coffee-mode-map (kbd "C-c C-r") 'coffee-compile-buffer)
   (define-key coffee-mode-map (kbd "C-j") 'coffee-newline-and-indent)
   (define-key coffee-mode-map (kbd "C-m") 'newline))
-(add-hook 'coffee-mode-hook 'ms-coffee)
 
-;; C
 (defun ms-c-common ()
+  "C hook function."
   (setq c-basic-offset 4
         tab-width 4)
   (c-toggle-auto-state 1)
   (define-key c-mode-base-map (kbd "RET") 'indent-new-comment-line))
-(add-hook 'c-mode-common-hook 'ms-c-common)
 
-;; Lua
-(defun ms-lua ()
-  (setq lua-indent-level 4))
-(add-hook 'lua-mode-hook 'ms-lua)
-
-;; CSS
-(defun ms-css-common ()
-  (setq css-indent-offset 2))
-(add-hook 'css-mode-hook 'ms-css-common)
-
-;; Email
-(setq message-send-mail-function 'message-send-mail-with-sendmail)
-(setq sendmail-program "/usr/bin/msmtp")
 (defun ms-mail ()
+  "Email hook function."
   (turn-on-auto-fill)
   (setq fill-column 72))
+
+;; Hooks
+(add-hook 'emacs-lisp-mode-hook (lambda () (eldoc-mode 1)))
+(add-hook 'lisp-mode-hook 'slime-mode)
+(add-hook 'nrepl-interaction-mode-hook 'nrepl-turn-on-eldoc-mode)
+(add-hook 'js-mode-hook (lambda () (setq js-indent-level 2 tab-width 2 c-basic-offset 2)))
+(add-hook 'js2-mode-hook 'ms-js2)
+(setq inferior-js-mode-hook 'ms-js-comint)
+(add-hook 'magit-log-edit-mode-hook 'ms-magit)
+(add-hook 'markdown-mode-hook 'ms-markdown)
+(add-hook 'rst-mode-hook 'ms-rst)
+(add-hook 'python-mode-hook 'ms-python)
+(add-hook 'haskell-mode-hook 'ms-haskell)
+(add-hook 'inferior-haskell-mode-hook 'ms-haskell-ghci)
+(add-hook 'coffee-mode-hook 'ms-coffee)
+(add-hook 'c-mode-common-hook 'ms-c-common)
+(add-hook 'lua-mode-hook (lambda () (setq lua-indent-level 4)))
+(add-hook 'css-mode-hook (lambda () (setq css-indent-offset 2)))
 (add-hook 'mail-mode-hook 'ms-mail)

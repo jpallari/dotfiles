@@ -137,6 +137,10 @@
   (turn-on-auto-fill)
   (setq fill-column 72))
 
+(defun ms-org ()
+  "Org mode hook function."
+  (setq org-hide-leading-stars t))
+
 (defun ms-comint ()
   "Comint mode hook function."
   (setq  comint-completion-addsuffix t
@@ -174,5 +178,6 @@
 (add-hook 'css-mode-hook (lambda () (setq css-indent-offset 2)))
 (add-hook 'TeX-mode-hook 'ms-tex)
 (add-hook 'mail-mode-hook 'ms-mail)
+(add-hook 'org-mode-hook 'ms-org)
 (add-hook 'comint-mode-hook 'ms-comint)
 (setq inferior-js-mode-hook 'ms-js-comint)

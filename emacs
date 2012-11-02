@@ -6,6 +6,7 @@
   (let ((default-directory "~/.emacs.d/vendor"))
     (normal-top-level-add-subdirs-to-load-path)))
 (setq custom-file "~/.emacs.d/custom-file.el")
+
 (defconst my-load-files
   (list "~/.emacs.d/pkg-management.el"  ; package management
         "~/.emacs.d/vendor/loaddefs.el" ; vendor
@@ -64,7 +65,7 @@
 
 ;; Keybindings
 (global-set-key (kbd "C-h") 'backward-delete-char-untabify)
-(global-set-key (kbd "C-x C-b") 'buffer-menu)
+(global-set-key (kbd "C-x C-b") 'ibuffer)
 (global-set-key (kbd "C-x C-h") 'help-command)
 (global-set-key (kbd "C-x C-j") 'join-line)
 (global-set-key (kbd "C-x C-k") 'backward-kill-word)
@@ -162,6 +163,24 @@
         ido-create-new-buffer 'always
         ido-use-filename-at-point 'guess))
 
+;; IBuffer
+(setq ibuffer-saved-filter-groups
+      '(("default"
+         ("Org" (mode . org-mode))
+         ("Dired" (mode . dired-mode))
+         ("Emacs"
+          (or (name . "^\\*scratch\\*$")
+              (name . "^\\*Messages\\*$")))
+         ("Help"
+          (or (name . "\\*Help\\*")
+              (name . "\\*Apropos\\*")
+              (name . "\\*info\\*")))
+         ("Email"
+          (or (name . "^\\*notmuch-")
+              (mode . message-mode)))))
+      ibuffer-show-empty-filter-groups nil
+      ibuffer-default-sorting-mode 'major-mode)
+
 ;; Hippie expand
 (setq hippie-expand-try-functions-list
       '(try-complete-file-name-partially
@@ -182,6 +201,10 @@
 ;; Hooks
 (add-hook 'after-make-frame-functions 'apply-gui-frame-settings)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
+(add-hook 'ibuffer-mode-hook
+          (lambda ()
+            (ibuffer-auto-mode 1)
+            (ibuffer-switch-to-saved-filter-groups "default")))
 
 ;; Load custom elisp files
 (mapc (lambda (filename) (load filename t t t)) my-load-files)

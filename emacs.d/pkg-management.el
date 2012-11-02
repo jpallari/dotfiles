@@ -1,9 +1,10 @@
 ;;;; pkg-management.el -- package management and package specific settings
 
-;; Version specific settings
+;; Run initialization on old versions
 (when (<= emacs-major-version 23) ;; Emacs 23 and older
   (add-to-list 'load-path "~/.emacs.d/package/")
-  (require 'package nil t))
+  (require 'package)
+  (package-initialize))
 
 ;; Package list
 (defconst my-pkgs-alist
@@ -15,15 +16,13 @@
     ("python" python virtualenv flymake-python-pyflakes)
     ("webdev" js2-mode js-comint coffee-mode less-css-mode flymake-jshint flymake-coffee)))
 
-;; Initialize
-(when (fboundp 'package-initialize)
-  (package-initialize)
-  (add-to-list 'package-archives
-               '("marmalade" . "http://marmalade-repo.org/packages/") t)
-  (add-to-list 'package-archives
-               '("melpa" . "http://melpa.milkbox.net/packages/") t))
+;; Repos
+(setq package-archives
+      '(("gnu" . "http://elpa.gnu.org/packages/")
+        ("marmalade" . "http://marmalade-repo.org/packages/")
+        ("melpa" . "http://melpa.milkbox.net/packages/")))
 
-;; Package management functions
+;; Package management functions and commands
 (defun ask-to-install (pkg)
   (and (not (package-installed-p pkg))
        (y-or-n-p (format "Package %s is not installed. Install it? " pkg))
@@ -37,16 +36,22 @@
 (defun install-missing-packages-all ()
   "Installs all the missing packages from every package list."
   (interactive)
-  (mapc (lambda (pkglist) (mapc 'ask-to-install (cdr pkglist))) my-pkgs-alist))
+  (mapc
+   (lambda (pkglist)
+     (mapc 'ask-to-install (cdr pkglist)))
+   my-pkgs-alist))
 
-;; Keybindings
-(global-set-key (kbd "M-M") 'er/expand-region)
-(when (fboundp 'win-switch-dispatch)
-  (global-set-key (kbd "C-x o") 'win-switch-dispatch))
+;; After init function
+(defun pkg-after-init ()
+  ;; Keybindings
+  (when (fboundp 'er/expand-region)
+    (global-set-key (kbd "M-M") 'er/expand-region))
+  (when (fboundp 'win-switch-dispatch)
+    (global-set-key (kbd "C-x o") 'win-switch-dispatch))
 
-;; Aliases
-(defalias 'git-st 'magit-status)
-(defalias 'hg-st 'monky-status)
+  ;; Aliases
+  (defalias 'git-st 'magit-status)
+  (defalias 'hg-st 'monky-status))
 
 ;; win-switch
 (eval-after-load "win-switch"
@@ -71,3 +76,6 @@
        (setq browse-url-browser-function 'w3m-browse-url
              w3m-use-cookies t)))
   (autoload 'w3m-browse-url "w3m" "Ask a WWW browser to show a URL." t))
+
+;; Hooks
+(add-hook 'after-init-hook 'pkg-after-init)

@@ -30,8 +30,8 @@ alias ...="cd ../.."
 alias jk="tmux attach -d"
 alias sudo='sudo '
 alias h="echo $HOSTNAME"
+alias emacs='emacs -nw'
 alias e='emacsclient -c -t --alternate-editor=""'
-alias em='emacs -Q -nw -l ~/.emacs'
 alias er='emacsclient -n'
 [[ -f ~/.bash_aliases ]] && source ~/.bash_aliases
 

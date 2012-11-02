@@ -43,16 +43,6 @@
   (local-set-key (kbd "C-c b") 'js-send-buffer-and-go)
   (local-set-key (kbd "C-c l") 'js-load-file-and-go))
 
-(defun ms-js-comint ()
-  "JS comint hook function."
-  (ansi-color-for-comint-mode-on)
-  (add-to-list
-   'comint-preoutput-filter-functions
-   (lambda (output)
-     (replace-regexp-in-string
-      ".*1G\.\.\..*5G" "..."
-      (replace-regexp-in-string ".*1G.*3G" "> " output)))))
-
 (defun ms-magit ()
   "Magit hook function."
   (setq fill-column 72)
@@ -135,10 +125,36 @@
   (c-toggle-auto-state 1)
   (define-key c-mode-base-map (kbd "RET") 'indent-new-comment-line))
 
+(defun ms-tex ()
+  "TeX hook function."
+  (setq TeX-auto-save t
+        TeX-PDF-mode t
+        TeX-parse-self t)
+  (add-to-list 'TeX-command-list '("Biber" "biber %s.bcf" TeX-run-BibTeX nil t)))
+
 (defun ms-mail ()
   "Email hook function."
   (turn-on-auto-fill)
   (setq fill-column 72))
+
+(defun ms-comint ()
+  "Comint mode hook function."
+  (setq  comint-completion-addsuffix t
+         comint-completion-autolist t
+         comint-input-ignoredups t
+         comint-scroll-show-maximum-output t
+         comint-scroll-to-bottom-on-input t
+         comint-scroll-to-bottom-on-output t))
+
+(defun ms-js-comint ()
+  "JS comint hook function."
+  (ansi-color-for-comint-mode-on)
+  (add-to-list
+   'comint-preoutput-filter-functions
+   (lambda (output)
+     (replace-regexp-in-string
+      ".*1G\.\.\..*5G" "..."
+      (replace-regexp-in-string ".*1G.*3G" "> " output)))))
 
 ;; Hooks
 (add-hook 'emacs-lisp-mode-hook (lambda () (eldoc-mode 1)))
@@ -146,7 +162,6 @@
 (add-hook 'nrepl-interaction-mode-hook 'nrepl-turn-on-eldoc-mode)
 (add-hook 'js-mode-hook (lambda () (setq js-indent-level 2 tab-width 2 c-basic-offset 2)))
 (add-hook 'js2-mode-hook 'ms-js2)
-(setq inferior-js-mode-hook 'ms-js-comint)
 (add-hook 'magit-log-edit-mode-hook 'ms-magit)
 (add-hook 'markdown-mode-hook 'ms-markdown)
 (add-hook 'rst-mode-hook 'ms-rst)
@@ -157,4 +172,7 @@
 (add-hook 'c-mode-common-hook 'ms-c-common)
 (add-hook 'lua-mode-hook (lambda () (setq lua-indent-level 4)))
 (add-hook 'css-mode-hook (lambda () (setq css-indent-offset 2)))
+(add-hook 'TeX-mode-hook 'ms-tex)
 (add-hook 'mail-mode-hook 'ms-mail)
+(add-hook 'comint-mode-hook 'ms-comint)
+(setq inferior-js-mode-hook 'ms-js-comint)

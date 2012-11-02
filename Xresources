@@ -2,36 +2,28 @@
 emacs.font:             Monaco-10
 
 ! colors --------------------------------------------------------
-! bg & fg
 xterm*background:       black
-xterm*foreground:       gray
+xterm*foreground:       #c0c0c0
 URxvt.background:       black
-URxvt.foreground:       gray
+URxvt.foreground:       #c0c0c0
 
-! black
-*color0:                black
-*color8:                #333333
-! red
-*color1:                #aa0000
-*color9:                #ff4444
-! green
-*color2:                #00aa00
-*color10:               #44ff44
-! yellow
-*color3:                #aaaa00
-*color11:               #ffff44
-! blue
-*color4:                #4444ee
-*color12:               #5555ff
-! magenta
-*color5:                #aa00aa
-*color13:               #ff44ff
-! cyan
-*color6:                #00aaaa
-*color14:               #44ffff
-! white
-*color7:                gray
-*color15:               #ffffff
+! order: black, red, green, yellow, blue, magenta, cyan, white
+*color0:  #000000
+*color1:  #aa0000
+*color2:  #00aa00
+*color3:  #aa5500
+*color4:  #4444aa
+*color5:  #aa00aa
+*color6:  #00aaaa
+*color7:  #c0c0c0
+*color8:  #555555
+*color9:  #ff5555
+*color10: #55ff55
+*color11: #ffff55
+*color12: #5555ff
+*color13: #ff55ff
+*color14: #55ffff
+*color15: #ffffff
 
 ! cursor
 *cursorColor:           #00ff00

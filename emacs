@@ -36,9 +36,7 @@
         (set-face-background 'cursor "#000000" frame)
         (set-face-foreground 'cursor "#ffffff" frame))
     (progn ; terminal
-      (set-frame-parameter frame 'menu-bar-lines 0)
-      (set-face-background 'default nil frame)
-      (set-face-foreground 'default "#dadada" frame))))
+      (set-frame-parameter frame 'menu-bar-lines 0))))
 
 ;; Commands
 (defun what-face (pos)

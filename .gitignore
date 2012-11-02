@@ -1,10 +1,11 @@
 *.elc
-emacs.d/elpa
-emacs.d/auto-save-list
 emacs.d/abbrev_defs
 emacs.d/ac-comphist.dat
+emacs.d/auto-save-list
+emacs.d/elpa
+emacs.d/eshell/history
+emacs.d/eshell/lastdir
+emacs.d/package.el
 emacs.d/tramp
 emacs.d/url
 emacs.d/vendor
-emacs.d/eshell/history
-emacs.d/eshell/lastdir

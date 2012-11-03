@@ -7,22 +7,17 @@
 (autoload 'slime-mode "my-slime" "Slime mode." t)
 
 ;; Automode
-(add-to-list 'auto-mode-alist '("dotfiles\\/emacs$" . emacs-lisp-mode))
-(when (fboundp 'markdown-mode)
-  (setq auto-mode-alist
-        (append
-         '(("\\.markdown$" . markdown-mode)
-           ("\\.md$" . markdown-mode)
-           ("\\.mdown$" . markdown-mode)
-           ("\\.text$" . markdown-mode))
-         auto-mode-alist)))
-(when (fboundp 'js2-mode)
-  (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode)))
-(when (fboundp 'erlang-mode)
-  (add-to-list 'auto-mode-alist '("\\.\\(e\\|h\\)rl$" . erlang-mode)))
-(when (fboundp 'clojure-mode)
-  (add-to-list 'auto-mode-alist '("\\.clj$" . clojure-mode)))
-
+(setq auto-mode-alist
+      (append
+       '(("dotfiles\\/emacs$" . emacs-lisp-mode)
+         ("\\.markdown$" . markdown-mode)
+         ("\\.md$" . markdown-mode)
+         ("\\.mdown$" . markdown-mode)
+         ("\\.text$" . markdown-mode)
+         ("\\.js$" . js2-mode)
+         ("\\.\\(e\\|h\\)rl$" . erlang-mode)
+         ("\\.clj$" . clojure-mode))
+       auto-mode-alist))
 
 ;; Hook functions
 
@@ -67,12 +62,12 @@
 (defun ms-python ()
   "Python hook function."
   (defun pep8 (&optional buffer)
-    (interactive "bPEP8 buffer: ")
+    (interactive "bPEP8 check buffer: ")
     (python-check
      (concat "pep8 "
              (buffer-file-name (get-buffer buffer)))))
   (defun pyflakes (&optional buffer)
-    (interactive "bPyFlakes buffer: ")
+    (interactive "bPyFlakes check buffer: ")
     (python-check
      (concat "pyflakes "
              (buffer-file-name (get-buffer buffer)))))

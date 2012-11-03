@@ -59,7 +59,9 @@
 
 (defun region-to-clipboard (start end)
   (interactive "r")
-  (shell-command-on-region start end "xsel -i -b"))
+  (if (display-graphic-p)
+      (clipboard-kill-ring-save start end)
+    (shell-command-on-region start end "xsel -i -b")))
 
 ;; Keybindings
 (global-set-key (kbd "C-h") 'backward-delete-char-untabify)

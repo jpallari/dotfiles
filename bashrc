@@ -35,6 +35,15 @@ alias e='emacsclient -c -t --alternate-editor=""'
 alias er='emacsclient -n'
 [[ -f ~/.bash_aliases ]] && source ~/.bash_aliases
 
+# functions
+function loadbashcompl {
+    if [ -f "/etc/bash_completion" ]; then
+        . "/etc/bash_completion" && echo "Bash completion loaded"
+    else
+        echo "No bash completion available"
+    fi
+}
+
 # prompt
 export PS1="\[\e[1;32m\]\h \[\e[1;31m\]\$\[\e[0m\] "
 case $TERM in

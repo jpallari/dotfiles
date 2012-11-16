@@ -22,22 +22,6 @@
            (and (funcall condp x) x))
          lst)))
 
-(defun apply-frame-settings (frame)
-  (with-selected-frame frame
-    (apply-color-theme frame)))
-
-(defun apply-color-theme (&optional frame)
-  (if (display-graphic-p)
-      (progn ; GUI
-        (set-frame-parameter frame 'menu-bar-lines 1)
-        (set-face-background 'default "white smoke" frame)
-        (set-face-foreground 'default "#000000" frame)
-        (set-face-background 'fringe "white smoke" frame)
-        (set-face-background 'cursor "#000000" frame)
-        (set-face-foreground 'cursor "#ffffff" frame))
-    (progn ; terminal
-      (set-frame-parameter frame 'menu-bar-lines 0))))
-
 ;; Commands
 (defun what-face (pos)
   "Displays the current face name under the cursor."
@@ -113,10 +97,8 @@
 (set-input-mode nil nil t)              ; No interrupt, no flow control
 (column-number-mode t)                  ; Enable column number mode
 (show-paren-mode t)                     ; Enable show paren mode
-(tool-bar-mode -1)                      ; No toolbar
 (transient-mark-mode t)                 ; Transient mark
 (ido-mode 1)                            ; IDO
-(apply-color-theme)                     ; Color theme
 
 ;; Settings
 (setq backup-inhibited t                      ; disable backup
@@ -131,7 +113,9 @@
 
 (setq compilation-ask-about-save nil    ; compilation
       compilation-save-buffers-predicate '(lambda () nil)
-      default-frame-alist '((vertical-scroll-bars . right)))
+      default-frame-alist '((vertical-scroll-bars . right)
+                            (menu-bar-lines . 0)
+                            (tool-bar-lines . 0)))
 
 (setq sendmail-program "/usr/bin/msmtp" ; mail
       message-send-mail-function 'message-send-mail-with-sendmail)
@@ -197,7 +181,6 @@
 (put 'narrow-to-region 'disabled nil)   ; Enable narrow to region
 
 ;; Hooks
-(add-hook 'after-make-frame-functions 'apply-frame-settings)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (add-hook 'ibuffer-mode-hook
           (lambda ()

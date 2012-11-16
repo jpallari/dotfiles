@@ -1,7 +1,9 @@
 #!/bin/bash
 
-wmctrl -a "$(wmctrl -l | \
+SELWIN=$(wmctrl -l | \
     grep -v '\-1' | \
     sed -n 's|^0x.\+  \([0-9]\) \w\+ \(.\+\)$|\1- \2|p' | \
     dmenu -i -b -l 10 | \
-    sed -n 's|[0-9]- \(.\+\)|\1|p')"
+    sed -n 's|[0-9]- \(.\+\)|\1|p')
+
+[[ "$SELWIN" ]] && wmctrl -a "$SELWIN"

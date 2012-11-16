@@ -22,7 +22,7 @@
            (and (funcall condp x) x))
          lst)))
 
-(defun apply-gui-frame-settings (frame)
+(defun apply-frame-settings (frame)
   (with-selected-frame frame
     (apply-color-theme frame)))
 
@@ -107,15 +107,18 @@
 ; Custom environment variables
 (setenv "PAGER" "/bin/cat")
 
-;; Settings
-(blink-cursor-mode 0)                    ; No blinking cursor
-(global-font-lock-mode t)                ; Syntax coloring
-(set-input-mode nil nil t)               ; No interrupt, no flow control
-(show-paren-mode (column-number-mode t)) ; Enable show-paren-mode
-(tool-bar-mode -1)                       ; No toolbar
-(transient-mark-mode t)                  ; Transient mark
-(apply-color-theme)                      ; Color theme
+;; Modes
+(blink-cursor-mode 0)                   ; No blinking cursor
+(global-font-lock-mode t)               ; Syntax coloring
+(set-input-mode nil nil t)              ; No interrupt, no flow control
+(column-number-mode t)                  ; Enable column number mode
+(show-paren-mode t)                     ; Enable show paren mode
+(tool-bar-mode -1)                      ; No toolbar
+(transient-mark-mode t)                 ; Transient mark
+(ido-mode 1)                            ; IDO
+(apply-color-theme)                     ; Color theme
 
+;; Settings
 (setq backup-inhibited t                      ; disable backup
       auto-save-default nil                   ; disable autosave
       inhibit-splash-screen t                 ; No splash screen
@@ -124,47 +127,25 @@
       ring-bell-function 'ignore              ; No audible bell
       x-select-enable-clipboard t             ; X clipboard
       confirm-nonexistent-file-or-buffer nil  ; New on open
-      sentence-end-double-space nil           ; Single space sentences
-      compilation-ask-about-save nil          ; Don't prompt for save on compile
-      mouse-wheel-progressive-speed nil       ; No progressive mouse scroll
-      mouse-wheel-scroll-amount '(2 ((shift) . 5) ((control) . nil))
+      sentence-end-double-space nil)          ; Single space sentences
+
+(setq compilation-ask-about-save nil    ; compilation
       compilation-save-buffers-predicate '(lambda () nil)
-      default-frame-alist '((vertical-scroll-bars . right))
-      message-send-mail-function 'message-send-mail-with-sendmail
-      sendmail-program "/usr/bin/msmtp")
+      default-frame-alist '((vertical-scroll-bars . right)))
 
-(setq-default
- tab-width 4                            ; Default tab width: 4
- c-basic-offset 4                       ; ...same for C style languages
- indent-tabs-mode nil                   ; Spaces instead of tabs
- fill-column 79                         ; Fill column: 79
- whitespace-style '(face                ; WP: use faces
-                    trailing            ; WP: trailing blanks
-                    lines-tail)         ; WP: long lines (tail)
- whitespace-line-column 79)
+(setq sendmail-program "/usr/bin/msmtp" ; mail
+      message-send-mail-function 'message-send-mail-with-sendmail)
 
-(put 'downcase-region 'disabled nil)    ; Enable downcase region
-(put 'set-goal-column 'disabled nil)    ; Enable set goal column
-(put 'narrow-to-region 'disabled nil)   ; Enable narrow to region
+(setq mouse-wheel-progressive-speed nil ; mouse
+      mouse-wheel-scroll-amount '(2 ((shift) . 5) ((control) . nil)))
 
-;; EShell
-(setq eshell-prompt-function (lambda () "$ "))
-(defun eshell/clear ()
-  "Clear buffer"
-  (interactive)
-  (let ((inhibit-read-only t)) (erase-buffer)))
+(setq ido-enable-flex-matching t        ; IDO
+      ido-everywhere t
+      ido-case-fold t
+      ido-create-new-buffer 'always
+      ido-use-filename-at-point 'guess)
 
-;; IDO mode
-(when (fboundp 'ido-mode)
-  (ido-mode 1)
-  (setq ido-enable-flex-matching t
-        ido-everywhere t
-        ido-case-fold t
-        ido-create-new-buffer 'always
-        ido-use-filename-at-point 'guess))
-
-;; IBuffer
-(setq ibuffer-saved-filter-groups
+(setq ibuffer-saved-filter-groups       ; ibuffer
       '(("default"
          ("Org" (mode . org-mode))
          ("Dired" (mode . dired-mode))
@@ -181,8 +162,7 @@
       ibuffer-show-empty-filter-groups nil
       ibuffer-default-sorting-mode 'major-mode)
 
-;; Hippie expand
-(setq hippie-expand-try-functions-list
+(setq hippie-expand-try-functions-list  ; hippie expand
       '(try-complete-file-name-partially
         try-complete-file-name
         try-expand-dabbrev
@@ -193,18 +173,43 @@
         try-complete-lisp-symbol-partially
         try-complete-lisp-symbol))
 
-;; TRAMP
-(setq tramp-default-method "sshx"
+(setq tramp-default-method "sshx"       ; TRAMP
       tramp-chunkzise 500
       tramp-shell-prompt-pattern "^[^$>\n]*[#$%>] *\\(\[[0-9;]*[a-zA-Z] *\\)*")
 
+(setq c-default-style                   ; CC-mode stuff
+      '((java-mode . "java")
+        (awk-mode . "awk")
+        (other . "k&r")))
+
+(setq-default                           ; -- Defaults --
+ tab-width 4                            ; Default tab width: 4
+ c-basic-offset 4                       ; ...same for C style languages
+ indent-tabs-mode nil                   ; Spaces instead of tabs
+ fill-column 79                         ; Fill column: 79
+ whitespace-style '(face                ; WP: use faces
+                    trailing            ; WP: trailing blanks
+                    lines-tail)         ; WP: long lines (tail)
+ whitespace-line-column 79)
+
+(put 'downcase-region 'disabled nil)    ; Enable downcase region
+(put 'set-goal-column 'disabled nil)    ; Enable set goal column
+(put 'narrow-to-region 'disabled nil)   ; Enable narrow to region
+
 ;; Hooks
-(add-hook 'after-make-frame-functions 'apply-gui-frame-settings)
+(add-hook 'after-make-frame-functions 'apply-frame-settings)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (add-hook 'ibuffer-mode-hook
           (lambda ()
             (ibuffer-auto-mode 1)
             (ibuffer-switch-to-saved-filter-groups "default")))
+(add-hook 'eshell-mode-hook
+          (lambda ()
+            (setq eshell-prompt-function (lambda () "$ "))
+            (defun eshell/clear ()
+              "Clear buffer"
+              (interactive)
+              (let ((inhibit-read-only t)) (erase-buffer)))))
 
 ;; Load custom elisp files
 (mapc (lambda (filename) (load filename t t t)) my-load-files)

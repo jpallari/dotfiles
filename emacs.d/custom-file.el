@@ -3,18 +3,18 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
-)
+ )
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(notmuch-search-count ((t (:foreground "brightcyan"))))
- '(notmuch-search-date ((t (:foreground "brightmagenta"))))
- '(notmuch-search-matching-authors ((t (:foreground "brightyellow"))))
- '(notmuch-tag-face ((((class color) (background dark)) (:foreground "brightgreen"))
-                     (((class color) (background light)) (:foreground "blue"))
-                     (t (:bold t))))
+ '(highlight ((((class color) (min-colors 88) (background light)) (:background "darkseagreen2")) (((class color) (min-colors 88) (background dark)) (:background "gray14")) (((class color) (min-colors 16) (background light)) (:background "darkseagreen2")) (((class color) (min-colors 16) (background dark)) (:background "gray14")) (((class color) (min-colors 8)) (:background "blue" :foreground "white")) (t (:inverse-video t))))
+ '(magit-item-highlight ((t nil)))
+ '(notmuch-search-count ((((class color) (background dark)) (:foreground "brightcyan")) (((class color) (background light)) (:foreground "cyan4"))))
+ '(notmuch-search-date ((((class color) (background dark)) (:foreground "brightmagenta")) (((class color) (background light)) (:foreground "purple3"))))
+ '(notmuch-search-matching-authors ((((class color) (background dark)) (:foreground "brightyellow")) (((class color) (background light)) (:foreground "red4"))))
+ '(notmuch-tag-face ((((class color) (background dark)) (:foreground "brightgreen")) (((class color) (background light)) (:foreground "blue")) (t (:bold t))))
  '(rst-level-1-face ((t (:background "grey85" :foreground "black"))) t)
  '(rst-level-2-face ((t (:background "grey78" :foreground "black"))) t)
  '(rst-level-3-face ((t (:background "grey71" :foreground "black"))) t)

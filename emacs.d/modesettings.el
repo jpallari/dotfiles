@@ -117,15 +117,15 @@
   "C hook function."
   (setq c-basic-offset 4
         tab-width 4)
-  (c-toggle-auto-state 1)
-  (define-key c-mode-base-map (kbd "RET") 'indent-new-comment-line))
+  (c-toggle-auto-state 1))
 
 (defun ms-tex ()
   "TeX hook function."
   (setq TeX-auto-save t
         TeX-PDF-mode t
         TeX-parse-self t)
-  (add-to-list 'TeX-command-list '("Biber" "biber %s.bcf" TeX-run-BibTeX nil t)))
+  (add-to-list 'TeX-command-list
+               '("Biber" "biber %s.bcf" TeX-run-BibTeX nil t)))
 
 (defun ms-mail ()
   "Email hook function."

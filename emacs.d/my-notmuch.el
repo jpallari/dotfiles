@@ -76,8 +76,9 @@
       notmuch-search-oldest-first nil
       notmuch-search-oldest-first nil
       notmuch-show-all-multipart/alternative-parts nil
-      notmuch-show-part-button-default-action 'notmuch-show-browser-browse-part
-      notmuch-search-line-faces nil)
+      notmuch-show-part-button-default-action 'notmuch-show-browser-browse-part)
+(setq notmuch-search-line-faces
+      '(("unread" :background "#5f005f")))
 (setq notmuch-saved-searches
       '(("inbox" . "tag:inbox")
         ("unread" . "tag:unread")
@@ -126,17 +127,19 @@
 (define-key notmuch-hello-mode-map "z" 'notmuch-quick-search)
 
 ;; search
-(define-key notmuch-search-mode-map "z" 'notmuch-quick-search)
 (define-key notmuch-search-mode-map "j" 'notmuch-search-next-thread)
 (define-key notmuch-search-mode-map "k" 'notmuch-search-previous-thread)
+(define-key notmuch-search-mode-map "z" 'notmuch-quick-search)
 
 ;; show
-(define-key notmuch-show-mode-map "z" 'notmuch-quick-search)
-(define-key notmuch-show-mode-map "n" 'notmuch-show-next-message)
-(define-key notmuch-show-mode-map "p" 'notmuch-show-previous-message)
+(define-key notmuch-show-mode-map " " 'notmuch-show-np-or-nt)
 (define-key notmuch-show-mode-map "N" 'notmuch-show-next-open-message)
 (define-key notmuch-show-mode-map "P" 'notmuch-show-previous-open-message)
-(define-key notmuch-show-mode-map " " 'notmuch-show-np-or-nt)
+(define-key notmuch-show-mode-map "R" 'notmuch-show-reply-sender)
+(define-key notmuch-show-mode-map "n" 'notmuch-show-next-message)
+(define-key notmuch-show-mode-map "p" 'notmuch-show-previous-message)
+(define-key notmuch-show-mode-map "r" 'notmuch-show-reply)
+(define-key notmuch-show-mode-map "z" 'notmuch-quick-search)
 (define-key notmuch-show-mode-map (kbd "M-n") 'notmuch-show-nt)
 (define-key notmuch-show-mode-map (kbd "M-p") 'notmuch-show-pt)
 

@@ -51,7 +51,11 @@
 
   ;; Aliases
   (defalias 'git-st 'magit-status)
-  (defalias 'hg-st 'monky-status))
+  (defalias 'hg-st 'monky-status)
+
+  ;; W3M
+  (if (and (not (getenv "DISPLAY")) (fboundp 'w3m-browse-url))
+      (setq browse-url-browser-function 'w3m-browse-url)))
 
 ;; win-switch
 (eval-after-load "win-switch"
@@ -70,12 +74,8 @@
      (win-switch-add-key "i" 'split-horizontally)))
 
 ;; W3M
-(unless (getenv "DISPLAY")
-  (eval-after-load "w3m"
-    '(progn
-       (setq browse-url-browser-function 'w3m-browse-url
-             w3m-use-cookies t)))
-  (autoload 'w3m-browse-url "w3m" "Ask a WWW browser to show a URL." t))
+(eval-after-load "w3m" '(setq w3m-use-cookies t))
+(autoload 'w3m-browse-url "w3m" "Ask a WWW browser to show a URL." t)
 
 ;; Hooks
 (add-hook 'after-init-hook 'pkg-after-init)

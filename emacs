@@ -45,7 +45,8 @@
   (interactive "r")
   (if (display-graphic-p)
       (clipboard-kill-ring-save start end)
-    (shell-command-on-region start end "xsel -i -b")))
+    (shell-command-on-region start end "xsel -i -b"))
+  (message "Region copied to clipboard"))
 
 ;; Keybindings
 (global-set-key (kbd "C-h") 'backward-delete-char-untabify)

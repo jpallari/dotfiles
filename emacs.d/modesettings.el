@@ -113,12 +113,6 @@
   (define-key coffee-mode-map (kbd "C-j") 'coffee-newline-and-indent)
   (define-key coffee-mode-map (kbd "C-m") 'newline))
 
-(defun ms-c-common ()
-  "C hook function."
-  (setq c-basic-offset 4
-        tab-width 4)
-  (c-toggle-auto-state 1))
-
 (defun ms-tex ()
   "TeX hook function."
   (setq TeX-auto-save t
@@ -168,7 +162,7 @@
 (add-hook 'haskell-mode-hook 'ms-haskell)
 (add-hook 'inferior-haskell-mode-hook 'ms-haskell-ghci)
 (add-hook 'coffee-mode-hook 'ms-coffee)
-(add-hook 'c-mode-common-hook 'ms-c-common)
+(add-hook 'c-mode-common-hook (lambda () (setq c-basic-offset 4 tab-width 4)))
 (add-hook 'lua-mode-hook (lambda () (setq lua-indent-level 4)))
 (add-hook 'css-mode-hook (lambda () (setq css-indent-offset 2)))
 (add-hook 'TeX-mode-hook 'ms-tex)

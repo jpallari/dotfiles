@@ -50,6 +50,7 @@ case $TERM in
     xterm*)
         export PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}\007"'
         ;;
+    *) export PROMPT_COMMAND="" ;;
 esac
 
 # exports

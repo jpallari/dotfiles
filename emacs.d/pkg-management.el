@@ -13,7 +13,7 @@
     ("modes" lua-mode markdown-mode erlang)
     ("clojure" clojure-mode nrepl)
     ("haskell" haskell-mode ghci-completion)
-    ("python" python virtualenv flymake-python-pyflakes)
+    ("python" virtualenv flymake-python-pyflakes)
     ("webdev" js2-mode js-comint coffee-mode less-css-mode flymake-jshint flymake-coffee)))
 
 ;; Repos

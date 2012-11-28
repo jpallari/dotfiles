@@ -12,7 +12,7 @@ URxvt.foreground:       #c0c0c0
 *color1:  #aa0000
 *color2:  #00aa00
 *color3:  #aa5500
-*color4:  #4444aa
+*color4:  #0000aa
 *color5:  #aa00aa
 *color6:  #00aaaa
 *color7:  #c0c0c0
@@ -24,9 +24,6 @@ URxvt.foreground:       #c0c0c0
 *color13: #ff55ff
 *color14: #55ffff
 *color15: #ffffff
-
-! cursor
-*cursorColor:           #00ff00
 
 ! xterm ---------------------------------------------------------
 xterm*termName:         xterm-256color

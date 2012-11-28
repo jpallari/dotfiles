@@ -45,7 +45,8 @@
   (interactive "r")
   (if (display-graphic-p)
       (clipboard-kill-ring-save start end)
-    (shell-command-on-region start end "xsel -i -b")))
+    (shell-command-on-region start end "xsel -i -b"))
+  (message "Region copied to clipboard"))
 
 ;; Keybindings
 (global-set-key (kbd "C-h") 'backward-delete-char-untabify)
@@ -84,10 +85,6 @@
   (setq track-mouse nil
         mouse-sel-mode t))
 
-; Emacs 23 and older
-(when (<= emacs-major-version 23)
-  (menu-bar-mode -1))
-
 ; Custom environment variables
 (setenv "PAGER" "/bin/cat")
 
@@ -99,6 +96,8 @@
 (show-paren-mode t)                     ; Enable show paren mode
 (transient-mark-mode t)                 ; Transient mark
 (ido-mode 1)                            ; IDO
+(tool-bar-mode -1)                      ; No toolbars
+(menu-bar-mode -1)                      ; No menu bars
 
 ;; Settings
 (setq backup-inhibited t                      ; disable backup
@@ -112,10 +111,7 @@
       sentence-end-double-space nil)          ; Single space sentences
 
 (setq compilation-ask-about-save nil    ; compilation
-      compilation-save-buffers-predicate '(lambda () nil)
-      default-frame-alist '((vertical-scroll-bars . right)
-                            (menu-bar-lines . 0)
-                            (tool-bar-lines . 0)))
+      compilation-save-buffers-predicate '(lambda () nil))
 
 (setq sendmail-program "/usr/bin/msmtp" ; mail
       message-send-mail-function 'message-send-mail-with-sendmail)

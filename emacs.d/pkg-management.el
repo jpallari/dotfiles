@@ -9,7 +9,7 @@
 ;; Package list
 (defconst my-pkgs-alist
   '(("essential" expand-region win-switch)
-    ("apps" magit monky auctex w3m)
+    ("apps" magit monky auctex)
     ("modes" lua-mode markdown-mode erlang)
     ("clojure" clojure-mode nrepl)
     ("haskell" haskell-mode ghci-completion)
@@ -51,11 +51,7 @@
 
   ;; Aliases
   (defalias 'git-st 'magit-status)
-  (defalias 'hg-st 'monky-status)
-
-  ;; W3M
-  (if (and (not (getenv "DISPLAY")) (fboundp 'w3m-browse-url))
-      (setq browse-url-browser-function 'w3m-browse-url)))
+  (defalias 'hg-st 'monky-status))
 
 ;; win-switch
 (eval-after-load "win-switch"
@@ -72,10 +68,6 @@
      (win-switch-add-key "J" 'shrink-vertically)
      (win-switch-add-key "K" 'enlarge-vertically)
      (win-switch-add-key "i" 'split-horizontally)))
-
-;; W3M
-(eval-after-load "w3m" '(setq w3m-use-cookies t))
-(autoload 'w3m-browse-url "w3m" "Ask a WWW browser to show a URL." t)
 
 ;; Hooks
 (add-hook 'after-init-hook 'pkg-after-init)

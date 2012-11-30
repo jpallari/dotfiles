@@ -1,7 +1,6 @@
 ;;;; modesettings.el -- settings for different kinds of modes
 
 ;; Autoloads
-(autoload 'notmuch "my-notmuch" "notmuch mail" t)
 (autoload 'ghc-init "ghc" "GHC completion." t)
 (autoload 'slime "my-slime" "Slime mode." t)
 (autoload 'slime-mode "my-slime" "Slime mode." t)

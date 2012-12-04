@@ -137,8 +137,9 @@
               (name . "\\*Apropos\\*")
               (name . "\\*info\\*")))
          ("Email"
-          (or (name . "^\\*notmuch-")
-              (mode . message-mode)))))
+          (or (name . "^\\*mu4e-")
+              (mode . message-mode)))
+         ("Calc" (name . "\\*Calc"))))
       ibuffer-show-empty-filter-groups nil
       ibuffer-default-sorting-mode 'major-mode)
 

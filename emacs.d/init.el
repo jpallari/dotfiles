@@ -1,7 +1,6 @@
 ;;;; jkpl's Emacs confs
 
 ;; Load paths and files
-(add-to-list 'load-path "~/.emacs.d/")
 (when (file-accessible-directory-p "~/.emacs.d/vendor")
   (let ((default-directory "~/.emacs.d/vendor"))
     (normal-top-level-add-subdirs-to-load-path)))

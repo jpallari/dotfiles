@@ -2,8 +2,8 @@
 
 ;; Autoloads
 (autoload 'ghc-init "ghc" "GHC completion." t)
-(autoload 'slime "my-slime" "Slime mode." t)
-(autoload 'slime-mode "my-slime" "Slime mode." t)
+(autoload 'slime "~/.emacs.d/my-slime" "Slime mode." t)
+(autoload 'slime-mode "~/.emacs.d/my-slime" "Slime mode." t)
 
 ;; Automode
 (setq auto-mode-alist

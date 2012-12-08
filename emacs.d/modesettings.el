@@ -2,8 +2,6 @@
 
 ;; Autoloads
 (autoload 'ghc-init "ghc" "GHC completion." t)
-(autoload 'slime "~/.emacs.d/my-slime" "Slime mode." t)
-(autoload 'slime-mode "~/.emacs.d/my-slime" "Slime mode." t)
 
 ;; Automode
 (setq auto-mode-alist
@@ -150,7 +148,6 @@
 
 ;; Hooks
 (add-hook 'emacs-lisp-mode-hook (lambda () (eldoc-mode 1)))
-(add-hook 'lisp-mode-hook 'slime-mode)
 (add-hook 'nrepl-interaction-mode-hook 'nrepl-turn-on-eldoc-mode)
 (add-hook 'js-mode-hook (lambda () (setq js-indent-level 2 tab-width 2 c-basic-offset 2)))
 (add-hook 'js2-mode-hook 'ms-js2)

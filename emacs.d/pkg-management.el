@@ -1,10 +1,9 @@
 ;;;; pkg-management.el -- package management and package specific settings
 
 ;; Run initialization on old versions
-(when (<= emacs-major-version 23) ;; Emacs 23 and older
-  (add-to-list 'load-path "~/.emacs.d/package/")
-  (require 'package)
-  (package-initialize))
+(when (<= emacs-major-version 23)
+  (if (require 'package nil t)
+      (package-initialize)))
 
 ;; Package list
 (defconst my-pkgs-alist

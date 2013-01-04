@@ -138,7 +138,8 @@
          ("Email"
           (or (name . "^\\*mu4e-")
               (mode . message-mode)))
-         ("Calc" (name . "\\*Calc"))))
+         ("Calc" (name . "\\*Calc"))
+         ("Elisp" (mode . emacs-lisp-mode))))
       ibuffer-show-empty-filter-groups nil
       ibuffer-default-sorting-mode 'major-mode)
 

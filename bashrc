@@ -45,7 +45,7 @@ function loadbashcompl {
 }
 
 # prompt
-export PS1="\[\e[1;32m\]\h \[\e[1;31m\]\$\[\e[0m\] "
+export PS1="\[\e[7m\]\h\$\[\e[0m\] "
 case $TERM in
     xterm*)
         export PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}\007"'

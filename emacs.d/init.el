@@ -41,18 +41,31 @@
   (indent-rigidly start end (- arg)))
 
 (defun region-to-clipboard (start end)
+  "Pastes region contents to clipboard"
   (interactive "r")
   (if (display-graphic-p)
       (clipboard-kill-ring-save start end)
     (shell-command-on-region start end "xsel -i -b"))
   (message "Region copied to clipboard"))
 
+(defun flip-colors ()
+  "Flips default face's background/foreground between black and
+white schemes in the current frame. Works only when run on
+terminals."
+  (interactive)
+  (if (not (display-graphic-p))
+      (let ((frame (selected-frame))
+            (current-foreground (face-foreground 'default))
+            (set-default-face (lambda (background foreground)
+                                (set-face-background 'default background)
+                                (set-face-foreground 'default foreground))))
+        (if (string= current-foreground "black")
+            (funcall set-default-face "black" "white")
+          (funcall set-default-face "white" "black")))))
+
 ;; Keybindings
-(global-set-key (kbd "C-h") 'backward-delete-char-untabify)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
-(global-set-key (kbd "C-x C-h") 'help-command)
 (global-set-key (kbd "C-x C-j") 'join-line)
-(global-set-key (kbd "C-x C-k") 'backward-kill-word)
 (global-set-key (kbd "C-x C-n") 'other-window)
 (global-set-key (kbd "C-x C-p") 'other-window-back)
 (global-set-key (kbd "C-x O") 'other-window-back)

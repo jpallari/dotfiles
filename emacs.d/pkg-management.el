@@ -2,18 +2,19 @@
 
 ;; Run initialization on old versions
 (when (<= emacs-major-version 23)
-  (if (require 'package nil t)
+  (if (require 'package nil 'noerror)
       (package-initialize)))
 
 ;; Package list
 (defconst my-pkgs-alist
   '(("essential" expand-region win-switch)
+    ("tools" auto-complete)
     ("apps" magit monky auctex)
     ("modes" lua-mode markdown-mode erlang)
-    ("clojure" clojure-mode nrepl)
+    ("clojure" clojure-mode nrepl ac-nrepl)
     ("haskell" haskell-mode ghci-completion)
-    ("python" virtualenv flymake-python-pyflakes)
-    ("webdev" js2-mode js-comint coffee-mode less-css-mode flymake-jshint flymake-coffee)))
+    ("python" virtualenv flymake-python-pyflakes jedi)
+    ("webdev" js2-mode js-comint less-css-mode flymake-jshint)))
 
 ;; Repos
 (setq package-archives
@@ -42,6 +43,10 @@
 
 ;; After init function
 (defun pkg-after-init ()
+  ;; auto-complete
+  (when (require 'auto-complete-config nil 'noerror)
+    (ac-config-default))
+
   ;; Keybindings
   (when (fboundp 'er/expand-region)
     (global-set-key (kbd "M-M") 'er/expand-region))
@@ -51,6 +56,13 @@
   ;; Aliases
   (defalias 'git-st 'magit-status)
   (defalias 'hg-st 'monky-status))
+
+;; auto-complete
+(eval-after-load "auto-complete"
+  '(progn
+     (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+     (setq ac-auto-start nil)
+     (ac-set-trigger-key "TAB")))
 
 ;; win-switch
 (eval-after-load "win-switch"

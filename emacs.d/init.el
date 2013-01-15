@@ -21,6 +21,16 @@
            (and (funcall condp x) x))
          lst)))
 
+(defun set-default-face-fg-bg (dark-bg dark-fg light-bg light-fg &optional frame)
+  "Sets the default face's background and foreground on the
+provided frame to either of the fg & bg pairs depending on the
+current default face foreground."
+  (if (string= (face-foreground 'default) "black")
+      (progn (set-face-background 'default dark-bg frame)
+             (set-face-foreground 'default dark-fg frame))
+    (progn (set-face-background 'default light-bg frame)
+           (set-face-foreground 'default light-fg frame))))
+
 ;; Commands
 (defun what-face (pos)
   "Displays the current face name under the cursor."
@@ -49,19 +59,13 @@
   (message "Region copied to clipboard"))
 
 (defun flip-colors ()
-  "Flips default face's background/foreground between black and
-white schemes in the current frame. Works only when run on
-terminals."
+  "Flips default face's background/foreground between dark and
+light schemes in the current frame."
   (interactive)
-  (if (not (display-graphic-p))
-      (let ((frame (selected-frame))
-            (current-foreground (face-foreground 'default))
-            (set-default-face (lambda (background foreground)
-                                (set-face-background 'default background)
-                                (set-face-foreground 'default foreground))))
-        (if (string= current-foreground "black")
-            (funcall set-default-face "black" "white")
-          (funcall set-default-face "white" "black")))))
+  (let ((frame (selected-frame)))
+    (if (display-graphic-p)
+        (set-default-face-fg-bg "grey10" "grey" "white smoke" "black" frame)
+      (set-default-face-fg-bg "black" "white" "white" "black" frame))))
 
 ;; Keybindings
 (global-set-key (kbd "C-x C-b") 'ibuffer)

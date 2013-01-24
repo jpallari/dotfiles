@@ -15,9 +15,6 @@ shopt -s checkwinsize
 # lesspipe
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
-# dircolors
-eval "$(dircolors -b)"
-
 # flow control
 stty -ixon
 
@@ -25,15 +22,13 @@ stty -ixon
 alias ls='ls --color=auto -F'
 alias ll='ls -lh'
 alias grep='grep --color=auto'
-alias ..="cd .."
-alias ...="cd ../.."
-alias jk="tmux attach -d"
+alias ..='cd ..'
+alias ...='cd ../..'
+alias jk='tmux attach -d'
 alias sudo='sudo '
-alias h="echo $HOSTNAME"
 alias emacs='emacs -nw'
 alias e='emacsclient -c -t --alternate-editor=""'
 alias er='emacsclient -n'
-[[ -f ~/.bash_aliases ]] && source ~/.bash_aliases
 
 # functions
 function loadbashcompl {

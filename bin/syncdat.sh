@@ -14,6 +14,7 @@ EXCLUDE_FILES=(
     ".git"
     ".svn"
     ".hg"
+    ".DS_Store"
 )
 
 
@@ -73,8 +74,7 @@ REMOTE_REPO="$1"
 # PULL_PARAMS="${PULL_PARAMS}"
 
 # Exclude these files from sync
-EXCLUDE_FILES=(
-    "$RS_CONFNAME"
+EXCLUDE_FILES=($(printf "\n    \"%s\"" "${EXCLUDE_FILES[@]}")
 )
 EOF
 }
@@ -89,7 +89,7 @@ function mk_excludeparams {
 
 
 function show_help {
-    echo "usage: $(basename $0) push | pull | init [file] | debug"
+    echo "usage: $(basename $0) push | pull | init [remoterepo] | debug"
 }
 
 

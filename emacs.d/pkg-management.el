@@ -8,12 +8,12 @@
 ;; Package list
 (defconst my-pkgs-alist
   '(("essential" expand-region win-switch)
-    ("tools" auto-complete)
+    ("autocomplete" auto-complete jedi auto-complete-clang ac-nrepl)
     ("apps" magit monky auctex)
     ("modes" lua-mode markdown-mode erlang)
-    ("clojure" clojure-mode nrepl ac-nrepl)
+    ("clojure" clojure-mode nrepl)
     ("haskell" haskell-mode ghci-completion)
-    ("python" virtualenv flymake-python-pyflakes jedi)
+    ("python" virtualenv flymake-python-pyflakes)
     ("webdev" js2-mode js-comint less-css-mode flymake-jshint)))
 
 ;; Repos
@@ -62,6 +62,7 @@
   '(progn
      (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
      (setq ac-auto-start nil)
+     (define-key ac-mode-map (kbd "M-TAB") 'auto-complete)
      (ac-set-trigger-key "TAB")))
 
 ;; win-switch

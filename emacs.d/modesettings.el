@@ -16,6 +16,14 @@
          ("\\.clj$" . clojure-mode))
        auto-mode-alist))
 
+;; Helper functions
+(defun setup-jedi ()
+  (jedi:setup)
+  (define-key jedi-mode-map (kbd "M-TAB") 'jedi:complete)
+  (define-key jedi-mode-map (kbd "C-c C-d") 'jedi:show-doc)
+  (define-key jedi-mode-map (kbd "C-c C-g") 'jedi:goto-definition)
+  (define-key jedi-mode-map (kbd "C-c r") 'jedi:related-names))
+
 ;; Hook functions
 
 (defun ms-js2 ()
@@ -69,7 +77,6 @@
      (concat "pyflakes "
              (buffer-file-name (get-buffer buffer)))))
   (turn-on-auto-fill)
-  (eldoc-mode 1)
   (whitespace-mode 1)
   (local-set-key (kbd "RET") 'newline)
   (setq tab-width 4
@@ -77,7 +84,8 @@
         py-indent-offset 4
         python-indent-offset 4
         whitespace-line-column 79
-        fill-column 79))
+        fill-column 79)
+  (setup-jedi))
 
 (defun ms-haskell ()
   "Haskell hook function."

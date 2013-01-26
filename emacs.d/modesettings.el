@@ -6,7 +6,7 @@
 ;; Automode
 (setq auto-mode-alist
       (append
-       '(("dotfiles\\/emacs$" . emacs-lisp-mode)
+       '(("\\.emacs.local$" . emacs-lisp-mode)
          ("\\.markdown$" . markdown-mode)
          ("\\.md$" . markdown-mode)
          ("\\.mdown$" . markdown-mode)

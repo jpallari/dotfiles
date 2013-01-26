@@ -6,24 +6,76 @@
     (normal-top-level-add-subdirs-to-load-path)))
 (setq custom-file "~/.emacs.d/custom-file.el")
 
+;; Variables and constants
 (defconst my-load-files
   (list "~/.emacs.d/pkg-management.el"  ; package management
         "~/.emacs.d/vendor/loaddefs.el" ; vendor
         "~/.emacs.d/modesettings.el"    ; mode settings
         custom-file                     ; customizations file
-        "~/.emacs.local"))              ; local customizations
+        "~/.emacs.local")               ; local customizations
+  "List of files to load during start up.")
+
+(defvar my-keybindings-alist
+  '(("C-x C-b" . ibuffer)
+    ("C-x C-j" . join-line)
+    ("C-x C-n" . other-window)
+    ("C-x C-p" . other-window-back)
+    ("C-x O" . other-window-back)
+    ("M-/" . hippie-expand)
+    ("M-C" . region-to-clipboard)
+    ("M-J" . deindent-rigidly)
+    ("M-K" . indent-rigidly)
+    ("<f5>" . shrink-window-horizontally)
+    ("<f6>" . enlarge-window)
+    ("<f7>" . shrink-window)
+    ("<f8>" . enlarge-window-horizontally))
+  "List of keybindings")
+
+(defvar my-aliases-alist
+  '((dml . delete-matching-lines)
+    (dnml . delete-non-matching-lines)
+    (lml . list-matching-lines)
+    (qr . query-replace)
+    (qrr . query-replace-regexp)
+    (rr . replace-regexp)
+    (sgc . set-goal-column)
+    (sl . sort-lines)
+    (snf . sort-numeric-fields)
+    (sr . replace-string)
+    (yes-or-no-p . y-or-n-p))
+  "List of aliases")
 
 ;; Functions
 (defun filtr (condp lst)
+  "Passes each element in LST to CONDP, and filters out the
+elements where the CONDP result is nil."
   (delq nil
         (mapcar
          (lambda (x)
            (and (funcall condp x) x))
          lst)))
 
+(defun set-my-keybindings ()
+  "Sets keybindings according to `my-keybindings-alist'"
+  (mapc (lambda (x)
+          (global-set-key (kbd (car x)) (cdr x)))
+        my-keybindings-alist))
+
+(defun set-my-aliases ()
+  "Sets aliases according to `my-aliases-alist'"
+  (mapc (lambda (x)
+          (defalias (car x) (cdr x)))
+        my-aliases-alist))
+
+(defun load-my-load-files ()
+  "Loads files according to `my-load-files'"
+  (mapc (lambda (filename)
+          (load filename t t t))
+        my-load-files))
+
 (defun set-default-face-fg-bg (dark-bg dark-fg light-bg light-fg &optional frame)
   "Sets the default face's background and foreground on the
-provided frame to either of the fg & bg pairs depending on the
+provided FRAME to either of the fg & bg pairs depending on the
 current default face foreground."
   (if (string= (face-foreground 'default) "black")
       (progn (set-face-background 'default dark-bg frame)
@@ -66,34 +118,6 @@ light schemes in the current frame."
     (if (display-graphic-p)
         (set-default-face-fg-bg "grey10" "grey" "white smoke" "black" frame)
       (set-default-face-fg-bg "black" "white" "white" "black" frame))))
-
-;; Keybindings
-(global-set-key (kbd "C-x C-b") 'ibuffer)
-(global-set-key (kbd "C-x C-j") 'join-line)
-(global-set-key (kbd "C-x C-n") 'other-window)
-(global-set-key (kbd "C-x C-p") 'other-window-back)
-(global-set-key (kbd "C-x O") 'other-window-back)
-(global-set-key (kbd "M-/") 'hippie-expand)
-(global-set-key (kbd "M-C") 'region-to-clipboard)
-(global-set-key (kbd "M-J") 'deindent-rigidly)
-(global-set-key (kbd "M-K") 'indent-rigidly)
-(global-set-key [f5] 'shrink-window-horizontally)
-(global-set-key [f6] 'enlarge-window)
-(global-set-key [f7] 'shrink-window)
-(global-set-key [f8] 'enlarge-window-horizontally)
-
-;; Aliases
-(defalias 'dml 'delete-matching-lines)
-(defalias 'dnml 'delete-non-matching-lines)
-(defalias 'lml 'list-matching-lines)
-(defalias 'qr 'query-replace)
-(defalias 'qrr 'query-replace-regexp)
-(defalias 'rr 'replace-regexp)
-(defalias 'sgc 'set-goal-column)
-(defalias 'sl 'sort-lines)
-(defalias 'snf 'sort-numeric-fields)
-(defalias 'sr 'replace-string)
-(defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; Xterm mouse & selection
 (when (require 'mouse nil t)
@@ -208,8 +232,9 @@ light schemes in the current frame."
               (interactive)
               (let ((inhibit-read-only t)) (erase-buffer)))))
 
-;; Load custom elisp files
-(mapc (lambda (filename) (load filename t t t)) my-load-files)
+(set-my-keybindings) ; Keybindings
+(set-my-aliases)     ; Aliases
+(load-my-load-files) ; Load custom elisp files
 
 ;; Encoding
 (prefer-coding-system 'utf-8)

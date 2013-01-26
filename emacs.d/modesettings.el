@@ -16,16 +16,18 @@
          ("\\.clj$" . clojure-mode))
        auto-mode-alist))
 
-;; Helper functions
-(defun setup-jedi ()
-  (jedi:setup)
-  (define-key jedi-mode-map (kbd "M-TAB") 'jedi:complete)
-  (define-key jedi-mode-map (kbd "C-c C-d") 'jedi:show-doc)
-  (define-key jedi-mode-map (kbd "C-c C-g") 'jedi:goto-definition)
-  (define-key jedi-mode-map (kbd "C-c r") 'jedi:related-names))
+;; Functions and commands
+(defun jedi ()
+  (interactive)
+  (if (fboundp 'jedi-mode)
+      (jedi-mode (if jedi-mode -1 1))
+    (jedi:setup)
+    (define-key jedi-mode-map (kbd "M-TAB") 'jedi:complete)
+    (define-key jedi-mode-map (kbd "C-c C-d") 'jedi:show-doc)
+    (define-key jedi-mode-map (kbd "C-c C-g") 'jedi:goto-definition)
+    (define-key jedi-mode-map (kbd "C-c r") 'jedi:related-names)))
 
 ;; Hook functions
-
 (defun ms-js2 ()
   "JavaScript (JS2) hook function."
   (setq tab-width 2
@@ -79,13 +81,13 @@
   (turn-on-auto-fill)
   (whitespace-mode 1)
   (local-set-key (kbd "RET") 'newline)
+  (local-set-key (kbd "C-c C-q") 'jedi)
   (setq tab-width 4
         c-basic-offset 4
         py-indent-offset 4
         python-indent-offset 4
         whitespace-line-column 79
-        fill-column 79)
-  (setup-jedi))
+        fill-column 79))
 
 (defun ms-haskell ()
   "Haskell hook function."
@@ -155,9 +157,7 @@
       (replace-regexp-in-string ".*1G.*3G" "> " output)))))
 
 ;; Hooks
-(add-hook 'emacs-lisp-mode-hook (lambda () (eldoc-mode 1)))
 (add-hook 'nrepl-interaction-mode-hook 'nrepl-turn-on-eldoc-mode)
-(add-hook 'js-mode-hook (lambda () (setq js-indent-level 2 tab-width 2 c-basic-offset 2)))
 (add-hook 'js2-mode-hook 'ms-js2)
 (add-hook 'magit-log-edit-mode-hook 'ms-magit)
 (add-hook 'markdown-mode-hook 'ms-markdown)
@@ -166,11 +166,27 @@
 (add-hook 'haskell-mode-hook 'ms-haskell)
 (add-hook 'inferior-haskell-mode-hook 'ms-haskell-ghci)
 (add-hook 'coffee-mode-hook 'ms-coffee)
-(add-hook 'c-mode-common-hook (lambda () (setq c-basic-offset 4 tab-width 4)))
-(add-hook 'lua-mode-hook (lambda () (setq lua-indent-level 4)))
-(add-hook 'css-mode-hook (lambda () (setq css-indent-offset 2)))
 (add-hook 'TeX-mode-hook 'ms-tex)
 (add-hook 'mail-mode-hook 'ms-mail)
 (add-hook 'org-mode-hook 'ms-org)
 (add-hook 'comint-mode-hook 'ms-comint)
 (setq inferior-js-mode-hook 'ms-js-comint)
+
+(add-hook 'emacs-lisp-mode-hook
+          (lambda ()
+            (eldoc-mode 1)))
+(add-hook 'js-mode-hook
+          (lambda ()
+            (setq js-indent-level 2
+                  tab-width 2
+                  c-basic-offset 2)))
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (setq c-basic-offset 4
+                  tab-width 4)))
+(add-hook 'lua-mode-hook
+          (lambda ()
+            (setq lua-indent-level 4)))
+(add-hook 'css-mode-hook
+          (lambda ()
+            (setq css-indent-offset 2)))

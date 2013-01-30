@@ -65,7 +65,7 @@ elements where the CONDP result is nil."
 (defun set-my-keybindings ()
   "Sets keybindings according to `my-keybindings-alist'"
   (mapc (lambda (x)
-          (global-set-key (kbd (car x)) (cdr x)))
+          (global-set-key (read-kbd-macro (car x)) (cdr x)))
         my-keybindings-alist))
 
 (defun set-my-aliases ()

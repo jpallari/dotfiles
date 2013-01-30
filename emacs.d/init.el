@@ -45,6 +45,16 @@
     (yes-or-no-p . y-or-n-p))
   "List of aliases")
 
+(defconst ido-decorations-horizontal
+  '("{" "}" " | " " | ..." "[" "]" " [No match]" " [Matched]" " [Not readable]"
+    " [Too big]" " [Confirm]")
+  "Ido decorations for horizontal listing.")
+
+(defconst ido-decorations-vertical
+  '("\n-> " "" "\n " "\n ..." "[" "]" " [No match]" " [Matched]"
+    " [Not readable]" " [Too big]" " [Confirm]")
+  "Ido decorations for vertical listing.")
+
 ;; Functions
 (defun filtr (condp lst)
   "Passes each element in LST to CONDP, and filters out the
@@ -83,6 +93,9 @@ current default face foreground."
     (progn (set-face-background 'default light-bg frame)
            (set-face-foreground 'default light-fg frame))))
 
+(defun ido-disable-line-truncation ()
+  (set (make-local-variable 'truncate-lines) nil))
+
 ;; Commands
 (defun what-face (pos)
   "Displays the current face name under the cursor."
@@ -118,6 +131,16 @@ light schemes in the current frame."
     (if (display-graphic-p)
         (set-default-face-fg-bg "grey10" "grey" "white smoke" "black" frame)
       (set-default-face-fg-bg "black" "white" "white" "black" frame))))
+
+(defun ido-vertical (&optional vertical)
+  (interactive)
+  (if (or vertical (not (string= (substring (car ido-decorations) 0 1) "\n")))
+      (progn ;; Set vertical
+        (setq ido-decorations ido-decorations-vertical)
+        (add-hook 'ido-minibuffer-setup-hook 'ido-disable-line-truncation))
+    (progn ;; Set horizontal
+      (setq ido-decorations ido-decorations-horizontal)
+      (remove-hook 'ido-minibuffer-setup-hook 'ido-disable-line-truncation))))
 
 ;; Xterm mouse & selection
 (when (require 'mouse nil t)
@@ -164,6 +187,7 @@ light schemes in the current frame."
       ido-case-fold t
       ido-create-new-buffer 'always
       ido-use-filename-at-point 'guess)
+(ido-vertical t) ; vertical by default
 
 (setq ibuffer-saved-filter-groups       ; ibuffer
       '(("default"

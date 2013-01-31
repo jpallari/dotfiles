@@ -1,6 +1,7 @@
 ;;;; jkpl's Emacs confs
 
-;; Load paths and files
+;; Load paths
+(add-to-list 'load-path "~/.emacs.d/vendor")
 (when (file-accessible-directory-p "~/.emacs.d/vendor")
   (let ((default-directory "~/.emacs.d/vendor"))
     (normal-top-level-add-subdirs-to-load-path)))
@@ -56,11 +57,7 @@
 (defun filtr (condp lst)
   "Passes each element in LST to CONDP, and filters out the
 elements where the CONDP result is nil."
-  (delq nil
-        (mapcar
-         (lambda (x)
-           (and (funcall condp x) x))
-         lst)))
+  (delq nil (mapcar (lambda (x) (and (funcall condp x) x)) lst)))
 
 (defun set-my-keybindings ()
   "Sets keybindings according to `my-keybindings-alist'"
@@ -92,6 +89,28 @@ current default face foreground."
 
 (defun ido-disable-line-truncation ()
   (set (make-local-variable 'truncate-lines) nil))
+
+(defun string-ends-with (str ending)
+  "Return non-nil if STR ends with ENDING."
+  (string= (substring str (- 0 (length ending))) ending))
+
+(defun subdirectories-of-directory (directory &optional full match nosort)
+  "Gets a list of all the subdirectories in DIRECTORY. The
+parameters FULL, MATCH, and NOSORT work the same as in
+`directory-files-and-attributes`."
+  (delq nil
+        (mapcar (lambda (file)
+                  (and (eq (car (cdr file)) t)
+                       (not (string-ends-with (car file) "."))
+                       (car file)))
+                (directory-files-and-attributes directory full match nosort))))
+
+(defun update-directory-loaddefs (directory)
+  "Scans the autoloads from all the subdirectories of DIRECTORY,
+and writes them to the loaddefs.el file of DIRECTORY"
+  (let ((generated-autoload-file (concat directory "/loaddefs.el")))
+    (apply 'update-directory-autoloads
+           (subdirectories-of-directory directory t))))
 
 ;; Commands
 (defun what-face (pos)
@@ -141,6 +160,10 @@ IDO. Always switches to vertical style if ARG is non-nil."
       (setq ido-decorations ido-decorations-horizontal)
       (remove-hook 'ido-minibuffer-setup-hook 'ido-disable-line-truncation))))
 
+(defun update-vendor-loaddefs ()
+  (interactive)
+  (update-directory-loaddefs "~/.emacs.d/vendor"))
+
 ;; Xterm mouse & selection
 (when (require 'mouse nil t)
   (xterm-mouse-mode t)
@@ -163,7 +186,8 @@ IDO. Always switches to vertical style if ARG is non-nil."
 
 ;; Settings
 (setq backup-inhibited t                      ; disable backup
-      auto-save-default nil                   ; disable autosave
+      auto-save-default t                     ; enable autosave
+      auto-save-visited-file-name t           ; auto save to visited file
       inhibit-splash-screen t                 ; No splash screen
       completion-cycle-threshold 0            ; No cycle threshold
       visible-bell nil                        ; No visible bell

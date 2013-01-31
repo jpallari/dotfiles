@@ -8,9 +8,9 @@
 
 ;; Variables and constants
 (defconst my-load-files
-  (list "~/.emacs.d/pkg-management.el"  ; package management
-        "~/.emacs.d/vendor/loaddefs.el" ; vendor
-        "~/.emacs.local")               ; local customizations
+  '("~/.emacs.d/pkg-management.el"
+    "~/.emacs.d/vendor/loaddefs.el"
+    "~/.emacs.local")
   "List of files to load during start up.")
 
 (defvar my-keybindings-alist
@@ -164,37 +164,35 @@ IDO. Always switches to vertical style if ARG is non-nil."
   (interactive)
   (update-directory-loaddefs "~/.emacs.d/vendor"))
 
+; Environment variables
+(setenv "PAGER" "/bin/cat")
+
 ;; Xterm mouse & selection
 (when (require 'mouse nil t)
   (xterm-mouse-mode t)
   (setq track-mouse nil
         mouse-sel-mode t))
 
-; Custom environment variables
-(setenv "PAGER" "/bin/cat")
-
 ;; Modes
-(blink-cursor-mode 0)                   ; No blinking cursor
-(global-font-lock-mode t)               ; Syntax coloring
-(set-input-mode nil nil t)              ; No interrupt, no flow control
-(column-number-mode t)                  ; Enable column number mode
-(show-paren-mode t)                     ; Enable show paren mode
-(transient-mark-mode t)                 ; Transient mark
-(ido-mode 1)                            ; IDO
-(tool-bar-mode -1)                      ; No toolbars
-(menu-bar-mode -1)                      ; No menu bars
+(blink-cursor-mode 0)
+(global-font-lock-mode t)
+(set-input-mode nil nil t)
+(column-number-mode t)
+(show-paren-mode t)
+(transient-mark-mode t)
+(ido-mode 1)
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+
+;; Automode
+(add-to-list 'auto-mode-alist '("\\.emacs.local$" . emacs-lisp-mode))
 
 ;; Settings
-(setq backup-inhibited t                      ; disable backup
-      auto-save-default t                     ; enable autosave
-      auto-save-visited-file-name t           ; auto save to visited file
-      inhibit-splash-screen t                 ; No splash screen
-      completion-cycle-threshold 0            ; No cycle threshold
-      visible-bell nil                        ; No visible bell
-      ring-bell-function 'ignore              ; No audible bell
-      x-select-enable-clipboard t             ; X clipboard
-      confirm-nonexistent-file-or-buffer nil  ; New on open
-      sentence-end-double-space nil)          ; Single space sentences
+(setq backup-inhibited t                ; auto saving
+      auto-save-default t
+      auto-save-visited-file-name t
+      auto-save-interval 200
+      auto-save-timeout 20)
 
 (setq compilation-ask-about-save nil    ; compilation
       compilation-save-buffers-predicate '(lambda () nil))
@@ -251,22 +249,26 @@ IDO. Always switches to vertical style if ARG is non-nil."
         (awk-mode . "awk")
         (other . "k&r")))
 
-(setq-default                           ; -- Defaults --
- tab-width 4                            ; Default tab width: 4
- c-basic-offset 4                       ; ...same for C style languages
- indent-tabs-mode nil                   ; Spaces instead of tabs
- fill-column 79                         ; Fill column: 79
- whitespace-style '(face                ; WP: use faces
-                    trailing            ; WP: trailing blanks
-                    lines-tail)         ; WP: long lines (tail)
+(setq visible-bell nil                  ; bell
+      ring-bell-function 'ignore)
+
+(setq inhibit-splash-screen t           ; misc
+      completion-cycle-threshold 0
+      x-select-enable-clipboard t
+      confirm-nonexistent-file-or-buffer nil
+      sentence-end-double-space nil)
+
+(setq-default                           ; defaults
+ tab-width 4
+ c-basic-offset 4
+ indent-tabs-mode nil
+ fill-column 79
+ whitespace-style '(face trailing lines-tail)
  whitespace-line-column 79)
 
-(put 'downcase-region 'disabled nil)    ; Enable downcase region
-(put 'set-goal-column 'disabled nil)    ; Enable set goal column
-(put 'narrow-to-region 'disabled nil)   ; Enable narrow to region
-
-;; Automode
-(add-to-list 'auto-mode-alist '("\\.emacs.local$" . emacs-lisp-mode))
+(put 'downcase-region 'disabled nil)    ; enable disabled
+(put 'set-goal-column 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
 
 ;; Mode settings
 (defun ms-mail ()
@@ -340,9 +342,7 @@ IDO. Always switches to vertical style if ARG is non-nil."
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (add-hook 'ibuffer-mode-hook 'ms-ibuffer)
 (add-hook 'eshell-mode-hook 'ms-eshell)
-(add-hook 'emacs-lisp-mode-hook
-          (lambda ()
-            (eldoc-mode 1)))
+(add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
 (add-hook 'js-mode-hook
           (lambda ()
             (setq js-indent-level 2
@@ -356,9 +356,10 @@ IDO. Always switches to vertical style if ARG is non-nil."
           (lambda ()
             (setq css-indent-offset 2)))
 
-(set-my-keybindings) ; Keybindings
-(set-my-aliases)     ; Aliases
-(load-my-load-files) ; Load custom elisp files
+;; Load my stuff
+(set-my-keybindings)
+(set-my-aliases)
+(load-my-load-files)
 
 ;; Customizations
 (custom-set-variables

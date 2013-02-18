@@ -19,7 +19,7 @@ shopt -s checkwinsize
 stty -ixon
 
 # aliases
-alias ls='ls --color=auto -F'
+alias ls='ls -F'
 alias ll='ls -lh'
 alias grep='grep --color=auto'
 alias ..='cd ..'

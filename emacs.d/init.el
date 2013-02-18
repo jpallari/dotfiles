@@ -373,7 +373,7 @@ IDO. Always switches to vertical style if ARG is non-nil."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((((type graphic)) (:background "white smoke" :foreground "black")) (t (:inherit nil :stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 1 :width normal :foundry "default" :family "default"))))
+ '(default ((((type graphic)) (:background "white smoke" :foreground "black")) (((class color) (min-colors 8)) (:background "black" :foreground "white")) (t (:inherit nil :stipple nil :background "unspecified-bg" :foreground "unspecified-fg" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 1 :width normal :foundry "default" :family "default"))))
  '(cursor ((((type graphic)) (:background "black" :foreground "white")) (t (:background "white"))))
  '(highlight ((((class color) (min-colors 88) (background light)) (:background "darkseagreen2")) (((class color) (min-colors 88) (background dark)) (:background "gray14")) (((class color) (min-colors 16) (background light)) (:background "darkseagreen2")) (((class color) (min-colors 16) (background dark)) (:background "gray14")) (((class color) (min-colors 8)) (:background "blue" :foreground "white")) (t (:inverse-video t))))
  '(magit-item-highlight ((t nil)))

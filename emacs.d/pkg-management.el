@@ -8,7 +8,7 @@
 ;; Package list
 (defconst my-pkgs-alist
   '(("essential" expand-region win-switch)
-    ("autocomplete" auto-complete jedi auto-complete-clang ac-nrepl)
+    ("autocomplete" auto-complete jedi auto-complete-clang ac-nrepl ac-js2)
     ("apps" magit monky auctex)
     ("modes" lua-mode markdown-mode erlang)
     ("clojure" clojure-mode nrepl)

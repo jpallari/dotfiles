@@ -27,6 +27,7 @@ alias ...='cd ../..'
 alias jk='tmux attach -d'
 alias sudo='sudo '
 alias emacs='emacs -nw'
+alias em='emacs --color=no'
 alias e='emacsclient -c -t --alternate-editor=""'
 alias er='emacsclient -n'
 

@@ -2,6 +2,7 @@
 
 ;; Load paths
 (add-to-list 'load-path "~/.emacs.d/vendor")
+(setq custom-theme-directory "~/.emacs.d/themes")
 (when (file-accessible-directory-p "~/.emacs.d/vendor")
   (let ((default-directory "~/.emacs.d/vendor"))
     (normal-top-level-add-subdirs-to-load-path)))
@@ -77,16 +78,6 @@ elements where the CONDP result is nil."
           (load filename t t t))
         my-load-files))
 
-(defun set-default-face-fg-bg (dark-bg dark-fg light-bg light-fg &optional frame)
-  "Sets the default face's background and foreground on the
-provided FRAME to either of the fg & bg pairs depending on the
-current default face foreground."
-  (if (string= (face-foreground 'default) "black")
-      (progn (set-face-background 'default dark-bg frame)
-             (set-face-foreground 'default dark-fg frame))
-    (progn (set-face-background 'default light-bg frame)
-           (set-face-foreground 'default light-fg frame))))
-
 (defun ido-disable-line-truncation ()
   (set (make-local-variable 'truncate-lines) nil))
 
@@ -138,15 +129,6 @@ and writes them to the loaddefs.el file of DIRECTORY"
       (clipboard-kill-ring-save start end)
     (shell-command-on-region start end "xsel -i -b"))
   (message "Region copied to clipboard"))
-
-(defun flip-colors ()
-  "Flips default face's background/foreground between dark and
-light schemes in the current frame."
-  (interactive)
-  (let ((frame (selected-frame)))
-    (if (display-graphic-p)
-        (set-default-face-fg-bg "grey10" "grey" "white smoke" "black" frame)
-      (set-default-face-fg-bg "black" "white" "white" "black" frame))))
 
 (defun ido-vertical (&optional arg)
   "Switches between vertical and horizontal style of listing in
@@ -373,21 +355,13 @@ IDO. Always switches to vertical style if ARG is non-nil."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((((type graphic)) (:background "white smoke" :foreground "black")) (((class color) (min-colors 8)) (:background "black" :foreground "white")) (t (:inherit nil :stipple nil :background "unspecified-bg" :foreground "unspecified-fg" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 1 :width normal :foundry "default" :family "default"))))
- '(cursor ((((type graphic)) (:background "black" :foreground "white")) (t (:background "white"))))
- '(highlight ((((class color) (min-colors 88) (background light)) (:background "darkseagreen2")) (((class color) (min-colors 88) (background dark)) (:background "gray14")) (((class color) (min-colors 16) (background light)) (:background "darkseagreen2")) (((class color) (min-colors 16) (background dark)) (:background "gray14")) (((class color) (min-colors 8)) (:background "blue" :foreground "white")) (t (:inverse-video t))))
  '(magit-item-highlight ((t nil)))
- '(notmuch-search-count ((((class color) (background dark)) (:foreground "brightcyan")) (((class color) (background light)) (:foreground "cyan4"))))
- '(notmuch-search-date ((((class color) (background dark)) (:foreground "brightmagenta")) (((class color) (background light)) (:foreground "purple3"))))
- '(notmuch-search-matching-authors ((((class color) (background dark)) (:foreground "brightyellow")) (((class color) (background light)) (:foreground "red4"))))
- '(notmuch-tag-face ((((class color) (background dark)) (:foreground "brightgreen")) (((class color) (background light)) (:foreground "blue")) (t (:bold t))))
  '(rst-level-1-face ((t (:background "grey85" :foreground "black"))) t)
  '(rst-level-2-face ((t (:background "grey78" :foreground "black"))) t)
  '(rst-level-3-face ((t (:background "grey71" :foreground "black"))) t)
  '(rst-level-4-face ((t (:background "grey64" :foreground "black"))) t)
  '(rst-level-5-face ((t (:background "grey57" :foreground "black"))) t)
- '(rst-level-6-face ((t (:background "grey50" :foreground "black"))) t)
- '(widget-field ((((background light)) (:background "light gray" :foreground "black")) (((background dark)) (:background "#3a3a3a" :foreground "#d7ff5f")))))
+ '(rst-level-6-face ((t (:background "grey50" :foreground "black"))) t))
 
 ;; Encoding
 (prefer-coding-system 'utf-8)

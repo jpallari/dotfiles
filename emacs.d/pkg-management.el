@@ -8,13 +8,14 @@
 ;; Package list
 (defconst my-pkgs-alist
   '(("essential" expand-region win-switch)
-    ("autocomplete" auto-complete jedi auto-complete-clang ac-nrepl ac-js2)
+    ("autocomplete" auto-complete jedi auto-complete-clang ac-nrepl)
     ("apps" magit monky auctex)
     ("modes" lua-mode markdown-mode erlang)
     ("clojure" clojure-mode nrepl)
     ("haskell" haskell-mode ghci-completion)
     ("python" virtualenv flymake-python-pyflakes)
-    ("webdev" js2-mode js-comint less-css-mode flymake-jshint)))
+    ("themes" cyberpunk-theme)
+    ("webdev" js2-mode js-comint less-css-mode flymake-jshint skewer)))
 
 ;; Repos
 (setq package-archives
@@ -44,19 +45,16 @@
 ;; Autoloads
 (autoload 'ghc-init "ghc" "GHC completion." t)
 
-;; Automode
-(setq auto-mode-alist
-      (append
-       '(("\\.markdown$" . markdown-mode)
-         ("\\.md$" . markdown-mode)
-         ("\\.mdown$" . markdown-mode)
-         ("\\.text$" . markdown-mode)
-         ("\\.js$" . js2-mode)
-         ("\\.\\(e\\|h\\)rl$" . erlang-mode)
-         ("\\.clj$" . clojure-mode))
-       auto-mode-alist))
-
 ;; Functions and commands
+(defun extend-auto-mode-alist (mode &rest patterns)
+  "Extends `auto-mode-alist' with the given MODE and PATTERNS.
+The MODE is applied for each pattern in PATTERNS only if MODE is
+a bound function."
+  (if (fboundp mode)
+      (mapc (lambda (pattern)
+              (add-to-list 'auto-mode-alist `(,pattern . ,mode)))
+            patterns)))
+
 (defun jedi ()
   (interactive)
   (if (fboundp 'jedi-mode)
@@ -102,9 +100,21 @@
   (when (fboundp 'win-switch-dispatch)
     (global-set-key (kbd "C-x o") 'win-switch-dispatch))
 
+  ;; Automode
+  (extend-auto-mode-alist 'markdown-mode "\\.markdown$" "\\.md$" "\\.text$")
+  (extend-auto-mode-alist 'js2-mode "\\.js$")
+  (extend-auto-mode-alist 'erlang-mode "\\.\\(e\\|h\\)rl$")
+  (extend-auto-mode-alist 'clojure-mode "\\.clj$")
+
   ;; Aliases
   (defalias 'git-st 'magit-status)
-  (defalias 'hg-st 'monky-status))
+  (defalias 'hg-st 'monky-status)
+
+  ;; Theme
+  (condition-case nil
+      (load-theme 'cyberpunk t)
+    (error
+     (load-theme 'my-default t))))
 
 (defun ms-js2 ()
   "JavaScript (JS2) hook function."
@@ -116,12 +126,14 @@
         js2-basic-offset 2
         js2-strict-inconsistent-return-warning nil
         inferior-js-program-command "node")
-  (flymake-mode 1)
-  (local-set-key (kbd "C-x C-e") 'js-send-last-sexp)
-  (local-set-key (kbd "C-M-x") 'js-send-last-sexp-and-go)
-  (local-set-key (kbd "C-c b") 'js-send-buffer)
-  (local-set-key (kbd "C-c b") 'js-send-buffer-and-go)
-  (local-set-key (kbd "C-c l") 'js-load-file-and-go))
+  (if (fboundp 'skewer-mode) (skewer-mode -1))
+  (define-key js2-mode-map (kbd "C-x C-e") 'js-send-last-sexp)
+  (define-key js2-mode-map (kbd "C-M-x") 'js-send-last-sexp-and-go)
+  (define-key js2-mode-map (kbd "C-c b") 'js-send-buffer)
+  (define-key js2-mode-map (kbd "C-c C-b") 'js-send-buffer-and-go)
+  (define-key js2-mode-map (kbd "C-c g") 'js-send-region)
+  (define-key js2-mode-map (kbd "C-c C-g") 'js-send-region-and-go)
+  (define-key js2-mode-map (kbd "C-c l") 'js-load-file-and-go))
 
 (defun ms-magit ()
   "Magit hook function."
@@ -181,9 +193,8 @@
   (add-to-list
    'comint-preoutput-filter-functions
    (lambda (output)
-     (replace-regexp-in-string
-      ".*1G\.\.\..*5G" "..."
-      (replace-regexp-in-string ".*1G.*3G" "> " output)))))
+     (replace-regexp-in-string "\e\\[[0-9]+[GKJ]" "" output)))
+  (setq comint-process-echoes t))
 
 ;; Hooks
 (add-hook 'after-init-hook 'pkg-after-init)

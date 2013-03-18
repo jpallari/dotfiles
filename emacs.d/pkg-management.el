@@ -10,7 +10,7 @@
   '(("essential" expand-region win-switch)
     ("autocomplete" auto-complete jedi auto-complete-clang ac-nrepl)
     ("apps" magit monky auctex)
-    ("modes" lua-mode markdown-mode erlang)
+    ("modes" lua-mode markdown-mode erlang go-mode)
     ("clojure" clojure-mode nrepl)
     ("haskell" haskell-mode ghci-completion)
     ("python" virtualenv flymake-python-pyflakes)
@@ -54,6 +54,19 @@ a bound function."
       (mapc (lambda (pattern)
               (add-to-list 'auto-mode-alist `(,pattern . ,mode)))
             patterns)))
+
+(defun call-until-no-error (&rest expressions)
+  "Call each expression in EXPRESSIONS until an expression does
+not produce an error."
+  (when expressions
+    (let ((head (car expressions))
+          (tail (cdr expressions)))
+      (condition-case nil
+          (if (listp head)
+              (apply head)
+            (funcall head))
+        (error
+         (apply 'call-until-no-error tail))))))
 
 (defun jedi ()
   (interactive)
@@ -111,10 +124,9 @@ a bound function."
   (defalias 'hg-st 'monky-status)
 
   ;; Theme
-  (condition-case nil
-      (load-theme 'cyberpunk t)
-    (error
-     (load-theme 'my-default t))))
+  (call-until-no-error
+   `(load-theme cyberpunk ,t)
+   `(load-theme my-default ,t)))
 
 (defun ms-js2 ()
   "JavaScript (JS2) hook function."
@@ -196,6 +208,11 @@ a bound function."
      (replace-regexp-in-string "\e\\[[0-9]+[GKJ]" "" output)))
   (setq comint-process-echoes t))
 
+(defun ms-go ()
+  "Go hook function."
+  (setq tab-width 8
+        indent-tabs-mode t))
+
 ;; Hooks
 (add-hook 'after-init-hook 'pkg-after-init)
 (add-hook 'nrepl-interaction-mode-hook 'nrepl-turn-on-eldoc-mode)
@@ -206,6 +223,7 @@ a bound function."
 (add-hook 'inferior-haskell-mode-hook 'ms-haskell-ghci)
 (add-hook 'coffee-mode-hook 'ms-coffee)
 (add-hook 'TeX-mode-hook 'ms-tex)
+(add-hook 'go-mode-hook 'ms-go)
 (setq inferior-js-mode-hook 'ms-js-comint)
 
 (add-hook 'lua-mode-hook

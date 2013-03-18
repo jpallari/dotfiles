@@ -15,11 +15,13 @@
   "List of files to load during start up.")
 
 (defvar my-keybindings-alist
-  '(("C-x C-b" . ibuffer)
+  '(("C-x ," . recompile)
+    ("C-x C-b" . ibuffer)
     ("C-x C-j" . join-line)
     ("C-x C-n" . other-window)
     ("C-x C-p" . other-window-back)
     ("C-x O" . other-window-back)
+    ("C-x g" . compile)
     ("M-/" . hippie-expand)
     ("M-C" . region-to-clipboard)
     ("M-J" . deindent-rigidly)
@@ -127,7 +129,7 @@ and writes them to the loaddefs.el file of DIRECTORY"
   (interactive "r")
   (if (display-graphic-p)
       (clipboard-kill-ring-save start end)
-    (shell-command-on-region start end "xsel -i -b"))
+    (shell-command-on-region start end (or my-clipboard-command "xsel -i -b")))
   (message "Region copied to clipboard"))
 
 (defun ido-vertical (&optional arg)
@@ -171,7 +173,7 @@ IDO. Always switches to vertical style if ARG is non-nil."
 
 ;; Settings
 (setq backup-inhibited t                ; auto saving
-      auto-save-default t
+      auto-save-default nil
       auto-save-visited-file-name t
       auto-save-interval 200
       auto-save-timeout 20)
@@ -355,6 +357,7 @@ IDO. Always switches to vertical style if ARG is non-nil."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(fringe ((t nil)))
  '(magit-item-highlight ((t nil)))
  '(rst-level-1-face ((t (:background "grey85" :foreground "black"))) t)
  '(rst-level-2-face ((t (:background "grey78" :foreground "black"))) t)

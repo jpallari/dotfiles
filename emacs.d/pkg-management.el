@@ -14,7 +14,6 @@
     ("clojure" clojure-mode nrepl)
     ("haskell" haskell-mode ghci-completion)
     ("python" virtualenv flymake-python-pyflakes)
-    ("themes" cyberpunk-theme)
     ("webdev" js2-mode js-comint less-css-mode flymake-jshint skewer)))
 
 ;; Repos

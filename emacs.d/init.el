@@ -253,6 +253,7 @@ IDO. Always switches to vertical style if ARG is non-nil."
 (put 'downcase-region 'disabled nil)    ; enable disabled
 (put 'set-goal-column 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
+(put 'dired-find-alternate-file 'disabled nil)
 
 ;; Mode settings
 (defun ms-mail ()
@@ -351,7 +352,7 @@ IDO. Always switches to vertical style if ARG is non-nil."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(ffap-machine-p-known (quote reject)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

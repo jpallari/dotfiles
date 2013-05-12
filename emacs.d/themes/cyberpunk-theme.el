@@ -92,7 +92,10 @@
       (cyberpunk-gray-8 "#262626")
       (cyberpunk-white "#ffffff")
       (cyberpunk-white-2 "#F8F8F8")
-      (cyberpunk-white-3 "#fffafa"))
+      (cyberpunk-white-3 "#fffafa")
+      (modeline-active-bg "#8cc3ff")
+      (modeline-active-box "#ace3ff")
+      (modeline-inactive-fg "#777777"))
 
  (custom-theme-set-faces
    'cyberpunk
@@ -151,12 +154,12 @@
    `(menu ((,class (:foreground ,cyberpunk-fg :background ,cyberpunk-bg))))
    `(minibuffer-prompt ((,class (:foreground ,cyberpunk-green+1 :background ,cyberpunk-black))))
    `(mode-line
-     ((,class (:foreground ,cyberpunk-blue-5
-                           :background ,cyberpunk-gray-5
-                           :box (:line-width -1)))))
+     ((,class (:foreground ,cyberpunk-gray-6
+                           :background ,modeline-active-bg
+                           :box (:line-width -1 :color ,modeline-active-box)))))
    ;; `(mode-line-buffer-id ((,class (:foreground ,cyberpunk-yellow :weight bold))))
    `(mode-line-inactive
-     ((,class (:foreground ,cyberpunk-gray-7
+     ((,class (:foreground ,modeline-inactive-fg
                            :background ,cyberpunk-gray-6
                            :box (:line-width -1)))))
    `(region ((,class (:background ,cyberpunk-red-5))))

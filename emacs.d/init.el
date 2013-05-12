@@ -165,8 +165,8 @@ IDO. Always switches to vertical style if ARG is non-nil."
 (show-paren-mode t)
 (transient-mark-mode t)
 (ido-mode 1)
-(tool-bar-mode -1)
-(menu-bar-mode -1)
+(when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+(when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
 
 ;; Automode
 (add-to-list 'auto-mode-alist '("\\.emacs.local$" . emacs-lisp-mode))

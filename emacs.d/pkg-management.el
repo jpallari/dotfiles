@@ -1,18 +1,20 @@
 ;;;; pkg-management.el -- package management and package specific settings
 
+(require 'my-utils)
+
 ;; Run initialization on old versions
 (when (<= emacs-major-version 23)
   (if (require 'package nil 'noerror)
       (package-initialize)))
 
 ;; Package list
-(defconst my-pkgs-alist
+(setq my-pkgs-alist
   '(("essential" expand-region win-switch)
     ("autocomplete" auto-complete jedi auto-complete-clang ac-nrepl)
     ("apps" magit monky auctex)
     ("modes" lua-mode markdown-mode erlang go-mode)
     ("clojure" clojure-mode nrepl)
-    ("haskell" haskell-mode ghci-completion)
+    ("haskell" haskell-mode ghci-completion ghc)
     ("python" virtualenv flymake-python-pyflakes)
     ("webdev" js2-mode js-comint less-css-mode flymake-jshint skewer)))
 
@@ -22,51 +24,10 @@
         ("marmalade" . "http://marmalade-repo.org/packages/")
         ("melpa" . "http://melpa.milkbox.net/packages/")))
 
-;; Package management functions and commands
-(defun ask-to-install (pkg)
-  (and (not (package-installed-p pkg))
-       (y-or-n-p (format "Package %s is not installed. Install it? " pkg))
-       (package-install pkg)))
-
-(defun install-missing-packages (pkg-list)
-  "Installs all the missing packages from selected list."
-  (interactive (list (completing-read "Choose a package group: " my-pkgs-alist)))
-  (mapc 'ask-to-install (cdr (assoc pkg-list my-pkgs-alist))))
-
-(defun install-missing-packages-all ()
-  "Installs all the missing packages from every package list."
-  (interactive)
-  (mapc
-   (lambda (pkglist)
-     (mapc 'ask-to-install (cdr pkglist)))
-   my-pkgs-alist))
-
 ;; Autoloads
 (autoload 'ghc-init "ghc" "GHC completion." t)
 
 ;; Functions and commands
-(defun extend-auto-mode-alist (mode &rest patterns)
-  "Extends `auto-mode-alist' with the given MODE and PATTERNS.
-The MODE is applied for each pattern in PATTERNS only if MODE is
-a bound function."
-  (if (fboundp mode)
-      (mapc (lambda (pattern)
-              (add-to-list 'auto-mode-alist `(,pattern . ,mode)))
-            patterns)))
-
-(defun call-until-no-error (&rest expressions)
-  "Call each expression in EXPRESSIONS until an expression does
-not produce an error."
-  (when expressions
-    (let ((head (car expressions))
-          (tail (cdr expressions)))
-      (condition-case nil
-          (if (listp head)
-              (apply head)
-            (funcall head))
-        (error
-         (apply 'call-until-no-error tail))))))
-
 (defun jedi ()
   (interactive)
   (if (fboundp 'jedi-mode)

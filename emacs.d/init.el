@@ -2,19 +2,21 @@
 
 ;; Load paths
 (add-to-list 'load-path "~/.emacs.d/vendor")
+(add-to-list 'load-path "~/.emacs.d/elisp")
 (setq custom-theme-directory "~/.emacs.d/themes")
 (when (file-accessible-directory-p "~/.emacs.d/vendor")
   (let ((default-directory "~/.emacs.d/vendor"))
     (normal-top-level-add-subdirs-to-load-path)))
 
-;; Variables and constants
-(defconst my-load-files
+;; My utils
+(require 'my-utils)
+
+(setq my-load-files
   '("~/.emacs.d/pkg-management.el"
     "~/.emacs.d/vendor/loaddefs.el"
-    "~/.emacs.local")
-  "List of files to load during start up.")
+    "~/.emacs.local"))
 
-(defvar my-keybindings-alist
+(setq my-keybindings-alist
   '(("C-x ," . recompile)
     ("C-x C-b" . ibuffer)
     ("C-x C-j" . join-line)
@@ -29,10 +31,9 @@
     ("<f5>" . shrink-window-horizontally)
     ("<f6>" . enlarge-window)
     ("<f7>" . shrink-window)
-    ("<f8>" . enlarge-window-horizontally))
-  "List of keybindings")
+    ("<f8>" . enlarge-window-horizontally)))
 
-(defvar my-aliases-alist
+(setq my-aliases-alist
   '((dml . delete-matching-lines)
     (dnml . delete-non-matching-lines)
     (lml . list-matching-lines)
@@ -43,110 +44,7 @@
     (sl . sort-lines)
     (snf . sort-numeric-fields)
     (sr . replace-string)
-    (yes-or-no-p . y-or-n-p))
-  "List of aliases")
-
-(defconst ido-decorations-horizontal
-  '("{" "}" " | " " | ..." "[" "]" " [No match]" " [Matched]" " [Not readable]"
-    " [Too big]" " [Confirm]")
-  "Ido decorations for horizontal listing.")
-
-(defconst ido-decorations-vertical
-  '("\n-> " "" "\n " "\n ..." "[" "]" " [No match]" " [Matched]"
-    " [Not readable]" " [Too big]" " [Confirm]")
-  "Ido decorations for vertical listing.")
-
-;; Functions
-(defun filtr (condp lst)
-  "Passes each element in LST to CONDP, and filters out the
-elements where the CONDP result is nil."
-  (delq nil (mapcar (lambda (x) (and (funcall condp x) x)) lst)))
-
-(defun set-my-keybindings ()
-  "Sets keybindings according to `my-keybindings-alist'"
-  (mapc (lambda (x)
-          (global-set-key (read-kbd-macro (car x)) (cdr x)))
-        my-keybindings-alist))
-
-(defun set-my-aliases ()
-  "Sets aliases according to `my-aliases-alist'"
-  (mapc (lambda (x)
-          (defalias (car x) (cdr x)))
-        my-aliases-alist))
-
-(defun load-my-load-files ()
-  "Loads files according to `my-load-files'"
-  (mapc (lambda (filename)
-          (load filename t t t))
-        my-load-files))
-
-(defun ido-disable-line-truncation ()
-  (set (make-local-variable 'truncate-lines) nil))
-
-(defun string-ends-with (str ending)
-  "Return non-nil if STR ends with ENDING."
-  (string= (substring str (- 0 (length ending))) ending))
-
-(defun subdirectories-of-directory (directory &optional full match nosort)
-  "Gets a list of all the subdirectories in DIRECTORY. The
-parameters FULL, MATCH, and NOSORT work the same as in
-`directory-files-and-attributes`."
-  (delq nil
-        (mapcar (lambda (file)
-                  (and (eq (car (cdr file)) t)
-                       (not (string-ends-with (car file) "."))
-                       (car file)))
-                (directory-files-and-attributes directory full match nosort))))
-
-(defun update-directory-loaddefs (directory)
-  "Scans the autoloads from all the subdirectories of DIRECTORY,
-and writes them to the loaddefs.el file of DIRECTORY"
-  (let ((generated-autoload-file (concat directory "/loaddefs.el")))
-    (apply 'update-directory-autoloads
-           (subdirectories-of-directory directory t))))
-
-;; Commands
-(defun what-face (pos)
-  "Displays the current face name under the cursor."
-  (interactive "d")
-  (let ((face (or (get-char-property (point) 'read-face-name)
-                  (get-char-property (point) 'face))))
-    (if face (message "Face: %s" face)
-      (message "No face at %d" pos))))
-
-(defun other-window-back (count &optional all-frames)
-  "Select another window backwards"
-  (interactive "p")
-  (other-window (- count) all-frames))
-
-(defun deindent-rigidly (start end arg)
-  "Same as indent-rigidly but with negative argument."
-  (interactive "r\np")
-  (indent-rigidly start end (- arg)))
-
-(defun region-to-clipboard (start end)
-  "Pastes region contents to clipboard"
-  (interactive "r")
-  (if (display-graphic-p)
-      (clipboard-kill-ring-save start end)
-    (shell-command-on-region start end (or my-clipboard-command "xsel -i -b")))
-  (message "Region copied to clipboard"))
-
-(defun ido-vertical (&optional arg)
-  "Switches between vertical and horizontal style of listing in
-IDO. Always switches to vertical style if ARG is non-nil."
-  (interactive)
-  (if (or arg (not (string= (substring (car ido-decorations) 0 1) "\n")))
-      (progn ;; Set vertical
-        (setq ido-decorations ido-decorations-vertical)
-        (add-hook 'ido-minibuffer-setup-hook 'ido-disable-line-truncation))
-    (progn ;; Set horizontal
-      (setq ido-decorations ido-decorations-horizontal)
-      (remove-hook 'ido-minibuffer-setup-hook 'ido-disable-line-truncation))))
-
-(defun update-vendor-loaddefs ()
-  (interactive)
-  (update-directory-loaddefs "~/.emacs.d/vendor"))
+    (yes-or-no-p . y-or-n-p)))
 
 ; Environment variables
 (setenv "PAGER" "/bin/cat")

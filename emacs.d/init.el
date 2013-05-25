@@ -191,6 +191,7 @@ IDO. Always switches to vertical style if ARG is non-nil."
       ido-everywhere t
       ido-case-fold t
       ido-create-new-buffer 'always
+      ido-default-buffer-method 'selected-window
       ido-use-filename-at-point 'guess)
 (ido-vertical t) ; vertical by default
 

@@ -164,8 +164,6 @@ not produce an error."
   (setq tab-width 2
         haskell-indent-offset 2
         c-basic-offset 2)
-  (define-key haskell-mode-map (kbd "C-c =") 'haskell-indent-insert-equal)
-  (define-key haskell-mode-map (kbd "C-c |") 'haskell-indent-insert-guard)
   (define-key haskell-mode-map (kbd "C-c .") 'haskell-mode-format-imports)
   (turn-on-haskell-indentation)
   (turn-on-haskell-doc-mode)

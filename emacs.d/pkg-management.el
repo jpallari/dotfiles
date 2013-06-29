@@ -9,7 +9,7 @@
 
 ;; Package list
 (setq my-pkgs-alist
-  '(("essential" expand-region win-switch)
+  '(("essential" expand-region win-switch paredit)
     ("autocomplete" auto-complete jedi auto-complete-clang ac-nrepl)
     ("apps" magit monky auctex)
     ("modes" lua-mode markdown-mode erlang go-mode)
@@ -26,6 +26,8 @@
 
 ;; Autoloads
 (autoload 'ghc-init "ghc" "GHC completion." t)
+(autoload 'enable-paredit-mode "paredit"
+  "Turn on pseudo-structural editing of Lisp code." t)
 
 ;; Functions and commands
 (defun jedi ()
@@ -72,6 +74,12 @@
     (global-set-key (kbd "M-M") 'er/expand-region))
   (when (fboundp 'win-switch-dispatch)
     (global-set-key (kbd "C-x o") 'win-switch-dispatch))
+
+  (add-hook 'emacs-lisp-mode #'enable-paredit-mode)
+  (add-hook 'clojure-mode-hook #'enable-paredit-mode)
+  (add-hook 'lisp-mode-hook #'enable-paredit-mode)
+  (add-hook 'ielm-mode-hook #'enable-paredit-mode)
+  (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
 
   ;; Automode
   (extend-auto-mode-alist 'markdown-mode "\\.markdown$" "\\.md$" "\\.text$")
@@ -126,12 +134,14 @@
         haskell-indent-offset 2
         c-basic-offset 2)
   (define-key haskell-mode-map (kbd "C-c .") 'haskell-mode-format-imports)
-  (turn-on-haskell-indentation)
+  (subword-mode)
+  (turn-on-haskell-indent)
   (turn-on-haskell-doc-mode)
   (when (fboundp 'ghc-init) (ghc-init)))
 
 (defun ms-haskell-ghci ()
   "Haskell GHCI hook function."
+  (setq comint-prompt-regexp "^ghci> ")
   (when (require 'ghci-completion nil t)
     (turn-on-ghci-completion)
     (when (boundp 'ghc-merged-keyword)
@@ -168,6 +178,7 @@
 
 (defun ms-go ()
   "Go hook function."
+  (subword-mode)
   (setq tab-width 8
         indent-tabs-mode t))
 

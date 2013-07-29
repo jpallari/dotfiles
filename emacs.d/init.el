@@ -258,7 +258,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(fringe ((t nil)))
- '(magit-item-highlight ((t nil)))
+ '(magit-item-highlight ((t nil)) t)
  '(rst-level-1-face ((t (:background "grey85" :foreground "black"))) t)
  '(rst-level-2-face ((t (:background "grey78" :foreground "black"))) t)
  '(rst-level-3-face ((t (:background "grey71" :foreground "black"))) t)

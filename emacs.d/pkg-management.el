@@ -26,8 +26,6 @@
 
 ;; Autoloads
 (autoload 'ghc-init "ghc" "GHC completion." t)
-(autoload 'enable-paredit-mode "paredit"
-  "Turn on pseudo-structural editing of Lisp code." t)
 
 ;; Functions and commands
 (defun jedi ()
@@ -75,11 +73,13 @@
   (when (fboundp 'win-switch-dispatch)
     (global-set-key (kbd "C-x o") 'win-switch-dispatch))
 
-  (add-hook 'emacs-lisp-mode #'enable-paredit-mode)
-  (add-hook 'clojure-mode-hook #'enable-paredit-mode)
-  (add-hook 'lisp-mode-hook #'enable-paredit-mode)
-  (add-hook 'ielm-mode-hook #'enable-paredit-mode)
-  (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
+  ;; Paredit
+  (when (fboundp 'paredit-mode)
+    (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
+    (add-hook 'clojure-mode-hook 'paredit-mode)
+    (add-hook 'lisp-mode-hook 'paredit-mode)
+    (add-hook 'ielm-mode-hook 'paredit-mode)
+    (add-hook 'lisp-interaction-mode-hook 'paredit-mode))
 
   ;; Automode
   (extend-auto-mode-alist 'markdown-mode "\\.markdown$" "\\.md$" "\\.text$")
@@ -93,7 +93,7 @@
 
   ;; Theme
   (call-until-no-error
-   `(load-theme cyberpunk ,t)
+   ;`(load-theme cyberpunk ,t)
    `(load-theme my-default ,t)))
 
 (defun ms-js2 ()
@@ -130,12 +130,15 @@
 
 (defun ms-haskell ()
   "Haskell hook function."
-  (setq tab-width 2
-        haskell-indent-offset 2
-        c-basic-offset 2)
+  (setq tab-width 4
+        haskell-indent-offset 4
+        haskell-indentation-layout-offset 4
+        haskell-indentation-left-offset 4
+        haskell-indentation-ifte-offset 4
+        c-basic-offset 4)
   (define-key haskell-mode-map (kbd "C-c .") 'haskell-mode-format-imports)
   (subword-mode)
-  (turn-on-haskell-indent)
+  (turn-on-haskell-indentation)
   (turn-on-haskell-doc-mode)
   (when (fboundp 'ghc-init) (ghc-init)))
 

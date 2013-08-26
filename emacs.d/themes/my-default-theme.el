@@ -80,6 +80,32 @@
      ((,gui-class (:bold t :weight bold))))
    `(org-column-title
      ((,gui-class (:underline t :weight bold))))
+
+   ;; term
+   `(term-color-black ((t (:foreground "#000000"))))
+   `(term-color-red ((t (:foreground "#880000"))))
+   `(term-color-green
+     ((,light-class (:foreground "#458b00"))
+      (,dark-class (:foreground "#00FF00"))))
+   `(term-color-yellow
+     ((,light-class (:foreground "#cd6600"))
+      (,dark-class (:foreground "#FFFF00"))))
+   `(term-color-blue
+     ((,light-class (:foreground "#000088"))
+      (,dark-class (:foreground "#0000FF"))))
+   `(term-color-magenta
+     ((,light-class (:foreground "#8b008b"))
+      (,dark-class (:foreground "#FF00FF"))))
+   `(term-color-cyan
+     ((,light-class (:foreground "#008b8b"))
+      (,dark-class (:foreground "#00FFFF"))))
+   `(term-color-white ((t (:foreground "#FFFFFF"))))
+   `(term-default-fg-color
+     ((,light-class (:foreground ,light-fg))
+      (,dark-class (:foreground ,dark-fg))))
+   `(term-default-bg-color
+     ((,light-class (:foreground ,light-bg))
+      (,dark-class (:foreground ,dark-bg))))
    ))
 
 (provide-theme 'my-default)

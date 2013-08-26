@@ -172,7 +172,7 @@
 
 (defun ms-js-comint ()
   "JS comint hook function."
-  (ansi-color-for-comint-mode-on)
+  (ansi-color-for-comint-mode-filter)
   (add-to-list
    'comint-preoutput-filter-functions
    (lambda (output)

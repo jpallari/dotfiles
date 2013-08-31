@@ -12,7 +12,7 @@
   '(("essential" expand-region win-switch paredit)
     ("autocomplete" auto-complete jedi auto-complete-clang ac-nrepl)
     ("apps" magit monky auctex)
-    ("modes" lua-mode markdown-mode erlang go-mode)
+    ("modes" scala-mode2 lua-mode markdown-mode erlang go-mode)
     ("clojure" clojure-mode nrepl)
     ("haskell" haskell-mode ghci-completion ghc)
     ("python" virtualenv flymake-python-pyflakes)
@@ -86,15 +86,14 @@
   (extend-auto-mode-alist 'js2-mode "\\.js$")
   (extend-auto-mode-alist 'erlang-mode "\\.\\(e\\|h\\)rl$")
   (extend-auto-mode-alist 'clojure-mode "\\.clj$")
+  (extend-auto-mode-alist 'scala-mode2 "\\.scala")
 
   ;; Aliases
   (defalias 'git-st 'magit-status)
   (defalias 'hg-st 'monky-status)
 
   ;; Theme
-  (call-until-no-error
-   ;`(load-theme cyberpunk ,t)
-   `(load-theme my-default ,t)))
+  (call-until-no-error `(load-theme my-default ,t)))
 
 (defun ms-js2 ()
   "JavaScript (JS2) hook function."
@@ -107,6 +106,7 @@
         js2-strict-inconsistent-return-warning nil
         inferior-js-program-command "node")
   (if (fboundp 'skewer-mode) (skewer-mode -1))
+  (subword-mode)
   (define-key js2-mode-map (kbd "C-x C-e") 'js-send-last-sexp)
   (define-key js2-mode-map (kbd "C-M-x") 'js-send-last-sexp-and-go)
   (define-key js2-mode-map (kbd "C-c b") 'js-send-buffer)
@@ -151,17 +151,6 @@
       (setq pcomplete-command-completion-function
             (lambda () (pcomplete-here* ghc-merged-keyword))))))
 
-(defun ms-coffee ()
-  "CoffeeScript hook function."
-  (make-local-variable 'tab-width)
-  (setenv "NODE_NO_READLINE" "1")
-  (whitespace-mode 1)
-  (setq coffee-tab-width 2
-        tab-width 2)
-  (define-key coffee-mode-map (kbd "C-c C-r") 'coffee-compile-buffer)
-  (define-key coffee-mode-map (kbd "C-j") 'coffee-newline-and-indent)
-  (define-key coffee-mode-map (kbd "C-m") 'newline))
-
 (defun ms-tex ()
   "TeX hook function."
   (setq TeX-auto-save t
@@ -173,6 +162,7 @@
 (defun ms-js-comint ()
   "JS comint hook function."
   (ansi-color-for-comint-mode-filter)
+  (subword-mode)
   (add-to-list
    'comint-preoutput-filter-functions
    (lambda (output)
@@ -193,11 +183,9 @@
 (add-hook 'markdown-mode-hook 'ms-markdown)
 (add-hook 'haskell-mode-hook 'ms-haskell)
 (add-hook 'inferior-haskell-mode-hook 'ms-haskell-ghci)
-(add-hook 'coffee-mode-hook 'ms-coffee)
 (add-hook 'TeX-mode-hook 'ms-tex)
 (add-hook 'go-mode-hook 'ms-go)
 (setq inferior-js-mode-hook 'ms-js-comint)
-
 (add-hook 'lua-mode-hook
           (lambda ()
             (setq lua-indent-level 4)))

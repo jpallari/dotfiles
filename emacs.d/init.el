@@ -63,6 +63,7 @@
 (show-paren-mode t)
 (transient-mark-mode t)
 (ido-mode 1)
+(winner-mode 1)
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
 
@@ -258,7 +259,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(fringe ((t nil)))
- '(magit-item-highlight ((t nil)) t)
+ '(magit-item-highlight ((t nil)))
  '(rst-level-1-face ((t (:background "grey85" :foreground "black"))) t)
  '(rst-level-2-face ((t (:background "grey78" :foreground "black"))) t)
  '(rst-level-3-face ((t (:background "grey71" :foreground "black"))) t)

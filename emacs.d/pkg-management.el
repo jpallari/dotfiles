@@ -86,7 +86,7 @@
   (extend-auto-mode-alist 'js2-mode "\\.js$")
   (extend-auto-mode-alist 'erlang-mode "\\.\\(e\\|h\\)rl$")
   (extend-auto-mode-alist 'clojure-mode "\\.clj$")
-  (extend-auto-mode-alist 'scala-mode2 "\\.scala")
+  (extend-auto-mode-alist 'scala-mode2 "\\.scala$")
 
   ;; Aliases
   (defalias 'git-st 'magit-status)

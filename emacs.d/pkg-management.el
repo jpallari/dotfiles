@@ -13,7 +13,7 @@
     ("autocomplete" auto-complete jedi auto-complete-clang ac-nrepl)
     ("apps" magit monky auctex)
     ("modes" scala-mode2 lua-mode markdown-mode erlang go-mode)
-    ("clojure" clojure-mode nrepl)
+    ("clojure" clojure-mode cider)
     ("haskell" haskell-mode ghci-completion ghc)
     ("python" virtualenv flymake-python-pyflakes)
     ("webdev" js2-mode js-comint less-css-mode flymake-jshint skewer)))
@@ -177,7 +177,7 @@
 
 ;; Hooks
 (add-hook 'after-init-hook 'pkg-after-init)
-(add-hook 'nrepl-interaction-mode-hook 'nrepl-turn-on-eldoc-mode)
+(add-hook 'cider-interaction-mode-hook 'cider-turn-on-eldoc-mode)
 (add-hook 'js2-mode-hook 'ms-js2)
 (add-hook 'magit-log-edit-mode-hook 'ms-magit)
 (add-hook 'markdown-mode-hook 'ms-markdown)

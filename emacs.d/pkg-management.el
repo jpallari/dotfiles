@@ -9,10 +9,10 @@
 
 ;; Package list
 (setq my-pkgs-alist
-  '(("essential" expand-region win-switch paredit)
+  '(("essential" expand-region win-switch paredit iedit)
     ("autocomplete" auto-complete jedi auto-complete-clang ac-nrepl)
     ("apps" magit monky auctex)
-    ("modes" scala-mode2 lua-mode markdown-mode erlang go-mode)
+    ("modes" markdown-mode erlang go-mode)
     ("clojure" clojure-mode cider)
     ("haskell" haskell-mode ghci-completion ghc)
     ("python" virtualenv flymake-python-pyflakes)
@@ -63,6 +63,10 @@
 
 ;; Hook functions
 (defun pkg-after-init ()
+  ;; iedit
+  (when (fboundp 'iedit-mode)
+    (global-set-key (kbd "M-N") 'iedit-mode))
+
   ;; auto-complete
   (when (require 'auto-complete-config nil 'noerror)
     (ac-config-default))
@@ -86,7 +90,6 @@
   (extend-auto-mode-alist 'js2-mode "\\.js$")
   (extend-auto-mode-alist 'erlang-mode "\\.\\(e\\|h\\)rl$")
   (extend-auto-mode-alist 'clojure-mode "\\.clj$")
-  (extend-auto-mode-alist 'scala-mode2 "\\.scala$")
 
   ;; Aliases
   (defalias 'git-st 'magit-status)
@@ -137,6 +140,8 @@
         haskell-indentation-ifte-offset 4
         c-basic-offset 4)
   (define-key haskell-mode-map (kbd "C-c .") 'haskell-mode-format-imports)
+  (define-key haskell-mode-map (kbd "C-j") 'haskell-newline-and-indent)
+  (define-key haskell-mode-map (kbd "C-m") 'newline)
   (subword-mode)
   (turn-on-haskell-indentation)
   (turn-on-haskell-doc-mode)
@@ -186,6 +191,3 @@
 (add-hook 'TeX-mode-hook 'ms-tex)
 (add-hook 'go-mode-hook 'ms-go)
 (setq inferior-js-mode-hook 'ms-js-comint)
-(add-hook 'lua-mode-hook
-          (lambda ()
-            (setq lua-indent-level 4)))

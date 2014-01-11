@@ -64,6 +64,7 @@
 (transient-mark-mode t)
 (ido-mode 1)
 (winner-mode 1)
+(delete-selection-mode 1)
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
 
@@ -74,8 +75,8 @@
 (setq backup-inhibited t                ; auto saving
       auto-save-default nil
       auto-save-visited-file-name t
-      auto-save-interval 200
-      auto-save-timeout 20)
+      auto-save-interval 0
+      auto-save-timeout 4)
 
 (setq compilation-ask-about-save nil    ; compilation
       compilation-save-buffers-predicate '(lambda () nil))

@@ -30,6 +30,7 @@ alias emacs='emacs -nw'
 alias em='emacs --color=no'
 alias e='emacsclient -c -t --alternate-editor=""'
 alias er='emacsclient -n'
+alias httpserver='python -m SimpleHTTPServer 8888'
 
 # functions
 function loadbashcompl {

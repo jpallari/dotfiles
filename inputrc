@@ -13,3 +13,9 @@ set bind-tty-special-chars off
 "\C-u": universal-argument
 "\C- ": set-mark
 "\C-w": kill-region
+"\eOD": backward-word
+"\eOC": forward-word
+"\e[1;5D": backward-word
+"\e[1;5C": forward-word
+"\e[1;9D": backward-word
+"\e[1;9C": forward-word

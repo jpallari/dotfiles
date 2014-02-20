@@ -10,19 +10,18 @@
 ;; Package list
 (setq my-pkgs-alist
   '(("essential" expand-region win-switch paredit iedit)
-    ("autocomplete" auto-complete jedi auto-complete-clang ac-nrepl)
-    ("apps" magit monky auctex)
+    ("autocomplete" auto-complete ac-nrepl)
+    ("apps" magit auctex)
     ("modes" markdown-mode erlang go-mode)
     ("clojure" clojure-mode cider)
     ("haskell" haskell-mode ghci-completion ghc)
     ("python" virtualenv flymake-python-pyflakes)
-    ("webdev" js2-mode js-comint less-css-mode flymake-jshint skewer)))
+    ("webdev" js2-mode js-comint less-css-mode flymake-jshint)))
 
 ;; Repos
 (setq package-archives
       '(("gnu" . "http://elpa.gnu.org/packages/")
-        ("marmalade" . "http://marmalade-repo.org/packages/")
-        ("melpa" . "http://melpa.milkbox.net/packages/")))
+        ("marmalade" . "http://marmalade-repo.org/packages/")))
 
 ;; Autoloads
 (autoload 'ghc-init "ghc" "GHC completion." t)

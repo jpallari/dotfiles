@@ -7,13 +7,12 @@
 HISTCONTROL=ignoreboth
 HISTSIZE=400
 HISTFILESIZE=2000
-shopt -s histappend
 
-# window size
+# shopts
 shopt -s checkwinsize
-
-# lesspipe
-[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+shopt -s histappend
+shopt -s dotglob
+shopt -s globstar
 
 # flow control
 stty -ixon
@@ -34,21 +33,32 @@ alias httpserver='python -m SimpleHTTPServer 8888'
 
 # functions
 function loadbashcompl {
-    if [ -f "/etc/bash_completion" ]; then
+    if [ -f "/etc/bash_completion" ]
+    then
         . "/etc/bash_completion" && echo "Bash completion loaded"
     else
         echo "No bash completion available"
     fi
 }
 
-# prompt
-export PS1="\[\e[7m\]\h\$\[\e[0m\] "
+function hr {
+    printf -v line "%${COLUMNS}s" ""
+    echo "${line// /=}"
+}
+
+function calc {
+    echo "${@}" | bc -l
+}
 
 # exports
+export PS1="\[\e[7m\]\h\$\[\e[0m\] "
 export PAGER=less
 
 # local configurations
 [[ -f ~/.shlocal ]] && source ~/.shlocal
+
+# lesspipe
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
 # Show the current host and path when the shell starts.
 echo "Host: ${HOSTNAME}"

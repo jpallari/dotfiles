@@ -92,7 +92,12 @@
       ido-case-fold t
       ido-create-new-buffer 'always
       ido-default-buffer-method 'selected-window
-      ido-use-filename-at-point 'guess)
+      ido-use-filename-at-point 'guess
+      ido-auto-merge-delay-time 9999)
+(define-key ido-file-completion-map (kbd "C-c C-s")
+  (lambda ()
+    (interactive)
+    (ido-initiate-auto-merge (current-buffer))))
 (ido-vertical t) ; vertical by default
 
 (setq ibuffer-saved-filter-groups       ; ibuffer

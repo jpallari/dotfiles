@@ -56,7 +56,6 @@
         mouse-sel-mode t))
 
 ;; Modes
-(blink-cursor-mode 0)
 (global-font-lock-mode t)
 (set-input-mode nil nil t)
 (column-number-mode t)
@@ -154,7 +153,8 @@
  indent-tabs-mode nil
  fill-column 79
  whitespace-style '(face trailing lines-tail)
- whitespace-line-column 79)
+ whitespace-line-column 79
+ cursor-type 'bar)
 
 (put 'downcase-region 'disabled nil)    ; enable disabled
 (put 'set-goal-column 'disabled nil)

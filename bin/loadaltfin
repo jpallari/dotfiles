@@ -1,8 +1,0 @@
-#!/bin/sh
-# Loads my XKB keyboard mappings
-
-XKBDIR="$HOME/.xkb"
-XKBMAPFILE="$XKBDIR/keymap/altfin"
-
-xkbcomp -I"$XKBDIR" "$XKBMAPFILE" "${DISPLAY%%.*}"
-

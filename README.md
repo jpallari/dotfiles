@@ -6,11 +6,9 @@ these configurations for your own use. Here are the stuff I have configurations
 for:
 
 - [Emacs][]
-- XKB
 - [Bash][]
 - [Tmux][]
 - [Readline][]
-- Xresources
 
 [Emacs]: http://www.gnu.org/software/emacs/
 [Bash]: http://www.gnu.org/software/bash/

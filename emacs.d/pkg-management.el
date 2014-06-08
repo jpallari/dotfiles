@@ -159,7 +159,8 @@
   "TeX hook function."
   (setq TeX-auto-save t
         TeX-PDF-mode t
-        TeX-parse-self t)
+        TeX-parse-self t
+        LaTeX-verbatim-environments '("Verbatim" "lstlisting"))
   (add-to-list 'TeX-command-list
                '("Biber" "biber %s.bcf" TeX-run-BibTeX nil t)))
 

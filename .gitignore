@@ -1,4 +1,6 @@
 .DS_Store
+vim/bundle
+.netrwhist
 *.elc
 emacs.d/abbrev_defs
 emacs.d/ac-comphist.dat

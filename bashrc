@@ -26,17 +26,21 @@ alias ...='cd ../..'
 alias jk='tmux attach -d'
 alias sudo='sudo '
 alias emacs='emacs -nw'
-alias em='emacs --color=no'
-alias e='emacsclient -c -t --alternate-editor=""'
-alias er='emacsclient -n'
 alias httpserver='python -m SimpleHTTPServer 8888'
 
 # functions
 function loadbashcompl {
-    if [ -f "/etc/bash_completion" ]
-    then
-        . "/etc/bash_completion" && echo "Bash completion loaded"
-    else
+    local files=("/etc/bash_completion" "/usr/local/etc/bash_completion")
+    local loaded=0
+
+    for f in "${files[@]}"; do
+        if [ -f $f ]; then
+            . $f
+            loaded=1
+        fi
+    done
+
+    if [ $loaded == 0 ]; then
         echo "No bash completion available"
     fi
 }
@@ -63,3 +67,6 @@ export PAGER=less
 # Show the current host and path when the shell starts.
 echo "Host: ${HOSTNAME}"
 echo "Path: ${PWD}"
+
+# load bash completion
+loadbashcompl

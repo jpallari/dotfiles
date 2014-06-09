@@ -52,10 +52,6 @@ autocmd BufEnter * lcd %:p:h
 noremap ; :
 noremap k gk
 noremap j gj
-noremap ? ?\v
-noremap / /\v
-noremap <F1> <ESC>
-inoremap <F1> <ESC>
 nnoremap x "_dl
 nnoremap X "_dh
 nnoremap Y y$

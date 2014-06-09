@@ -13,6 +13,7 @@ Plugin 'Shougo/vimshell.vim'
 Plugin 'bitc/vim-hdevtools'
 Plugin 'jpalardy/vim-slime'
 Plugin 'vim-scripts/gnupg.vim'
+Plugin 'endel/vim-github-colorscheme'
 
 call vundle#end()
 filetype plugin on

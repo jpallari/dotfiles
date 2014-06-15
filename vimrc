@@ -3,7 +3,6 @@ syntax on
 set nocompatible
 set background=dark
 set showcmd
-set gdefault
 set autowrite
 set mouse=a
 set backspace=indent,eol,start
@@ -24,7 +23,8 @@ set laststatus=1
 let mapleader=","
 let &showbreak='↳'
 
-" Search stuff
+" Search & replace stuff
+set gdefault
 set showmatch
 set ignorecase
 set infercase
@@ -49,7 +49,6 @@ au FileType mail set tw=65
 autocmd BufEnter * lcd %:p:h 
 
 " Custom mappings
-noremap ; :
 noremap k gk
 noremap j gj
 nnoremap x "_dl
@@ -57,9 +56,7 @@ nnoremap X "_dh
 nnoremap Y y$
 vnoremap < <gv
 vnoremap > >gv
-nnoremap <Leader>p :echo &ft . ", " . &fenc . ", " . &ff<cr>
-nnoremap <Leader>i :echo @%<cr>
-nnoremap <Leader>j <C-^>
+nnoremap <Leader>p :echo &ft . ", " . &fenc . ", " . &ff . ", " . @%<cr>
 vnoremap <Leader>c "+y
 nnoremap <Leader>v "+p
 
@@ -104,15 +101,8 @@ nnoremap <Leader>sk :leftabove new<cr>
 nnoremap <Leader>sl :rightbelow vnew<cr>
 
 " Some keybindings from Emacs
-inoremap <C-p> <C-O>k
-inoremap <C-n> <C-O>j
-inoremap <C-f> <C-O>l
-inoremap <C-b> <C-O>h
-inoremap <C-e> <C-O>$
-inoremap <C-a> <C-O>0
-inoremap <C-k> <C-O>D
-inoremap <C-d> <C-O>x
-inoremap <C-g> <ESC>
+cnoremap <C-a> <Home>
+cnoremap <C-e> <End>
 cnoremap <C-f> <Right>
 cnoremap <C-b> <Left>
 cnoremap <C-p> <Up>

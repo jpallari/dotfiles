@@ -33,10 +33,12 @@ let g:ctrlp_custom_ignore = {
 nnoremap <Leader>f :CtrlP<cr>
 nnoremap <Leader>b :CtrlPBuffer<cr>
 nnoremap <Leader>r :CtrlPMRUFiles<cr>
-nnoremap <Leader><Leader> :CtrlPBuffer<cr>
 
 " bbye
 nnoremap <Leader>q :Bdelete<CR>
 
 " vim-slime
 let g:slime_target = "tmux"
+let g:slime_no_mappings = 1
+xmap <Leader>s <Plug>SlimeRegionSend
+nmap <Leader>s <Plug>SlimeParagraphSend

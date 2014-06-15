@@ -19,7 +19,6 @@ set sw=4 sts=4 ts=8 et
 set tw=0
 set pastetoggle=<F4>
 set listchars=tab:▸\ ,eol:¬,trail:⋅,extends:❯,precedes:❮
-set laststatus=1
 let mapleader=","
 let &showbreak='↳'
 
@@ -31,6 +30,11 @@ set infercase
 set smartcase
 set incsearch
 set nohls
+
+" Functions
+fu! BufferInfo()
+    echo &ft . ", " . &fenc . ", " . &ff . ", " . @%
+endfunction
 
 " Filetype detection
 filetype on
@@ -46,7 +50,7 @@ au FileType text set tw=79 sw=4 sts=4 et
 au FileType mail set tw=65
 
 " Auto command
-autocmd BufEnter * lcd %:p:h 
+au BufEnter * silent! lcd %:p:h
 
 " Custom mappings
 noremap k gk
@@ -56,7 +60,7 @@ nnoremap X "_dh
 nnoremap Y y$
 vnoremap < <gv
 vnoremap > >gv
-nnoremap <Leader>p :echo &ft . ", " . &fenc . ", " . &ff . ", " . @%<cr>
+nnoremap <Leader>p :call BufferInfo()<cr>
 vnoremap <Leader>c "+y
 nnoremap <Leader>v "+p
 
@@ -87,18 +91,6 @@ nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
-nnoremap - <C-w>-
-nnoremap + <C-w>+
-
-" Shortcuts for managing splits
-nnoremap <Leader>swh :topleft vnew<cr>
-nnoremap <Leader>swj :botright new<cr>
-nnoremap <Leader>swk :topleft new<cr>
-nnoremap <Leader>swl :botright vnew<cr>
-nnoremap <Leader>sh :leftabove vnew<cr>
-nnoremap <Leader>sj :rightbelow new<cr>
-nnoremap <Leader>sk :leftabove new<cr>
-nnoremap <Leader>sl :rightbelow vnew<cr>
 
 " Some keybindings from Emacs
 cnoremap <C-a> <Home>

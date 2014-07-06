@@ -21,6 +21,8 @@ set pastetoggle=<F4>
 set listchars=tab:▸\ ,eol:¬,trail:⋅,extends:❯,precedes:❮
 let mapleader=","
 let &showbreak='↳'
+set splitbelow
+set splitright
 
 " Search & replace stuff
 set gdefault

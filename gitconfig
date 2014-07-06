@@ -1,0 +1,24 @@
+[alias]
+	co = checkout
+	ci = commit
+	st = status
+	br = branch
+	aa = add --all
+	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	di = diff
+	diw = diff --word-diff
+	dc = diff --cached
+	amend = commit --amend
+	ff = merge --ff-only
+	pullff = pull --ff-only
+	fa = fetch --all
+[color]
+	ui = true
+[push]
+	default = upstream
+[merge]
+	tool = vimdiff
+[branch]
+	autosetupmerge = false
+[diff]
+

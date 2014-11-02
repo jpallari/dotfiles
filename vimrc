@@ -1,7 +1,6 @@
 " General
 syntax on
 set nocompatible
-set background=dark
 set showcmd
 set autowrite
 set mouse=a
@@ -19,8 +18,8 @@ set sw=4 sts=4 ts=8 et
 set tw=0
 set pastetoggle=<F4>
 set listchars=tab:▸\ ,eol:¬,trail:⋅,extends:❯,precedes:❮
-let mapleader=","
 let &showbreak='↳'
+set showtabline=0
 set splitbelow
 set splitright
 
@@ -35,7 +34,28 @@ set nohls
 
 " Functions
 fu! BufferInfo()
-    echo &ft . ", " . &fenc . ", " . &ff . ", " . @%
+    let name = bufname('%')
+    let name = empty(l:name) ? '[No Name]' : l:name
+    let maininfo = bufnr('%') . ' ' . name
+    let infos = join([
+        \ empty(&ft) ? '-' : &ft,
+        \ empty(&fenc) ? '-' : &fenc,
+        \ empty(&ff) ? '-' : &ff,
+        \ &modified ? 'modified' : 'unmodified'
+        \ ], ', ')
+    echo l:maininfo . ': ' . l:infos
+endfunction
+
+fu! CommentLines() range
+    let commentsymbol = exists('b:commentsymbol') ? b:commentsymbol : '//'
+    let beginsWithComment = getline(a:firstline) =~ ('^' . l:commentsymbol)
+    for linenum in range(a:firstline, a:lastline)
+        let line = getline(linenum)
+        let replacement = l:beginsWithComment
+            \ ? substitute(line, '^' . l:commentsymbol . '\s\?', '', '')
+            \ : substitute(line, '^', l:commentsymbol . ' ', '')
+        call setline(linenum, replacement)
+    endfor
 endfunction
 
 " Filetype detection
@@ -51,8 +71,10 @@ au FileType markdown set tw=79 sw=4 sts=4 et
 au FileType text set tw=79 sw=4 sts=4 et
 au FileType mail set tw=65
 
-" Auto command
-au BufEnter * silent! lcd %:p:h
+" Custom commands
+command! -nargs=0 BufferInfo call BufferInfo()
+command! -nargs=0 -range Comment <line1>,<line2>call CommentLines()
+command! -nargs=0 Here lcd %:p:h
 
 " Custom mappings
 noremap k gk
@@ -65,6 +87,13 @@ vnoremap > >gv
 nnoremap <Leader>p :call BufferInfo()<cr>
 vnoremap <Leader>c "+y
 nnoremap <Leader>v "+p
+nnoremap <silent> <Esc>; :call CommentLines()<cr>
+vnoremap <silent> <Esc>; :call CommentLines()<cr>
+inoremap <M-Backspace> <C-w>
+inoremap <Esc><Backspace> <C-w>
+cnoremap <M-Backspace> <C-w>
+cnoremap <Esc><Backspace> <C-w>
+nnoremap <Leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
 
 " Indent stuff
 nnoremap <Leader>ms :setl et sts=2 sw=2 ts=8 sts? sw? ts?<cr>
@@ -93,14 +122,6 @@ nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
-
-" Some keybindings from Emacs
-cnoremap <C-a> <Home>
-cnoremap <C-e> <End>
-cnoremap <C-f> <Right>
-cnoremap <C-b> <Left>
-cnoremap <C-p> <Up>
-cnoremap <C-n> <Down>
 
 " Additional configurations
 if filereadable($HOME . "/.vim/extra.vim")

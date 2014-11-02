@@ -56,6 +56,7 @@ fu! CommentLines() range
             \ : substitute(line, '^', l:commentsymbol . ' ', '')
         call setline(linenum, replacement)
     endfor
+    call cursor(a:lastline + 1, 1)
 endfunction
 
 " Filetype detection

@@ -124,6 +124,10 @@ nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
+" Colors
+hi statusline term=inverse,bold cterm=inverse,bold ctermfg=darkred ctermbg=white
+hi statuslinenc term=inverse,bold cterm=inverse,bold ctermfg=gray ctermbg=black
+
 " Additional configurations
 if filereadable($HOME . "/.vim/extra.vim")
     source $HOME/.vim/extra.vim

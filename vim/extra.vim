@@ -12,6 +12,8 @@ Plugin 'jpalardy/vim-slime'
 Plugin 'vim-scripts/gnupg.vim'
 Plugin 'xolox/vim-misc'
 Plugin 'szw/vim-ctrlspace'
+Plugin 'mileszs/ack.vim'
+Plugin 'vim-scripts/paredit.vim'
 
 call vundle#end()
 filetype plugin on

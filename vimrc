@@ -1,27 +1,44 @@
-" General
-syntax on
 set nocompatible
-set showcmd
-set autowrite
-set mouse=a
-set backspace=indent,eol,start
-set ai
-set nobackup
-set ruler
+
+" Buffers and files
 set hidden
+set autowrite
+set nobackup
+set noswapfile
+
+" Editing
+set backspace=indent,eol,start
+set autoindent
+set sw=4 sts=4 ts=8 et tw=0
+
+" UI
+syntax on
 set scrolloff=3
-set wildmenu
-set wildignore=*.so,*.dll,*.o,*.obj,*.bak,*.exe,*.pyc,*/.git*,*/.hg*,*/.svn*
-set ofu=syntaxcomplete#Complete
-set completeopt=menuone,longest,preview
-set sw=4 sts=4 ts=8 et
-set tw=0
-set pastetoggle=<F4>
-set listchars=tab:▸\ ,eol:¬,trail:⋅,extends:❯,precedes:❮
-let &showbreak='↳'
+set showcmd
+set mouse=a
 set showtabline=0
+set ruler
 set splitbelow
 set splitright
+set listchars=tab:▸\ ,eol:¬,trail:⋅,extends:❯,precedes:❮
+let &showbreak='↳'
+set wrap
+set linebreak
+set visualbell t_vb=
+set noerrorbells
+set shortmess+=I
+set title
+
+" Menu
+set wildmenu
+set wildmode=longest,full
+set wildignore+=*.so,*.dll,*.o,*.a,*.obj,*.exe,*.pyc,*.class
+set wildignore+=.git,.hg,.svn
+set wildignore+=*.bak,*.swp,.DS_Store,*.tmp,*~
+
+" Completion
+set ofu=syntaxcomplete#Complete
+set completeopt=menuone,longest,preview
 
 " Search & replace stuff
 set gdefault
@@ -32,9 +49,26 @@ set smartcase
 set incsearch
 set nohls
 
+" File type detection
+filetype on
+filetype plugin on
+filetype indent on
+
+" Folding
+set foldenable
+set foldlevelstart=10
+set foldnestmax=10
+set foldmethod=indent
+
+augroup filetypedetect
+    au BufRead,BufNewFile *.txt setfiletype text
+    au BufRead,BufNewFile *mutt-* setfiletype mail
+    au BufRead,BufNewFile *.md setfiletype markdown
+augroup END
+
 " Functions
 fu! BufferInfo()
-    let name = bufname('%')
+    let name = expand('%:t')
     let name = empty(l:name) ? '[No Name]' : l:name
     let maininfo = bufnr('%') . ' ' . name
     let infos = join([
@@ -59,42 +93,37 @@ fu! CommentLines() range
     call cursor(a:lastline + 1, 1)
 endfunction
 
-" Filetype detection
-filetype on
-filetype plugin on
-filetype indent on
-augroup filetypedetect
-    au BufRead,BufNewFile *.txt setfiletype text
-    au BufRead,BufNewFile *mutt-* setfiletype mail
-    au BufRead,BufNewFile *.md setfiletype markdown
-augroup END
-au FileType markdown set tw=79 sw=4 sts=4 et
-au FileType text set tw=79 sw=4 sts=4 et
-au FileType mail set tw=65
-
-" Custom commands
+" Commands
 command! -nargs=0 BufferInfo call BufferInfo()
 command! -nargs=0 -range Comment <line1>,<line2>call CommentLines()
 command! -nargs=0 Here lcd %:p:h
 
-" Custom mappings
+" Preferred defaults
+set pastetoggle=<F4>
 noremap k gk
 noremap j gj
+nnoremap <space> za
 nnoremap x "_dl
 nnoremap X "_dh
 nnoremap Y y$
 vnoremap < <gv
 vnoremap > >gv
-nnoremap <Leader>p :call BufferInfo()<cr>
-vnoremap <Leader>c "+y
-nnoremap <Leader>v "+p
-nnoremap <silent> <Esc>; :call CommentLines()<cr>
-vnoremap <silent> <Esc>; :call CommentLines()<cr>
 inoremap <M-Backspace> <C-w>
 inoremap <Esc><Backspace> <C-w>
 cnoremap <M-Backspace> <C-w>
 cnoremap <Esc><Backspace> <C-w>
+
+" Custom command mappings
+nnoremap <Leader>p :BufferInfo<cr>
+nnoremap <silent> <Esc>; :Comment<cr>
+vnoremap <silent> <Esc>; :Comment<cr>
+
+" Autocompleted commands
 nnoremap <Leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
+
+" Copy/paste
+vnoremap <Leader>c "+y
+nnoremap <Leader>v "+p
 
 " Indent stuff
 nnoremap <Leader>ms :setl et sts=2 sw=2 ts=8 sts? sw? ts?<cr>
@@ -117,12 +146,8 @@ nnoremap <Leader>tn :set number!<cr>
 nnoremap <Leader>tr :set relativenumber!<cr>
 nnoremap <Leader>tl :set list! list?<cr>
 nnoremap <Leader>tw :set wrap! wrap?<cr>
-
-" Shortcuts for managing windows
-nnoremap <C-h> <C-w>h
-nnoremap <C-j> <C-w>j
-nnoremap <C-k> <C-w>k
-nnoremap <C-l> <C-w>l
+nnoremap <Leader>tb :set linebreak! linebreak?<cr>
+nnoremap <Leader>tc :set cursorline! cursorline?<cr>
 
 " Colors
 hi statusline term=inverse,bold cterm=inverse,bold ctermfg=darkred ctermbg=white

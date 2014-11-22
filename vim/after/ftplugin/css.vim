@@ -1,2 +1,1 @@
-set omnifunc=csscomplete#CompleteCSS
-
+setl omnifunc=csscomplete#CompleteCSS

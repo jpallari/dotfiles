@@ -10,6 +10,7 @@ set noswapfile
 set backspace=indent,eol,start
 set autoindent
 set sw=4 sts=4 ts=8 et tw=0
+set nojoinspaces
 
 " UI
 syntax on
@@ -152,6 +153,11 @@ nnoremap <Leader>tc :set cursorline! cursorline?<cr>
 " Colors
 hi statusline term=inverse,bold cterm=inverse,bold ctermfg=darkred ctermbg=white
 hi statuslinenc term=inverse,bold cterm=inverse,bold ctermfg=gray ctermbg=black
+
+" shell
+if &shell =~# 'fish$'
+    set shell=sh
+endif
 
 " Additional configurations
 if filereadable($HOME . "/.vim/extra.vim")

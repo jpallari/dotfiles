@@ -94,9 +94,14 @@ fu! CommentLines() range
     call cursor(a:lastline + 1, 1)
 endfunction
 
+fu! CommentSymbol(commentsymbol)
+    let b:commentsymbol = a:commentsymbol
+endfunction
+
 " Commands
 command! -nargs=0 BufferInfo call BufferInfo()
 command! -nargs=0 -range Comment <line1>,<line2>call CommentLines()
+command! -nargs=1 CommentSymbol call CommentSymbol(<f-args>)
 command! -nargs=0 Here lcd %:p:h
 
 " Preferred defaults
@@ -149,6 +154,7 @@ nnoremap <Leader>tl :set list! list?<cr>
 nnoremap <Leader>tw :set wrap! wrap?<cr>
 nnoremap <Leader>tb :set linebreak! linebreak?<cr>
 nnoremap <Leader>tc :set cursorline! cursorline?<cr>
+nnoremap <Leader>tl :set spell! spell?<cr>
 
 " Colors
 hi statusline term=inverse,bold cterm=inverse,bold ctermfg=darkred ctermbg=white

@@ -30,7 +30,7 @@ set title
 
 " Menu
 set wildmenu
-set wildmode=longest,full
+set wildmode=list:longest,full
 set wildignore+=*.so,*.dll,*.o,*.a,*.obj,*.exe,*.pyc,*.class
 set wildignore+=.git,.hg,.svn
 set wildignore+=*.bak,*.swp,.DS_Store,*.tmp,*~
@@ -178,17 +178,10 @@ nnoremap <Leader>rw :%s/\s\+$//e<cr>
 
 " Mouse
 set mouse=a
-map <ScrollWheelUp> <C-Y>
-map <ScrollWheelDown> <C-E>
 
 " Colors
 hi statusline term=inverse,bold cterm=inverse,bold ctermfg=darkred ctermbg=white
 hi statuslinenc term=inverse,bold cterm=inverse,bold ctermfg=gray ctermbg=black
-
-" shell
-if &shell =~# 'fish$'
-    set shell=sh
-endif
 
 " Additional configurations
 if filereadable($HOME . "/.vim/extra.vim")

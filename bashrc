@@ -25,7 +25,6 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias jk='tmux attach -d'
 alias sudo='sudo '
-alias emacs='emacs -nw'
 alias httpserver='python -m SimpleHTTPServer 8888'
 if [ "`uname`" = 'Linux' ]; then
     alias pbcopy='xsel --clipboard --input'

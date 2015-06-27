@@ -5,13 +5,11 @@ stuff is recycled from other people's files. Feel free to grab any part of
 these configurations for your own use. Here are the stuff I have configurations
 for:
 
-- [Emacs][]
 - [Vim][]
 - [Bash][]
 - [Tmux][]
 - [Readline][]
 
-[Emacs]: http://www.gnu.org/software/emacs/
 [Vim]: http://www.vim.org/
 [Bash]: http://www.gnu.org/software/bash/
 [Tmux]: http://tmux.sourceforge.net/

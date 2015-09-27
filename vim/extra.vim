@@ -9,6 +9,7 @@ Plug 'vim-scripts/gnupg.vim'
 Plug 'mileszs/ack.vim'
 Plug 'vim-scripts/paredit.vim', { 'for': ['clojure', 'scheme'] }
 Plug 'maxbrunsfeld/vim-yankstack'
+Plug 'derekwyatt/vim-scala'
 call plug#end()
 
 " bbye

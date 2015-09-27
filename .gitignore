@@ -1,4 +1,5 @@
 .DS_Store
 .netrwhist
 plug.vim
+plug.vim.old
 vim/plugged

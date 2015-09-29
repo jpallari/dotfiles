@@ -1,0 +1,28 @@
+! rxvt-unicode --------------------------------------------------
+URxvt.loginShell:               false
+URxvt.scrollBar:                false
+URxvt.font:                     -misc-fixed-medium-r-semicondensed-*-13-120-75-75-c-60-iso10646-1, \
+                                -*-unifont-*-*-*-*-*-*-*-*-*-*-*-*
+URxvt.boldFont:
+URxvt.italicFont:
+URxvt.boldItalicFont:
+URxvt.iso14755:                 false
+URxvt.matcher.button:           1
+URxvt.urgentOnBell:             true
+URxvt.insecure:                 true
+
+! perl extensions
+URxvt.perl-ext:                 default,selection,clipboard,url-select,-searchable-scrollback
+URxvt.url-select.underline:     false
+URxvt.url-select.launcher:      xdg-open
+URxvt.url-select.button:        2
+URxvt.clipboard.copycmd:        xsel -ib
+URxvt.clipboard.pastecmd:       xsel -ob
+URxvt.keysym.C-3:               perl:url-select:select_next
+URxvt.keysym.Shift-Control-C:   perl:clipboard:copy
+URxvt.keysym.Shift-Control-V:   perl:clipboard:paste
+
+! other ---------------------------------------------------------
+*VT100.utf8:                    1
+Xft.lcdfilter:                  lcddefault
+

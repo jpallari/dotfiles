@@ -9,6 +9,7 @@ for:
 - [Bash][]
 - [Tmux][]
 - [Readline][]
+- Xresources
 
 [Vim]: http://www.vim.org/
 [Bash]: http://www.gnu.org/software/bash/

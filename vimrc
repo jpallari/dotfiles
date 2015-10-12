@@ -15,7 +15,6 @@ set nojoinspaces
 " UI
 syntax on
 set showcmd
-set showtabline=0
 set ruler
 set splitbelow
 set splitright
@@ -66,7 +65,7 @@ augroup filetypedetect
 augroup END
 
 " Functions
-fu! BufferInfo()
+fu! s:BufferInfo()
     let name = expand('%:t')
     let name = empty(l:name) ? '[No Name]' : l:name
     let maininfo = bufnr('%') . ' ' . name
@@ -79,7 +78,7 @@ fu! BufferInfo()
     echo l:maininfo . ': ' . l:infos
 endfunction
 
-fu! CommentLines() range
+fu! s:CommentLines() range
     let commentsymbol = exists('b:commentsymbol') ? b:commentsymbol : '//'
     let beginsWithComment = getline(a:firstline) =~ ('\M^' . l:commentsymbol)
     for linenum in range(a:firstline, a:lastline)
@@ -97,7 +96,7 @@ fu! CommentLines() range
     call cursor(a:lastline + 1, 1)
 endfunction
 
-fu! CommentSymbol(start, ...)
+fu! s:CommentSymbol(start, ...)
     let b:commentsymbol = a:start
     if a:0 >= 1
         let b:commentsymbolend = a:1
@@ -106,7 +105,7 @@ fu! CommentSymbol(start, ...)
     endif
 endfunction
 
-fu! Indent(i)
+fu! s:Indent(i)
     let n = str2nr(a:i)
     if a:i ==? 'tab' || a:i ==? 't'
         setl noet sts=0 sw=8
@@ -122,29 +121,88 @@ fu! Indent(i)
 endfunction
 
 function! s:RunShellCommand(cmdline)
-  let expanded_cmdline = a:cmdline
-  for part in split(a:cmdline, ' ')
-     if part[0] =~ '\v[%#<]'
-        let expanded_part = fnameescape(expand(part))
-        let expanded_cmdline = substitute(expanded_cmdline, part, expanded_part, '')
-     endif
-  endfor
-  botright new
-  setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap
-  call setline(1, a:cmdline)
-  call setline(2, substitute(a:cmdline, '.', '=', 'g'))
-  execute '$read !'. expanded_cmdline
-  setlocal nomodifiable
-  1
+    let expanded_cmdline = a:cmdline
+    for part in split(a:cmdline, ' ')
+        if part[0] =~ '\v[%#<]'
+            let expanded_part = fnameescape(expand(part))
+            let expanded_cmdline = substitute(expanded_cmdline, part, expanded_part, '')
+        endif
+    endfor
+    botright new
+    setl buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap
+    call setline(1, a:cmdline)
+    call setline(2, substitute(a:cmdline, '.', '=', 'g'))
+    execute 'silent $read !'. expanded_cmdline
+    setl nomodifiable
+    1
+endfunction
+
+function! CursorFileInPreviousWindow()
+    let cursorfile = expand('<cfile>')
+    wincmd p
+    execute 'e ' . l:cursorfile
+endfunction
+
+function! s:MinimalWindowSize(maxsize)
+    let buflines = line('$')
+    let wsize = min([a:maxsize, &lines / 2, l:buflines])
+    execute 'resize ' . l:wsize
+endfunction
+
+function! s:InitFindWindow()
+    let startwin = winnr()
+    let findwindownr = 0
+
+    for winnumber in range(1, winnr('$'))
+        execute winnumber . 'wincmd w'
+        if &filetype == 'findbuf'
+            let findwindownr = winnumber
+            break
+        endif
+    endfor
+
+    if !findwindownr
+        execute startwin . 'wincmd w'
+        botright new
+        setfiletype findbuf
+    endif
+endfunction
+
+function! s:ReplaceContentsWithCommand(cmd)
+    silent %d
+    execute 'silent $read !' . a:cmd
+    g/^$/d
+    1
+endfunction
+
+function! s:Find(pattern)
+    let defaultcmd = 'find . \( -type f -o -type l \) -iname' 
+    let cmd = exists('g:findcmd') ? g:findcmd : defaultcmd
+    let fullcmd = l:cmd . " '" . a:pattern . "'"
+    let maxwinsize = exists('g:findwinsize') ? g:findwinsize : 10
+
+    call s:InitFindWindow()
+    setl modifiable
+    call s:ReplaceContentsWithCommand(l:fullcmd)
+    call s:MinimalWindowSize(l:maxwinsize)
+    let &l:statusline='Find: ' . a:pattern . ' %= %l/%L'
+    setl nomodifiable
 endfunction
 
 " Commands
-command! -nargs=0 BufferInfo call BufferInfo()
-command! -nargs=0 -range Comment <line1>,<line2>call CommentLines()
-command! -nargs=+ CommentSymbol call CommentSymbol(<f-args>)
+command! -nargs=0 BufferInfo call s:BufferInfo()
+command! -nargs=0 -range Comment <line1>,<line2>call s:CommentLines()
+command! -nargs=+ CommentSymbol call s:CommentSymbol(<f-args>)
 command! -nargs=0 Here lcd %:p:h
-command! -nargs=1 Indent call Indent(<f-args>)
+command! -nargs=1 Indent call s:Indent(<f-args>)
 command! -complete=shellcmd -nargs=+ Shell call s:RunShellCommand(<q-args>)
+command! -nargs=1 Find call s:Find(<q-args>)
+
+" Custom file types
+au FileType findbuf
+    \ nnoremap <buffer> <Return> :call CursorFileInPreviousWindow()<CR> |
+    \ setl buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap |
+    \ setl cursorline
 
 " Preferred defaults
 noremap k gk

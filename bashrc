@@ -14,6 +14,7 @@ shopt -s checkwinsize
 shopt -s histappend
 shopt -s dotglob
 shopt -s globstar
+shopt -s direxpand
 
 # flow control
 stty -ixon
@@ -76,7 +77,7 @@ function calc {
     echo "${@}" | bc -l
 }
 
-function rvim {
+function revim {
     local paramcount="$#"
     local servername="$1"
     shift
@@ -108,6 +109,25 @@ export PS1="\[\e[7m\]\h\$\[\e[0m\] "
 export PAGER=less
 export EDITOR=vim
 export VISUAL="$EDITOR"
+
+# completion
+_revim() {
+    local cur prev opts
+    COMPREPLY=()
+    cur=${COMP_WORDS[COMP_CWORD]}
+    prev=${COMP_WORDS[COMP_CWORD-1]}
+
+    if [ $COMP_CWORD -eq 1 ]; then
+        cur=${cur,,}
+        opts=`revim`
+        opts=${opts,,}
+        COMPREPLY=( $(compgen -W "$opts" -- $cur ) )
+    else
+        _filedir
+    fi
+}
+
+complete -F _revim revim
 
 # custom paths. customize in shlocal
 export CUSTOM_PATHS=(

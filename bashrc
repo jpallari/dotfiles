@@ -29,7 +29,7 @@ alias jk='tmux attach -d'
 alias sudo='sudo '
 
 # aliases in Linux
-if [ "`uname`" = 'Linux' ]; then
+if [ "$(uname)" = 'Linux' ]; then
     alias pbcopy='xsel --clipboard --input'
     alias pbpaste='xsel --clipboard --output'
     alias open='xdg-open >/dev/null 2>&1'
@@ -38,11 +38,11 @@ fi
 if hash gvim 2>/dev/null || hash mvim 2>/dev/null; then
     guivim=gvim
     guivim=${guivim:=mvim}
-    alias vim="$guivim -v"
+    alias vim="${guivim} -v"
 fi
 
 # functions
-function loadbashcompl {
+loadbashcompl() {
     local files=(
         '/etc/bash_completion'
         '/usr/local/etc/bash_completion'
@@ -62,66 +62,58 @@ function loadbashcompl {
     fi
 }
 
-function httpserver {
+httpserver() {
     local port=$1
     port=${port:=10101}
-    python -m SimpleHTTPServer $port
+    python -m SimpleHTTPServer "$port"
 }
 
-function hr {
+hr() {
     printf -v line "%${COLUMNS}s" ""
     echo "${line// /=}"
 }
 
-function calc {
+calc() {
     echo "${@}" | bc -l
 }
 
-function revim {
+revim() {
     local paramcount="$#"
     local servername="$1"
     shift
-    local rest="$@"
 
     case $paramcount in
         0) vim --serverlist ;;
-        1) vim --servername $servername ;;
-        *) vim --servername $servername --remote $rest ;;
+        1) vim --servername "$servername" ;;
+        *) vim --servername "$servername" --remote "$@" ;;
     esac
 }
 
-function join {
+join_args() {
     local IFS="$1"
     shift
     echo "$*"
 }
 
-function reset_path {
+reset_path() {
     export PATH="$DEFAULT_PATH"
 }
 
-function add_path {
-    export PATH="$PATH:$1"
+add_path() {
+    export PATH="$1:$PATH"
 }
-
-# exports
-export PS1="\[\e[7m\]\h\$\[\e[0m\] "
-export PAGER=less
-export EDITOR=vim
-export VISUAL="$EDITOR"
 
 # completion
 _revim() {
     local cur prev opts
     COMPREPLY=()
     cur=${COMP_WORDS[COMP_CWORD]}
-    prev=${COMP_WORDS[COMP_CWORD-1]}
 
-    if [ $COMP_CWORD -eq 1 ]; then
+    if [ "$COMP_CWORD" -eq 1 ]; then
         cur=${cur,,}
-        opts=`revim`
+        opts=$(revim)
         opts=${opts,,}
-        COMPREPLY=( $(compgen -W "$opts" -- $cur ) )
+        COMPREPLY=( $(compgen -W "$opts" -- "$cur" ) )
     else
         _filedir
     fi
@@ -129,20 +121,26 @@ _revim() {
 
 complete -F _revim revim
 
+# exports
+export PS1="\[\e[7m\]\h\$\[\e[0m\] "
+export PAGER=less
+export EDITOR=vim
+export VISUAL="$EDITOR"
+
 # custom paths. customize in shlocal
 export CUSTOM_PATHS=(
     "$HOME/.bin"
 )
 
 # local configurations
-[[ -f ~/.shlocal ]] && source ~/.shlocal
+[[ -f $HOME/.local.sh ]] && source $HOME/.local.sh
 
 # lesspipe
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
 # init paths
 if [ -z "$CUSTOM_PATHS_SET" ]; then
-    export DEFAULT_PATH="$PATH:`join : ${CUSTOM_PATHS[@]}`"
+    export DEFAULT_PATH="$(join_args : "${CUSTOM_PATHS[@]}"):$PATH"
     export PATH="$DEFAULT_PATH"
     export CUSTOM_PATHS_SET=1
 fi

@@ -1,11 +1,8 @@
 ! rxvt-unicode --------------------------------------------------
 URxvt.loginShell:               false
 URxvt.scrollBar:                false
-URxvt*font:                     xft:Source Code Pro:antialias=true:pixelsize=11
-! URxvt*font:                     -misc-fixed-medium-r-semicondensed-*-13-120-75-75-c-60-iso10646-1
-! URxvt*font:                     -xos4-terminus-medium-*-*-*-12-*-*-*-*-*-iso8859-15, \
-!                                 -*-unifont-*-*-*-*-*-*-*-*-*-*-*-*
-URxvt.boldFont:
+URxvt.font:                     xft:Source Code Pro:antialias=true:pixelsize=11
+URxvt.boldFont:                 xft:Source Code Pro:bold:antialias=true:pixelsize=11
 URxvt.italicFont:
 URxvt.boldItalicFont:
 URxvt.colorUL:                  #0000FF

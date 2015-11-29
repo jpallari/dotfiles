@@ -10,6 +10,7 @@ Plug 'mileszs/ack.vim'
 Plug 'vim-scripts/paredit.vim', { 'for': ['clojure', 'scheme'] }
 Plug 'maxbrunsfeld/vim-yankstack'
 Plug 'derekwyatt/vim-scala'
+Plug 'Lepovirta/pikkuwiki'
 call plug#end()
 
 " bbye

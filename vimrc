@@ -81,21 +81,34 @@ fu! s:BufferInfo()
     echo l:maininfo . ': ' . l:infos
 endfunction
 
-fu! s:CommentLines() range
-    let commentsymbol = exists('b:commentsymbol') ? b:commentsymbol : '//'
-    let beginsWithComment = getline(a:firstline) =~ ('\M^' . l:commentsymbol)
+fu! s:GetConfVar(varname, alternative)
+    if exists('b:' . a:varname)
+        return eval('b:' . a:varname)
+    elseif exists('g:' . a:varname)
+        return eval('g:' . a:varname)
+    else
+        return a:alternative
+    endif
+endfunction
+
+fu! s:CommentLines(...) range
+    let commentstart = a:0 >= 1 ? a:1 : s:GetConfVar('commentsymbol', '//')
+    let commentend = a:0 >= 2 ? a:2 : s:GetConfVar('commentsymbolend', '')
+    let beginsWithComment = getline(a:firstline) =~ ('\M^' . l:commentstart)
+
     for linenum in range(a:firstline, a:lastline)
-        let line = getline(linenum)
+        let line = getline(l:linenum)
         let replacement = l:beginsWithComment
-            \ ? substitute(line, '\M^' . l:commentsymbol . '\s\?', '', '')
-            \ : l:commentsymbol . ' ' . line
-        if exists('b:commentsymbolend')
+            \ ? substitute(line, '\M^' . l:commentstart . '\s\?', '', '')
+            \ : l:commentstart . ' ' . l:line
+        if !empty(l:commentend)
             let l:replacement = l:beginsWithComment
-                \ ? substitute(l:replacement, '\M\s\?' . b:commentsymbolend . '$', '', '')
-                \ : l:replacement . ' ' . b:commentsymbolend
+                \ ? substitute(l:replacement, '\M\s\?' . l:commentend . '$', '', '')
+                \ : l:replacement . ' ' . l:commentend
         endif
-        call setline(linenum, replacement)
+        call setline(l:linenum, l:replacement)
     endfor
+
     call cursor(a:lastline + 1, 1)
 endfunction
 
@@ -192,7 +205,7 @@ endfunction
 
 " Commands
 command! -nargs=0 BufferInfo call s:BufferInfo()
-command! -nargs=0 -range Comment <line1>,<line2>call s:CommentLines()
+command! -nargs=* -range Comment <line1>,<line2>call s:CommentLines(<f-args>)
 command! -nargs=+ CommentSymbol call s:CommentSymbol(<f-args>)
 command! -nargs=0 Here lcd %:p:h
 command! -nargs=1 Indent call s:Indent(<f-args>)

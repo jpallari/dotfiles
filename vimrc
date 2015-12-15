@@ -64,6 +64,9 @@ augroup filetypedetect
     au BufRead,BufNewFile *.md setfiletype markdown
 augroup END
 
+" Custom function confs
+let g:findcmd = 'find . \( -type f -o -type l \) -iname'
+
 " Functions
 fu! s:BufferInfo()
     let name = expand('%:t')
@@ -176,9 +179,7 @@ function! s:ReplaceContentsWithCommand(cmd)
 endfunction
 
 function! s:Find(pattern)
-    let defaultcmd = 'find . \( -type f -o -type l \) -iname' 
-    let cmd = exists('g:findcmd') ? g:findcmd : defaultcmd
-    let fullcmd = l:cmd . " '" . a:pattern . "'"
+    let fullcmd = g:findcmd . " '" . a:pattern . "'"
     let maxwinsize = exists('g:findwinsize') ? g:findwinsize : 10
 
     call s:InitFindWindow()

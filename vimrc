@@ -136,6 +136,22 @@ fu! s:Indent(i)
     endif
 endfunction
 
+fu! s:Underline(...)
+    let underlinestring = a:0 >= 1 ? a:1 : s:GetConfVar('underlinechar', '#')
+    let underlinechar = l:underlinestring[0]
+    let linenr = line('.')
+    let line_len = len(getline(l:linenr))
+    let nextline_nr = l:linenr + 1
+    let nextline = getline(l:nextline_nr)
+    let underline = repeat(l:underlinechar, l:line_len)
+    let is_underlined = nextline =~ ('^' . l:underlinechar . '\+$')
+    if is_underlined
+        call setline(l:nextline_nr, l:underline)
+    else
+        call append(l:linenr, l:underline)
+    endif
+endfunction
+
 function! s:RunShellCommand(cmdline)
     let expanded_cmdline = a:cmdline
     for part in split(a:cmdline, ' ')
@@ -209,6 +225,7 @@ command! -nargs=* -range Comment <line1>,<line2>call s:CommentLines(<f-args>)
 command! -nargs=+ CommentSymbol call s:CommentSymbol(<f-args>)
 command! -nargs=0 Here lcd %:p:h
 command! -nargs=1 Indent call s:Indent(<f-args>)
+command! -nargs=? Underline call s:Underline(<f-args>)
 command! -complete=shellcmd -nargs=+ Shell call s:RunShellCommand(<q-args>)
 command! -nargs=1 Find call s:Find(<q-args>)
 

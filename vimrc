@@ -14,6 +14,7 @@ set nojoinspaces
 
 " UI
 syntax on
+set bg=dark
 set showcmd
 set ruler
 set splitbelow

@@ -10,6 +10,9 @@ Plug 'mileszs/ack.vim'
 Plug 'vim-scripts/paredit.vim', { 'for': ['clojure', 'scheme'] }
 Plug 'maxbrunsfeld/vim-yankstack'
 Plug 'derekwyatt/vim-scala'
+Plug 'rust-lang/rust.vim'
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
 Plug 'Lepovirta/pikkuwiki.vim'
 call plug#end()
 
@@ -35,3 +38,5 @@ nmap <M-n> <Plug>yankstack_substitute_newer_paste
 nmap <Esc>p <Plug>yankstack_substitute_older_paste
 nmap <Esc>n <Plug>yankstack_substitute_newer_paste
 
+" UltiSnips
+let g:UltiSnipsListSnippets = '<C-b>'

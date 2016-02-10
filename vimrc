@@ -288,8 +288,10 @@ nnoremap <Leader>rw :%s/\s\+$//e<cr>
 set mouse=a
 
 " Colors
-hi statusline term=inverse,bold cterm=inverse,bold ctermfg=darkred ctermbg=white
+hi statusline term=inverse,bold cterm=inverse,bold ctermfg=darkblue ctermbg=white
+    \ gui=inverse,bold guifg=blue guibg=white
 hi statuslinenc term=inverse,bold cterm=inverse,bold ctermfg=gray ctermbg=black
+    \ gui=inverse,bold guifg=lightgray guibg=black
 
 " Additional configurations
 if filereadable($HOME . "/.vim/extra.vim")

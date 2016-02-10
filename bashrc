@@ -20,7 +20,7 @@ shopt -s direxpand
 stty -ixon
 
 # aliases
-alias ls='ls -F'
+alias ls='ls --color -F'
 alias ll='ls -lh'
 alias grep='grep --color=auto'
 alias ..='cd ..'
@@ -63,9 +63,12 @@ loadbashcompl() {
 }
 
 httpserver() {
-    local port=$1
-    port=${port:=10101}
+    local curdir="$PWD"
+    local port=${1:=10101}
+    local dir=${2:=.}
+    cd "$dir"
     python -m SimpleHTTPServer "$port"
+    cd "$curdir"
 }
 
 hr() {

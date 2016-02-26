@@ -20,6 +20,7 @@ URxvt.lineSpace:                -1
 URxvt*background:               #10171f
 URxvt*foreground:               #bccfed
 URxvt*cursorColor:              #bccfed
+URxvt*cursorBlink:              true
 
 !Black
 URxvt*color0: #000000

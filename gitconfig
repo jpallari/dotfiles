@@ -16,9 +16,6 @@
 	ui = true
 [push]
 	default = upstream
-[merge]
-	tool = vimdiff
 [branch]
 	autosetupmerge = false
 [diff]
-

@@ -23,22 +23,16 @@ stty -ixon
 alias ls='ls --color -F'
 alias ll='ls -lh'
 alias grep='grep --color=auto'
-alias ..='cd ..'
-alias ...='cd ../..'
 alias jk='tmux attach -d'
 alias sudo='sudo '
+alias emacs='emacs -nw'
+alias remacs='emacsclient -n'
 
 # aliases in Linux
 if [ "$(uname)" = 'Linux' ]; then
     alias pbcopy='xsel --clipboard --input'
     alias pbpaste='xsel --clipboard --output'
     alias open='xdg-open >/dev/null 2>&1'
-fi
-
-if hash gvim 2>/dev/null || hash mvim 2>/dev/null; then
-    guivim=gvim
-    guivim=${guivim:=mvim}
-    alias vim="${guivim} -v"
 fi
 
 # functions
@@ -80,18 +74,6 @@ calc() {
     echo "${@}" | bc -l
 }
 
-revim() {
-    local paramcount="$#"
-    local servername="$1"
-    shift
-
-    case $paramcount in
-        0) vim --serverlist ;;
-        1) vim --servername "$servername" ;;
-        *) vim --servername "$servername" --remote "$@" ;;
-    esac
-}
-
 join_args() {
     local IFS="$1"
     shift
@@ -106,33 +88,15 @@ add_path() {
     export PATH="$1:$PATH"
 }
 
-# completion
-_revim() {
-    local cur prev opts
-    COMPREPLY=()
-    cur=${COMP_WORDS[COMP_CWORD]}
-
-    if [ "$COMP_CWORD" -eq 1 ]; then
-        cur=${cur,,}
-        opts=$(revim)
-        opts=${opts,,}
-        COMPREPLY=( $(compgen -W "$opts" -- "$cur" ) )
-    else
-        _filedir
-    fi
-}
-
-complete -F _revim revim
-
 # exports
 export PS1="\[\e[7m\]\h\$\[\e[0m\] "
 export PAGER=less
-export EDITOR=vim
+export EDITOR=emacs
 export VISUAL="$EDITOR"
 
 # custom paths. customize in shlocal
 export CUSTOM_PATHS=(
-    "$HOME/.bin"
+    "$HOME/bin"
 )
 
 # local configurations
@@ -151,4 +115,3 @@ fi
 # Show the current host and path when the shell starts.
 echo "Host: ${HOSTNAME}"
 echo "Path: ${PWD}"
-

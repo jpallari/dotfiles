@@ -1,5 +1,7 @@
 .DS_Store
 .netrwhist
-plug.vim
-plug.vim.old
-vim/plugged
+emacs.d/*
+*.elc
+!emacs.d/init.el
+!emacs.d/pkg-management.el
+!emacs.d/elisp

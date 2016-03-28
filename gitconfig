@@ -18,4 +18,3 @@
 	default = upstream
 [branch]
 	autosetupmerge = false
-[diff]

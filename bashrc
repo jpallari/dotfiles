@@ -20,20 +20,21 @@ shopt -s direxpand
 stty -ixon
 
 # aliases
-alias ls='ls --color -F'
+if [ "$(uname)" = 'Linux' ]; then
+    alias ls='ls --color=auto -F'
+    alias pbcopy='xsel --clipboard --input'
+    alias pbpaste='xsel --clipboard --output'
+    alias open='xdg-open >/dev/null 2>&1'
+else
+    alias ls='ls -F'
+fi
+
 alias ll='ls -lh'
 alias grep='grep --color=auto'
 alias jk='tmux attach -d'
 alias sudo='sudo '
 alias emacs='emacs -nw'
 alias remacs='emacsclient -n'
-
-# aliases in Linux
-if [ "$(uname)" = 'Linux' ]; then
-    alias pbcopy='xsel --clipboard --input'
-    alias pbpaste='xsel --clipboard --output'
-    alias open='xdg-open >/dev/null 2>&1'
-fi
 
 # functions
 loadbashcompl() {
@@ -45,21 +46,21 @@ loadbashcompl() {
     local loaded=0
 
     for f in "${files[@]}"; do
-        if [ -f $f ]; then
-            . $f
+        if [ -f "$f" ]; then
+            . "$f"
             loaded=1
         fi
     done
 
-    if [ $loaded == 0 ]; then
+    if [ "$loaded" = 0 ]; then
         echo 'No bash completion available'
     fi
 }
 
 httpserver() {
     local curdir="$PWD"
-    local port=${1:=10101}
-    local dir=${2:=.}
+    local port=${1:-10101}
+    local dir=${2:-.}
     cd "$dir"
     python -m SimpleHTTPServer "$port"
     cd "$curdir"
@@ -91,7 +92,7 @@ add_path() {
 # exports
 export PS1="\[\e[7m\]\h\$\[\e[0m\] "
 export PAGER=less
-export EDITOR=emacs
+export EDITOR="emacs -nw"
 export VISUAL="$EDITOR"
 
 # custom paths. customize in shlocal

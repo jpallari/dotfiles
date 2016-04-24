@@ -9,7 +9,7 @@
 
 ;; Package list
 (setq my-pkgs-alist
-  '(("essential" expand-region win-switch paredit iedit)
+  '(("essential" expand-region win-switch paredit iedit ag)
     ("autocomplete" auto-complete)
     ("apps" magit auctex)
     ("modes" markdown-mode erlang go-mode)
@@ -111,10 +111,8 @@
 
 (defun ms-markdown ()
   "Markdown hook function."
-  (turn-on-auto-fill)
   (setq tab-width 4
         c-basic-offset 4
-        fill-column 79
         whitespace-line-column 79))
 
 (defun ms-haskell ()

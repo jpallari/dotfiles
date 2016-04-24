@@ -98,6 +98,13 @@ user answers yes to the prompt."
        (y-or-n-p (format "Package %s is not installed. Install it? " pkg))
        (package-install pkg)))
 
+(defun kill-emacs-y-or-n-p (prompt)
+  "The prompt used when killing Emacs.
+Ask user a \"y or n\" question only when server has been started."
+  (or (not (fboundp 'server-running-p))
+      (not (server-running-p))
+      (y-or-n-p (concat "Server is running. " prompt))))
+
 ;; Commands
 (defun what-face (pos)
   "Displays the current face name under the cursor."
@@ -151,5 +158,12 @@ IDO. Always switches to vertical style if ARG is non-nil."
    (lambda (pkglist)
      (mapc 'package-install (cdr pkglist)))
    my-pkgs-alist))
+
+(defun toggle-delete-trailing-whitespace ()
+  "Toggles trailing whitespace deletion during save."
+  (interactive)
+  (if (member 'delete-trailing-whitespace before-save-hook)
+      (remove-hook 'before-save-hook 'delete-trailing-whitespace)
+    (add-hook 'before-save-hook 'delete-trailing-whitespace)))
 
 (provide 'my-utils)

@@ -135,6 +135,9 @@
 (setq visible-bell nil                  ; bell
       ring-bell-function 'ignore)
 
+(setq confirm-kill-emacs                ; killing emacs
+      'kill-emacs-y-or-n-p)
+
 (setq inhibit-splash-screen t           ; misc
       completion-cycle-threshold 0
       x-select-enable-clipboard t
@@ -146,9 +149,8 @@
  tab-width 4
  c-basic-offset 4
  indent-tabs-mode nil
- fill-column 79
+ fill-column 80
  whitespace-style '(face trailing lines-tail)
- whitespace-line-column 79
  cursor-type 'bar)
 
 (put 'downcase-region 'disabled nil)    ; enable disabled
@@ -177,9 +179,7 @@
 (defun ms-rst ()
   "RST hook function"
   (setq tab-width 4
-        c-basic-offset 4
-        fill-column 79
-        whitespace-line-column 79))
+        c-basic-offset 4))
 
 (defun ms-python ()
   "Python hook function"
@@ -193,14 +193,11 @@
     (python-check
      (concat "pyflakes "
              (buffer-file-name (get-buffer buffer)))))
-  (whitespace-mode 1)
   (local-set-key (kbd "RET") 'newline)
   (setq tab-width 4
         c-basic-offset 4
         py-indent-offset 4
-        python-indent-offset 4
-        whitespace-line-column 79
-        fill-column 79))
+        python-indent-offset 4))
 
 (defun ms-ibuffer ()
   "IBuffer hook function"

@@ -61,8 +61,6 @@
 (winner-mode 1)
 (delete-selection-mode 1)
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
-(when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
-(when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 
 ;;; Automode
 (add-to-list 'auto-mode-alist '("\\.emacs.local$" . emacs-lisp-mode))
@@ -241,6 +239,14 @@
 (add-hook 'c-mode-common-hook 'ms-c)
 (add-hook 'css-mode-hook 'ms-css)
 
+;;; Menu bar only on GUI mode
+(defun my-menu-bar-for-frame (frame)
+  (if (memq (window-system frame) '(ns x))
+      (set-frame-parameter frame 'menu-bar-lines 1)
+    (set-frame-parameter frame 'menu-bar-lines 0)))
+(add-hook 'after-make-frame-functions 'my-menu-bar-for-frame)
+(menu-bar-mode (if (display-graphic-p) 1 -1))
+
 ;;; Custom key-to-key mappings (for terminals)
 (define-key input-decode-map "\e[1;5A" (kbd "C-<up>"))
 (define-key input-decode-map "\e[1;5B" (kbd "C-<down>"))
@@ -261,6 +267,19 @@
 (define-key input-decode-map "\e[1;7B" (kbd "C-M-<down>"))
 (define-key input-decode-map "\e[1;7C" (kbd "C-M-<right>"))
 (define-key input-decode-map "\e[1;7D" (kbd "C-M-<left>"))
+
+;;; OS X specific customizations
+(when (eq system-type 'darwin)
+  ;; Custom bindings
+  (global-unset-key (kbd "s-q"))
+  (global-unset-key (kbd "s-w"))
+  (global-set-key (kbd "s-<right>") 'move-end-of-line)
+  (global-set-key (kbd "s-<left>") 'move-beginning-of-line)
+  (global-set-key (kbd "s-<up>") 'beginning-of-buffer)
+  (global-set-key (kbd "s-<down>") 'end-of-buffer)
+
+  ;; Right option as alt gr
+  (setq mac-right-option-modifier nil))
 
 ;;; Load my stuff
 (set-my-keybindings)

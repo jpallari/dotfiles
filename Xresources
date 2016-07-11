@@ -67,5 +67,10 @@ URxvt.keysym.Shift-Control-V:   perl:clipboard:paste
 
 ! other ---------------------------------------------------------
 *VT100.utf8:                    1
-Xft.lcdfilter:                  lcddefault
 fltk*scheme:                    plastic
+Xft.autohint:                   0
+Xft.lcdfilter:                  lcddefault
+Xft.hintstyle:                  hintslight
+Xft.hinting:                    1
+Xft.antialias:                  1
+Xft.rgba:                       rgb

@@ -34,7 +34,7 @@ alias ll='ls -lh'
 alias grep='grep --color=auto'
 alias jk='tmux attach -d'
 alias sudo='sudo '
-alias emacs="emacs -nw -Q -l $HOME/.emacs.d/init.el"
+alias emacs="emacs -nw -Q -l $HOME/.emacs.d/fast-init.el"
 alias remacs='emacsclient -n'
 
 # functions
@@ -91,28 +91,52 @@ add_path() {
 }
 
 add_note() {
-    echo "$@" >> "$HOME/.notes.txt"
+    if [ ! -f "$NOTES_FILE" ]; then
+        echo "$NOTES_FILE doesn't point to a file!" 1>&2
+        return 1
+    fi
+
+    if [ ! "$@" ]; then
+        echo "Nothing to add to notes file!" 1>&2
+        return 1
+    fi
+
+    echo "$@" >> "$NOTES_FILE"
     echo "Note added!" 1>&2
 }
 
 read_notes() {
+    if [ ! -f "$NOTES_FILE" ]; then
+        echo "$NOTES_FILE doesn't point to a file!" 1>&2
+        return 1
+    fi
+
     cat "$HOME/.notes.txt"
+}
+
+set_window_title() {
+    echo -ne "\033]0;$@\007"
 }
 
 __my_prompt_command() {
     local last_exit="$?"
     local default="\[\e[0m\]"
     local status_color="\[\e[102m\]\[\e[30m\]"
+    local dir_name=$(basename "$PWD")
+
+    if [ "$PWD" = "$HOME" ]; then
+        dir_name="~"
+    fi
 
     if [ "$last_exit" != 0 ]; then
         status_color="\[\e[101m\]\[\e[30m\]"
     fi
 
-    PS1="$time_color$time"
-    PS1+="\[\e[30m\]\[\e[90m\]\A " # time
-    PS1+="$status_color \h " # host
+    PS1="$status_color\h " # host
     PS1+="\[\e[44m\]\[\e[96m\] \W \$" # directory
     PS1+="$default " # end
+
+    set_window_title "$dir_name - ${USER}@${HOSTNAME}"
 }
 
 # exports
@@ -120,6 +144,7 @@ export PROMPT_COMMAND=__my_prompt_command
 export PAGER=less
 export EDITOR="emacs -nw"
 export VISUAL="$EDITOR"
+export NOTES_FILE="$HOME/.notes.txt"
 
 # custom paths. customize in shlocal
 export CUSTOM_PATHS=(
@@ -139,6 +164,5 @@ if [ -z "$CUSTOM_PATHS_SET" ]; then
     export CUSTOM_PATHS_SET=1
 fi
 
-# Show the current host and path when the shell starts.
-echo "Host: ${HOSTNAME}"
-echo "Path: ${PWD}"
+# Who? Where?
+echo "${USER}@${HOSTNAME}:${PWD}"

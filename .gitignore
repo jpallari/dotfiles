@@ -3,5 +3,6 @@
 emacs.d/*
 *.elc
 !emacs.d/init.el
+!emacs.d/fast-init.el
 !emacs.d/pkg-management.el
 !emacs.d/elisp

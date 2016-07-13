@@ -166,4 +166,9 @@ IDO. Always switches to vertical style if ARG is non-nil."
       (remove-hook 'before-save-hook 'delete-trailing-whitespace)
     (add-hook 'before-save-hook 'delete-trailing-whitespace)))
 
+(defun wiki-file ()
+  (interactive)
+  (let ((default-directory (concat org-directory "/")))
+    (call-interactively 'ido-find-file)))
+
 (provide 'my-utils)

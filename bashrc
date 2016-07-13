@@ -120,9 +120,9 @@ set_window_title() {
 
 __my_prompt_command() {
     local last_exit="$?"
-    local default="\[\e[0m\]"
     local status_color="\[\e[102m\]\[\e[30m\]"
     local dir_name=$(basename "$PWD")
+    local title="$dir_name - ${USER}@${HOSTNAME}"
 
     if [ "$PWD" = "$HOME" ]; then
         dir_name="~"
@@ -134,9 +134,12 @@ __my_prompt_command() {
 
     PS1="$status_color\h " # host
     PS1+="\[\e[44m\]\[\e[96m\] \W \$" # directory
-    PS1+="$default " # end
+    PS1+="\[\e[0m\] " # end
 
-    set_window_title "$dir_name - ${USER}@${HOSTNAME}"
+    case "$TERM" in
+        xterm*) set_window_title "$title" ;;
+        *)
+    esac
 }
 
 # exports

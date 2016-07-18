@@ -149,7 +149,7 @@ export EDITOR="emacs -nw"
 export VISUAL="$EDITOR"
 export NOTES_FILE="$HOME/.notes.txt"
 
-# custom paths. customize in shlocal
+# custom paths. customize in ~/.local.sh
 export CUSTOM_PATHS=(
     "$HOME/bin"
 )
@@ -168,4 +168,5 @@ if [ -z "$CUSTOM_PATHS_SET" ]; then
 fi
 
 # Who? Where?
-echo "${USER}@${HOSTNAME}:${PWD}"
+echo -e "User : \e[92m${USER} \e[94m@ \e[96m${HOSTNAME}\e[39m"
+echo -e "Dir  : \e[36m$(dirname "$PWD")/\e[93m$(basename "$PWD")\e[39m"

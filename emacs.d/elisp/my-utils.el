@@ -3,7 +3,7 @@
 (defvar my-load-files '() "List of files to load during start up.")
 (defvar my-keybindings-alist '() "List of keybindings")
 (defvar my-aliases-alist '() "List of aliases")
-(defvar my-pkgs-alist '() "List of packages to install")
+(defvar my-pkgs-list '() "List of packages to install")
 (defvar my-clipboard-copy "xsel -b -i" "Shell clipboard copy command")
 (defvar my-clipboard-paste "xsel -b -o" "Shell clipboard paste command")
 
@@ -91,13 +91,6 @@ not produce an error."
         (error
          (apply 'call-until-no-error tail))))))
 
-(defun ask-to-install (pkg)
-  "Installs package PKG if it is not already installed and the
-user answers yes to the prompt."
-  (and (not (package-installed-p pkg))
-       (y-or-n-p (format "Package %s is not installed. Install it? " pkg))
-       (package-install pkg)))
-
 (defun kill-emacs-y-or-n-p (prompt)
   "The prompt used when killing Emacs.
 Ask user a \"y or n\" question only when server has been started."
@@ -146,18 +139,11 @@ IDO. Always switches to vertical style if ARG is non-nil."
   (interactive)
   (update-directory-loaddefs my-vendor-path))
 
-(defun install-missing-packages (pkg-list)
-  "Installs all the missing packages from selected list."
-  (interactive (list (completing-read "Choose a package group: " my-pkgs-alist)))
-  (mapc 'ask-to-install (cdr (assoc pkg-list my-pkgs-alist))))
-
-(defun install-missing-packages-all ()
-  "Installs all the missing packages from every package list."
+(defun install-missing-packages ()
+  "Installs all the missing packages."
   (interactive)
-  (mapc
-   (lambda (pkglist)
-     (mapc 'package-install (cdr pkglist)))
-   my-pkgs-alist))
+  (mapc (lambda (pkg) (package-install pkg))
+        my-pkgs-list))
 
 (defun toggle-delete-trailing-whitespace ()
   "Toggles trailing whitespace deletion during save."
@@ -167,6 +153,7 @@ IDO. Always switches to vertical style if ARG is non-nil."
     (add-hook 'before-save-hook 'delete-trailing-whitespace)))
 
 (defun wiki-file ()
+  "Open a file from the Org directory."
   (interactive)
   (let ((default-directory (concat org-directory "/")))
     (call-interactively 'ido-find-file)))

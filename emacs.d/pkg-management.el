@@ -17,7 +17,7 @@
         magit
         markdown-mode
         clojure-mode cider
-        scala-mode2 sbt-mode
+        scala-mode sbt-mode
         haskell-mode
         js2-mode js-comint))
 
@@ -86,17 +86,17 @@
 
 (use-package markdown-mode
   :mode
-  "\\.markdown$" "\\.md$" "\\.text$"
+  "\\.markdown\\'" "\\.md\\'" "\\.text\\'"
   :config
   (setq tab-width 4
         c-basic-offset 4
         whitespace-line-column 79))
 
 (use-package clojure-mode
-  :mode "\\.clj$")
+  :mode "\\.clj\\'")
 
 (use-package haskell-mode
-  :mode "\\.hs$"
+  :mode "\\.hs\\'"
   :bind (:map haskell-mode-map
               ("C-c ." . haskell-mode-format-imports)
               ("C-j" . haskell-newline-and-indent)
@@ -123,7 +123,7 @@
                '("Biber" "biber %s.bcf" TeX-run-BibTeX nil t)))
 
 (use-package js2-mode
-  :mode "\\.js$"
+  :mode "\\.js\\'"
   :bind (:map js2-mode-map
               ("C-x C-e" . js-send-last-sexp)
               ("C-M-x"   . js-send-last-sexp-and-go)
@@ -151,3 +151,7 @@
              (replace-regexp-in-string "\e\\[[0-9]+[GKJ]" "" output)))
           (setq comint-process-echoes t)))
   (subword-mode))
+
+(use-package scala-mode
+  :mode ("\\.scala\\'" . scala-mode)
+  :interpreter ("scala" . scala-mode))

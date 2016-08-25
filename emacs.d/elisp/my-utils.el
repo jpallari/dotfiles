@@ -152,6 +152,11 @@ IDO. Always switches to vertical style if ARG is non-nil."
       (remove-hook 'before-save-hook 'delete-trailing-whitespace)
     (add-hook 'before-save-hook 'delete-trailing-whitespace)))
 
+(defun add-to-hooks (function hooks &optional append local)
+  "Adds FUNCTION to multiple HOOKS. Optional APPEND and LOCAL work the same way they work in `add-hook'."
+  (mapc (lambda (hook) (add-hook hook function append local))
+        hooks))
+
 (defun wiki-file ()
   "Open a file from the Org directory."
   (interactive)

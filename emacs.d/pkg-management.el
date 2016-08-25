@@ -10,7 +10,7 @@
       '(use-package
         expand-region
         win-switch
-        paredit
+        smartparens
         iedit
         ag
         auto-complete
@@ -54,73 +54,75 @@
   (win-switch-add-key "K" 'enlarge-vertically)
   (win-switch-add-key "i" 'split-horizontally))
 
-(use-package paredit
-  :defer t
-  :init
-  (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
-  (add-hook 'clojure-mode-hook 'paredit-mode)
-  (add-hook 'lisp-mode-hook 'paredit-mode)
-  (add-hook 'ielm-mode-hook 'paredit-mode)
-  (add-hook 'lisp-interaction-mode-hook 'paredit-mode))
+(use-package smartparens
+  :config
+  (require 'smartparens-config)
+  (add-to-hooks
+   'smartparens-strict-mode
+   '(emacs-lisp-mode-hook
+     clojure-mode-hook
+     lisp-mode-hook
+     ielm-mode-hook
+     lisp-interaction-mode-hook
+     haskell-mode-hook
+     scala-mode-hook
+     js2-mode-hook)))
 
 (use-package iedit
   :bind ("M-N" . iedit-mode))
 
 (use-package auto-complete
-  :defer t
-  :bind (:map ac-mode-map
-              ("M-TAB" . auto-complete))
+  :diminish auto-complete-mode
   :config
   (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
-  (setq ac-auto-start nil)
-  (ac-set-trigger-key "TAB")
-  (ac-config-default))
+  (ac-config-default)
+  (setq ac-auto-start nil
+        ac-auto-show-menu nil
+        ac-ignore-case t)
+  (ac-set-trigger-key "TAB"))
 
 (use-package magit
   :defer t
   :init
-  (defalias 'git-st 'magit-status)
-  :config
-  (setq fill-column 72)
-  (turn-on-auto-fill))
+  (defalias 'git-st 'magit-status))
 
 (use-package markdown-mode
   :mode
-  "\\.markdown\\'" "\\.md\\'" "\\.text\\'"
-  :config
-  (setq tab-width 4
-        c-basic-offset 4
-        whitespace-line-column 79))
+  "\\.markdown\\'" "\\.md\\'" "\\.text\\'")
 
 (use-package clojure-mode
   :mode "\\.clj\\'")
+
+(defun ms-haskell ()
+  (turn-on-haskell-indentation)
+  (turn-on-haskell-doc)
+  (subword-mode))
 
 (use-package haskell-mode
   :mode "\\.hs\\'"
   :bind (:map haskell-mode-map
               ("C-c ." . haskell-mode-format-imports)
-              ("C-j" . haskell-newline-and-indent)
-              ("C-m" . newline))
+              ("C-j"   . haskell-newline-and-indent)
+              ("C-m"   . newline))
   :config
-  (setq tab-width 4
-        haskell-indent-offset 4
-        haskell-indentation-layout-offset 4
-        haskell-indentation-left-offset 4
-        haskell-indentation-ifte-offset 4
-        c-basic-offset 4)
-  (subword-mode)
-  (turn-on-haskell-indentation)
-  (turn-on-haskell-doc-mode))
+  (setq-default haskell-indent-offset 4
+                haskell-indentation-layout-offset 4
+                haskell-indentation-left-offset 4
+                haskell-indentation-ifte-offset 4)
+  (add-hook 'haskell-mode-hook #'ms-haskell))
 
 (use-package AucTex
   :defer t
   :config
-  (setq TeX-auto-save t
-        TeX-PDF-mode t
-        TeX-parse-self t
-        LaTeX-verbatim-environments '("Verbatim" "lstlisting"))
+  (setq-default TeX-auto-save t
+                TeX-PDF-mode t
+                TeX-parse-self t
+                LaTeX-verbatim-environments '("Verbatim" "lstlisting"))
   (add-to-list 'TeX-command-list
                '("Biber" "biber %s.bcf" TeX-run-BibTeX nil t)))
+
+(defun ms-js2 ()
+  (subword-mode))
 
 (use-package js2-mode
   :mode "\\.js\\'"
@@ -133,25 +135,23 @@
               ("C-c C-g" . js-send-region-and-go)
               ("C-c l"   . js-load-file-and-go))
   :config
-  (setq tab-width 2
-        c-basic-offset 2
-        jshint-configuration-path (concat (getenv "HOME") "/.jshint.json")
-        js2-consistent-level-indent-inner-bracket-p t
-        js2-pretty-multiline-decl-indentation-p t
-        js2-basic-offset 2
-        js2-strict-inconsistent-return-warning nil
-        inferior-js-program-command "node")
-  (setq inferior-js-mode-hook
-        (lambda ()
-          (ansi-color-for-comint-mode-filter)
-          (subword-mode)
-          (add-to-list
-           'comint-preoutput-filter-functions
-           (lambda (output)
-             (replace-regexp-in-string "\e\\[[0-9]+[GKJ]" "" output)))
-          (setq comint-process-echoes t)))
-  (subword-mode))
+  (setq-default js2-basic-offset 2
+                js2-strict-inconsistent-return-warning nil
+                inferior-js-program-command "node")
+  (setq-default
+   inferior-js-mode-hook
+   (lambda ()
+     (ansi-color-for-comint-mode-filter)
+     (subword-mode)
+     (add-to-list
+      'comint-preoutput-filter-functions
+      (lambda (output)
+        (replace-regexp-in-string "\e\\[[0-9]+[GKJ]" "" output)))
+     (setq comint-process-echoes t)))
+  (add-hook 'js2-mode-hook #'ms-js2))
 
 (use-package scala-mode
   :mode ("\\.scala\\'" . scala-mode)
-  :interpreter ("scala" . scala-mode))
+  :interpreter ("scala" . scala-mode)
+  :config
+  (add-hook 'scala-mode-hook 'subword-mode))

@@ -66,19 +66,30 @@
 (add-to-list 'auto-mode-alist '("\\.emacs.local$" . emacs-lisp-mode))
 
 ;;; Settings
-(setq backup-inhibited t                ; auto saving
+
+;; Auto saving
+(setq backup-inhibited t
       auto-save-default nil
       auto-save-visited-file-name t
       auto-save-interval 0
       auto-save-timeout 4)
 
-(setq compilation-ask-about-save nil    ; compilation
+;; Compilation
+(setq compilation-ask-about-save nil
       compilation-save-buffers-predicate '(lambda () nil))
 
-(setq sendmail-program "/usr/bin/msmtp" ; mail
+;; Email
+(setq sendmail-program "/usr/bin/msmtp"
       message-send-mail-function 'message-send-mail-with-sendmail)
 
-(setq ido-enable-flex-matching t        ; IDO
+(defun ms-mail ()
+  "Email hook function"
+  (setq fill-column 72))
+
+(add-hook 'mail-mode-hook #'ms-mail)
+
+;; IDO
+(setq ido-enable-flex-matching t
       ido-everywhere t
       ido-case-fold t
       ido-create-new-buffer 'always
@@ -91,7 +102,8 @@
     (ido-initiate-auto-merge (current-buffer))))
 (ido-vertical t) ; vertical by default
 
-(setq ibuffer-saved-filter-groups       ; ibuffer
+;; IBuffer
+(setq ibuffer-saved-filter-groups
       '(("default"
          ("Org" (mode . org-mode))
          ("Dired" (mode . dired-mode))
@@ -110,7 +122,15 @@
       ibuffer-show-empty-filter-groups nil
       ibuffer-default-sorting-mode 'major-mode)
 
-(setq hippie-expand-try-functions-list  ; hippie expand
+(defun ms-ibuffer ()
+  "IBuffer hook function"
+  (ibuffer-auto-mode 1)
+  (ibuffer-switch-to-saved-filter-groups "default"))
+
+(add-hook 'ibuffer-mode-hook #'ms-ibuffer)
+
+;; Hippie expand
+(setq hippie-expand-try-functions-list
       '(try-complete-file-name-partially
         try-complete-file-name
         try-expand-dabbrev
@@ -121,63 +141,42 @@
         try-complete-lisp-symbol-partially
         try-complete-lisp-symbol))
 
-(setq tramp-default-method "sshx"       ; TRAMP
+;; TRAMP
+(setq tramp-default-method "sshx"
       tramp-chunkzise 500
       tramp-shell-prompt-pattern "^[^$>\n]*[#$%>] *\\(\[[0-9;]*[a-zA-Z] *\\)*")
 
-(setq c-default-style                   ; CC-mode stuff
-      '((java-mode . "java")
-        (awk-mode . "awk")
-        (other . "k&r")))
-
-(setq visible-bell nil                  ; bell
+;; Bell
+(setq visible-bell nil
       ring-bell-function 'ignore)
 
-(setq confirm-kill-emacs                ; killing emacs
+;; Killing Emacs
+(setq confirm-kill-emacs
       'kill-emacs-y-or-n-p)
 
-(setq inhibit-splash-screen t           ; misc
-      completion-cycle-threshold 0
-      x-select-enable-clipboard t
-      confirm-nonexistent-file-or-buffer nil
-      sentence-end-double-space nil
-      ffap-machine-p-known 'reject)
+;; Indentation
+(setq-default tab-width 4
+              indent-tabs-mode nil
+              fill-column 80
+              whitespace-style '(face trailing lines-tail)
+              cursor-type 'bar)
 
-(setq-default                           ; indent defaults
- tab-width 4
- c-basic-offset 4
- indent-tabs-mode nil
- fill-column 80
- whitespace-style '(face trailing lines-tail)
- cursor-type 'bar)
-
-(put 'downcase-region 'disabled nil)    ; enable disabled
+;; Enable disabled features
+(put 'downcase-region 'disabled nil)
 (put 'set-goal-column 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
 (put 'dired-find-alternate-file 'disabled nil)
 
-;;; Mode settings
-(defun ms-mail ()
-  "Email hook function"
-  (setq fill-column 72))
+;; Comint
+(setq-default comint-completion-addsuffix t
+              comint-completion-autolist t
+              comint-input-ignoredups t
+              comint-scroll-show-maximum-output t
+              comint-scroll-to-bottom-on-input t
+              comint-scroll-to-bottom-on-output t)
 
-(defun ms-org ()
-  "Org mode hook function"
-  (setq org-hide-leading-stars t))
-
-(defun ms-comint ()
-  "Comint mode hook function"
-  (setq comint-completion-addsuffix t
-        comint-completion-autolist t
-        comint-input-ignoredups t
-        comint-scroll-show-maximum-output t
-        comint-scroll-to-bottom-on-input t
-        comint-scroll-to-bottom-on-output t))
-
-(defun ms-rst ()
-  "RST hook function"
-  (setq tab-width 4
-        c-basic-offset 4))
+;; Python
+(setq-default python-indent-offset 4)
 
 (defun ms-python ()
   "Python hook function"
@@ -190,18 +189,20 @@
     (interactive "bPyFlakes check buffer: ")
     (python-check
      (concat "pyflakes "
-             (buffer-file-name (get-buffer buffer)))))
-  (local-set-key (kbd "RET") 'newline)
-  (setq tab-width 4
-        c-basic-offset 4
-        py-indent-offset 4
-        python-indent-offset 4))
+             (buffer-file-name (get-buffer buffer))))))
 
-(defun ms-ibuffer ()
-  "IBuffer hook function"
-  (ibuffer-auto-mode 1)
-  (ibuffer-switch-to-saved-filter-groups "default"))
+(add-hook 'python-mode-hook #'ms-python)
 
+;; JavaScript
+(setq-default js-indent-level 2)
+
+;; ORG
+(setq-default org-hide-leading-stars t)
+
+;; CSS
+(setq-default css-indent-offset 2)
+
+;; EShell
 (defun ms-eshell ()
   "EShell hook function"
   (setq eshell-prompt-function (lambda () "$ "))
@@ -210,34 +211,26 @@
     (interactive)
     (let ((inhibit-read-only t)) (erase-buffer))))
 
-(defun ms-js ()
-  "JavaScript hook function"
-  (setq js-indent-level 2
-        tab-width 2
-        c-basic-offset 2))
+(add-hook 'eshell-mode-hook #'ms-eshell)
 
-(defun ms-c ()
-  "C hook function"
-  (setq c-basic-offset 4
-        tab-width 4))
+;; CC mode
+(setq-default c-default-style
+              '((java-mode . "java")
+                (awk-mode . "awk")
+                (other . "k&r"))
+              c-basic-offset 4)
 
-(defun ms-css ()
-  "CSS hook function"
-  (setq css-indent-offset 2))
+;; Misc
+(setq inhibit-splash-screen t
+      completion-cycle-threshold 0
+      x-select-enable-clipboard t
+      confirm-nonexistent-file-or-buffer nil
+      sentence-end-double-space nil
+      ffap-machine-p-known 'reject)
 
 ;;; Hooks
-(add-hook 'rst-mode-hook 'ms-rst)
-(add-hook 'python-mode-hook 'ms-python)
-(add-hook 'org-mode-hook 'ms-org)
-(add-hook 'mail-mode-hook 'ms-mail)
-(add-hook 'comint-mode-hook 'ms-comint)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
-(add-hook 'ibuffer-mode-hook 'ms-ibuffer)
-(add-hook 'eshell-mode-hook 'ms-eshell)
 (add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
-(add-hook 'js-mode-hook 'ms-js)
-(add-hook 'c-mode-common-hook 'ms-c)
-(add-hook 'css-mode-hook 'ms-css)
 
 ;;; Menu bar only on GUI mode
 (defun my-menu-bar-for-frame (frame)
@@ -299,13 +292,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(fringe ((t nil)))
- '(magit-item-highlight ((t nil)) t)
- '(rst-level-1-face ((t (:background "grey85" :foreground "black"))) t)
- '(rst-level-2-face ((t (:background "grey78" :foreground "black"))) t)
- '(rst-level-3-face ((t (:background "grey71" :foreground "black"))) t)
- '(rst-level-4-face ((t (:background "grey64" :foreground "black"))) t)
- '(rst-level-5-face ((t (:background "grey57" :foreground "black"))) t)
- '(rst-level-6-face ((t (:background "grey50" :foreground "black"))) t))
+ '(magit-item-highlight ((t nil)) t))
 
 ;;; Encoding
 (prefer-coding-system 'utf-8)

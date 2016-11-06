@@ -18,6 +18,7 @@
         markdown-mode
         clojure-mode cider
         scala-mode sbt-mode
+        rust-mode
         haskell-mode
         js2-mode js-comint))
 

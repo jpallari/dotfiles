@@ -2,26 +2,6 @@
 
 (require 'my-utils)
 
-;;; Initialize packages
-(package-initialize)
-
-;;; Package list
-(setq my-pkgs-list
-      '(use-package
-        expand-region
-        win-switch
-        smartparens
-        iedit
-        ag
-        auto-complete
-        magit
-        markdown-mode
-        clojure-mode cider
-        scala-mode sbt-mode
-        rust-mode
-        haskell-mode
-        js2-mode js-comint))
-
 ;;; Repos
 (setq package-archives
       '(("gnu" . "https://elpa.gnu.org/packages/")

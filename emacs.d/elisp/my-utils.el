@@ -3,7 +3,6 @@
 (defvar my-load-files '() "List of files to load during start up.")
 (defvar my-keybindings-alist '() "List of keybindings")
 (defvar my-aliases-alist '() "List of aliases")
-(defvar my-pkgs-list '() "List of packages to install")
 (defvar my-clipboard-copy "xsel -b -i" "Shell clipboard copy command")
 (defvar my-clipboard-paste "xsel -b -o" "Shell clipboard paste command")
 
@@ -138,12 +137,6 @@ IDO. Always switches to vertical style if ARG is non-nil."
   "Update loaddefs.el file for vendor directory."
   (interactive)
   (update-directory-loaddefs my-vendor-path))
-
-(defun install-missing-packages ()
-  "Installs all the missing packages."
-  (interactive)
-  (mapc (lambda (pkg) (package-install pkg))
-        my-pkgs-list))
 
 (defun toggle-delete-trailing-whitespace ()
   "Toggles trailing whitespace deletion during save."

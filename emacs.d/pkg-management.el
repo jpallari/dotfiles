@@ -51,7 +51,6 @@
               ("C-M-k" . sp-kill-sexp)
               ("C-M-w" . sp-copy-sexp)
               ("M-<delete>" . sp-unwrap-sexp)
-              ("M-<backspace>" . sp-backward-unwrap-sexp)
               ("C-<right>" . sp-forward-slurp-sexp)
               ("C-<left>" . sp-forward-barf-sexp)
               ("C-M-<left>" . sp-backward-slurp-sexp)
@@ -64,13 +63,9 @@
   (add-to-hooks
    'smartparens-strict-mode
    '(emacs-lisp-mode-hook
-     clojure-mode-hook
      lisp-mode-hook
      ielm-mode-hook
-     lisp-interaction-mode-hook
-     haskell-mode-hook
-     scala-mode-hook
-     js2-mode-hook)))
+     lisp-interaction-mode-hook)))
 
 (use-package iedit
   :bind ("M-N" . iedit-mode))
@@ -95,12 +90,16 @@
   "\\.markdown\\'" "\\.md\\'" "\\.text\\'")
 
 (use-package clojure-mode
-  :mode "\\.clj\\'")
-
-(defun ms-haskell ()
-  (turn-on-haskell-indentation)
-  (turn-on-haskell-doc)
-  (subword-mode))
+  :mode "\\.clj\\'"
+  :init
+  (use-package cider
+    :commands cider-minor-mode
+    :init
+    (add-hook 'cider-mode-hook #'eldoc-mode)
+    (add-hook 'cider-mode-hook #'smartparens-strict-mode))
+  :config
+  (add-hook 'clojure-mode-hook #'eldoc-mode)
+  (add-hook 'clojure-mode-hook #'smartparens-strict-mode))
 
 (use-package haskell-mode
   :mode "\\.hs\\'"
@@ -113,7 +112,10 @@
                 haskell-indentation-layout-offset 4
                 haskell-indentation-left-offset 4
                 haskell-indentation-ifte-offset 4)
-  (add-hook 'haskell-mode-hook #'ms-haskell))
+  (add-hook 'haskell-mode-hook #'turn-on-haskell-indendation)
+  (add-hook 'haskell-mode-hook #'turn-on-haskell-doc)
+  (add-hook 'haskell-mode-hook #'subword-mode)
+  (add-hook 'haskell-mode-hook #'smartparens-strict-mode))
 
 (use-package AucTex
   :defer t
@@ -124,9 +126,6 @@
                 LaTeX-verbatim-environments '("Verbatim" "lstlisting"))
   (add-to-list 'TeX-command-list
                '("Biber" "biber %s.bcf" TeX-run-BibTeX nil t)))
-
-(defun ms-js2 ()
-  (subword-mode))
 
 (use-package js2-mode
   :mode "\\.js\\'"
@@ -152,10 +151,12 @@
       (lambda (output)
         (replace-regexp-in-string "\e\\[[0-9]+[GKJ]" "" output)))
      (setq comint-process-echoes t)))
-  (add-hook 'js2-mode-hook #'ms-js2))
+  (add-hook 'js2-mode-hook #'subword-mode)
+  (add-hook 'js2-mode-hook #'smartparens-strict-mode))
 
 (use-package scala-mode
   :mode ("\\.scala\\'" . scala-mode)
   :interpreter ("scala" . scala-mode)
   :config
-  (add-hook 'scala-mode-hook 'subword-mode))
+  (add-hook 'scala-mode-hook #'subword-mode)
+  (add-hook 'scala-mode-hook #'smartparens-strict-mode))

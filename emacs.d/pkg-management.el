@@ -158,5 +158,4 @@
   :mode ("\\.scala\\'" . scala-mode)
   :interpreter ("scala" . scala-mode)
   :config
-  (add-hook 'scala-mode-hook #'subword-mode)
-  (add-hook 'scala-mode-hook #'smartparens-strict-mode))
+  (add-hook 'scala-mode-hook #'subword-mode))

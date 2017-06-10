@@ -1,7 +1,5 @@
 ;;;; pkg-management.el -- package management and package specific settings
 
-(require 'my-utils)
-
 ;;; Repos
 (setq package-archives
       '(("gnu" . "https://elpa.gnu.org/packages/")
@@ -18,6 +16,12 @@
 
 (use-package expand-region
   :bind ("M-M" . er/expand-region))
+
+(use-package smex
+  :config
+  (global-set-key (kbd "M-x") 'smex)
+  (global-set-key (kbd "M-X") 'smex-major-mode-commands)
+  (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command))
 
 (use-package win-switch
   :bind ("C-x o" . win-switch-dispatch)

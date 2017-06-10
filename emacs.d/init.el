@@ -13,39 +13,105 @@
   (let ((default-directory "~/.emacs.d/vendor"))
     (normal-top-level-add-subdirs-to-load-path)))
 
-;;; My utils
-(require 'my-utils)
+;; Variables
+(defvar my-clipboard-copy "xsel -b -i" "Shell clipboard copy command")
+(defvar my-clipboard-paste "xsel -b -o" "Shell clipboard paste command")
 
-(setq my-load-files
-  '("~/.emacs.d/pkg-management.el"
-    "~/.emacs.d/vendor/loaddefs.el"
-    "~/.emacs.local"))
+;;; Functions
+(defun filter-list (condp lst)
+  "Passes each element in LST to CONDP, and filters out the
+elements where the CONDP result is nil."
+  (delq nil
+        (mapcar (lambda (x)
+                  (and (funcall condp x) x))
+                lst)))
 
-(setq my-keybindings-alist
-  '(("C-x ," . recompile)
-    ("C-x C-b" . ibuffer)
-    ("C-x O" . other-window-back)
-    ("C-x g" . compile)
-    ("M-/" . hippie-expand)
-    ("M-C" . region-to-clipboard)
-    ("M-V" . paste-from-clipboard)
-    ("<f5>" . shrink-window-horizontally)
-    ("<f6>" . enlarge-window)
-    ("<f7>" . shrink-window)
-    ("<f8>" . enlarge-window-horizontally)))
+(defun string-ends-with (str ending)
+  "Return non-nil if STR ends with ENDING."
+  (string= (substring str (- 0 (length ending))) ending))
 
-(setq my-aliases-alist
-  '((dml . delete-matching-lines)
-    (dnml . delete-non-matching-lines)
-    (lml . list-matching-lines)
-    (qr . query-replace)
-    (qrr . query-replace-regexp)
-    (rr . replace-regexp)
-    (sgc . set-goal-column)
-    (sl . sort-lines)
-    (snf . sort-numeric-fields)
-    (sr . replace-string)
-    (yes-or-no-p . y-or-n-p)))
+(defun subdirectories-of-directory (directory &optional full match nosort)
+  "Gets a list of all the subdirectories in DIRECTORY. The
+parameters FULL, MATCH, and NOSORT work the same as in
+`directory-files-and-attributes`."
+  (filter-list (lambda (file)
+                  (and (eq (car (cdr file)) t)                 ; is directory
+                       (not (string-ends-with (car file) ".")) ; isn't "."
+                       (car file)))                            ; is not empty
+                (directory-files-and-attributes directory full match nosort)))
+
+(defun update-directory-loaddefs (directory)
+  "Scans the autoloads from all the subdirectories of DIRECTORY,
+and writes them to the loaddefs.el file of DIRECTORY"
+  (let* ((generated-autoload-file (concat directory "/loaddefs.el"))
+         (dirs-with-info (subdirectories-of-directory directory t))
+         (dirs (mapcar 'car dirs-with-info)))
+    (apply 'update-directory-autoloads dirs)))
+
+(defun kill-emacs-y-or-n-p (prompt)
+  "The prompt used when killing Emacs.
+Ask user a \"y or n\" question only when server has been started."
+  (or (not (fboundp 'server-running-p))
+      (not (server-running-p))
+      (y-or-n-p (concat "Server is running. " prompt))))
+
+;;; Commands
+(defun what-face (pos)
+  "Displays the current face name under the cursor."
+  (interactive "d")
+  (let ((face (or (get-char-property (point) 'read-face-name)
+                  (get-char-property (point) 'face))))
+    (if face (message "Face: %s" face)
+      (message "No face at %d" pos))))
+
+(defun region-to-clipboard (start end)
+  "Copies region contents to clipboard"
+  (interactive "r")
+  (if (display-graphic-p)
+      (clipboard-kill-ring-save start end)
+    (shell-command-on-region start end my-clipboard-copy))
+  (message "Region copied to clipboard"))
+
+(defun paste-from-clipboard ()
+  "Pastes clipboard contents to buffer"
+  (interactive)
+  (if (display-graphic-p)
+      (clipboard-yank)
+    (insert (shell-command-to-string my-clipboard-paste))))
+
+(defun update-vendor-loaddefs ()
+  "Update loaddefs.el file for vendor directory."
+  (interactive)
+  (update-directory-loaddefs "~/.emacs.d/vendor"))
+
+(defun toggle-delete-trailing-whitespace ()
+  "Toggles trailing whitespace deletion during save."
+  (interactive)
+  (if (member 'delete-trailing-whitespace before-save-hook)
+      (remove-hook 'before-save-hook 'delete-trailing-whitespace)
+    (add-hook 'before-save-hook 'delete-trailing-whitespace)))
+
+(defun org-file ()
+  "Open a file from the Org directory."
+  (interactive)
+  (let ((default-directory (concat org-directory "/")))
+    (call-interactively 'ido-find-file)))
+
+;;; Bindings
+(global-set-key (kbd "C-x ,") 'recompile)
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+(global-set-key (kbd "C-x O") 'other-window-back)
+(global-set-key (kbd "C-x g") 'compile)
+(global-set-key (kbd "M-/") 'hippie-expand)
+(global-set-key (kbd "M-C") 'region-to-clipboard)
+(global-set-key (kbd "M-V") 'paste-from-clipboard)
+(global-set-key (kbd "<f5>") 'shrink-window-horizontally)
+(global-set-key (kbd "<f6>") 'enlarge-window)
+(global-set-key (kbd "<f7>") 'shrink-window)
+(global-set-key (kbd "<f8>") 'enlarge-window-horizontally)
+
+;;; Aliases
+(defalias 'yes-or-no-p 'y-or-n-p)
 
 ;;; Environment variables
 (setenv "PAGER" "/bin/cat")
@@ -96,6 +162,16 @@
 (add-hook 'mail-mode-hook #'ms-mail)
 
 ;; IDO
+(defconst ido-decorations-horizontal
+  '("{" "}" " | " " | ..." "[" "]" " [No match]" " [Matched]" " [Not readable]"
+    " [Too big]" " [Confirm]")
+  "Ido decorations for horizontal listing.")
+
+(defconst ido-decorations-vertical
+  '("\n-> " "" "\n " "\n ..." "[" "]" " [No match]" " [Matched]"
+    " [Not readable]" " [Too big]" " [Confirm]")
+  "Ido decorations for vertical listing.")
+
 (setq ido-enable-flex-matching t
       ido-everywhere t
       ido-case-fold t
@@ -103,10 +179,27 @@
       ido-default-buffer-method 'selected-window
       ido-use-filename-at-point 'guess
       ido-auto-merge-delay-time 9999)
+
 (define-key ido-file-completion-map (kbd "C-c C-s")
   (lambda ()
     (interactive)
     (ido-initiate-auto-merge (current-buffer))))
+
+(defun ido-disable-line-truncation ()
+  (set (make-local-variable 'truncate-lines) nil))
+
+(defun ido-vertical (&optional arg)
+  "Switches between vertical and horizontal style of listing in
+IDO. Always switches to vertical style if ARG is non-nil."
+  (interactive)
+  (if (or arg (not (string= (substring (car ido-decorations) 0 1) "\n")))
+      (progn ;; Set vertical
+        (setq ido-decorations ido-decorations-vertical)
+        (add-hook 'ido-minibuffer-setup-hook 'ido-disable-line-truncation))
+    (progn ;; Set horizontal
+      (setq ido-decorations ido-decorations-horizontal)
+      (remove-hook 'ido-minibuffer-setup-hook 'ido-disable-line-truncation))))
+
 (ido-vertical t) ; vertical by default
 
 ;; IBuffer
@@ -241,9 +334,8 @@
 
 ;;; Menu bar only on GUI mode
 (defun my-menu-bar-for-frame (frame)
-  (if (memq (window-system frame) '(ns x))
-      (set-frame-parameter frame 'menu-bar-lines 1)
-    (set-frame-parameter frame 'menu-bar-lines 0)))
+  (set-frame-parameter frame 'menu-bar-lines
+                       (if (memq (window-system frame) '(ns x)) 1 0)))
 (add-hook 'after-make-frame-functions 'my-menu-bar-for-frame)
 (menu-bar-mode (if (display-graphic-p) 1 -1))
 
@@ -282,9 +374,10 @@
   (setq mac-right-option-modifier nil))
 
 ;;; Load my stuff
-(set-my-keybindings)
-(set-my-aliases)
-(load-my-load-files)
+(mapc (lambda (filename) (load filename t t t))
+      '("~/.emacs.d/pkg-management.el"
+        "~/.emacs.d/vendor/loaddefs.el"
+        "~/.emacs.local"))
 
 ;;; Customizations
 (custom-set-variables
@@ -294,7 +387,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (elm-mode ox-pandoc htmlize yaml-mode win-switch utop use-package smartparens scala-mode2 scala-mode sbt-mode rust-mode paredit markdown-mode magit less-css-mode js2-mode js-comint iedit groovy-mode gradle-mode go-mode ghc fuzzy flymake-python-pyflakes expand-region exec-path-from-shell erlang auctex ag ac-cider))))
+    (smex elm-mode ox-pandoc htmlize yaml-mode win-switch utop use-package scala-mode2 scala-mode sbt-mode rust-mode paredit markdown-mode magit less-css-mode js2-mode js-comint iedit groovy-mode gradle-mode go-mode ghc fuzzy flymake-python-pyflakes expand-region exec-path-from-shell erlang auctex ag ac-cider))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

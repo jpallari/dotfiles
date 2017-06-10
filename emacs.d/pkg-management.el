@@ -35,37 +35,15 @@
   (win-switch-add-key "K" 'enlarge-vertically)
   (win-switch-add-key "i" 'split-horizontally))
 
-(use-package smartparens
-  :bind (:map smartparens-mode-map
-              ("C-M-f" . sp-forward-sexp)
-              ("C-M-b" . sp-backward-sexp)
-              ("C-M-d" . sp-down-sexp)
-              ("C-M-a" . sp-backward-down-sexp)
-              ("C-S-d" . sp-beginning-of-sexp)
-              ("C-S-a" . sp-end-of-sexp)
-              ("C-M-e" . sp-up-sexp)
-              ("C-M-u" . sp-backward-up-sexp)
-              ("C-M-t" . sp-transpose-sexp)
-              ("C-M-n" . sp-next-sexp)
-              ("C-M-p" . sp-previous-sexp)
-              ("C-M-k" . sp-kill-sexp)
-              ("C-M-w" . sp-copy-sexp)
-              ("M-<delete>" . sp-unwrap-sexp)
-              ("C-<right>" . sp-forward-slurp-sexp)
-              ("C-<left>" . sp-forward-barf-sexp)
-              ("C-M-<left>" . sp-backward-slurp-sexp)
-              ("C-M-<right>" . sp-backward-barf-sexp)
-              ("M-D" . sp-splice-sexp)
-              ("M-F" . sp-forward-symbol)
-              ("M-B" . sp-backward-symbol))
-  :config
-  (require 'smartparens-config)
-  (add-to-hooks
-   'smartparens-strict-mode
-   '(emacs-lisp-mode-hook
-     lisp-mode-hook
-     ielm-mode-hook
-     lisp-interaction-mode-hook)))
+(use-package paredit
+  :diminish paredit-mode
+  :init
+  (add-hook 'clojure-mode-hook #'enable-paredit-mode)
+  (add-hook 'cider-repl-mode-hook #'enable-paredit-mode)
+  (add-hook 'lisp-mode-hook #'enable-paredit-mode)
+  (add-hook 'emacs-lisp-mode-hook #'enable-paredit-mode)
+  (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
+  (add-hook 'ielm-mode-hook #'enable-paredit-mode))
 
 (use-package iedit
   :bind ("M-N" . iedit-mode))
@@ -95,11 +73,9 @@
   (use-package cider
     :commands cider-minor-mode
     :init
-    (add-hook 'cider-mode-hook #'eldoc-mode)
-    (add-hook 'cider-mode-hook #'smartparens-strict-mode))
+    (add-hook 'cider-mode-hook #'eldoc-mode))
   :config
-  (add-hook 'clojure-mode-hook #'eldoc-mode)
-  (add-hook 'clojure-mode-hook #'smartparens-strict-mode))
+  (add-hook 'clojure-mode-hook #'eldoc-mode))
 
 (use-package haskell-mode
   :mode "\\.hs\\'"
@@ -114,8 +90,7 @@
                 haskell-indentation-ifte-offset 4)
   (add-hook 'haskell-mode-hook #'turn-on-haskell-indendation)
   (add-hook 'haskell-mode-hook #'turn-on-haskell-doc)
-  (add-hook 'haskell-mode-hook #'subword-mode)
-  (add-hook 'haskell-mode-hook #'smartparens-strict-mode))
+  (add-hook 'haskell-mode-hook #'subword-mode))
 
 (use-package AucTex
   :defer t
@@ -151,8 +126,7 @@
       (lambda (output)
         (replace-regexp-in-string "\e\\[[0-9]+[GKJ]" "" output)))
      (setq comint-process-echoes t)))
-  (add-hook 'js2-mode-hook #'subword-mode)
-  (add-hook 'js2-mode-hook #'smartparens-strict-mode))
+  (add-hook 'js2-mode-hook #'subword-mode))
 
 (use-package scala-mode
   :mode ("\\.scala\\'" . scala-mode)

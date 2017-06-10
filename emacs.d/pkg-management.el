@@ -81,6 +81,9 @@
   :config
   (add-hook 'clojure-mode-hook #'eldoc-mode))
 
+(use-package go-mode
+  :mode "\\.go\\'")
+
 (use-package haskell-mode
   :mode "\\.hs\\'"
   :bind (:map haskell-mode-map
@@ -137,3 +140,10 @@
   :interpreter ("scala" . scala-mode)
   :config
   (add-hook 'scala-mode-hook #'subword-mode))
+
+(use-package exec-path-from-shell
+  :init
+  (add-hook 'after-init-hook
+            '(lambda ()
+               (when (display-graphic-p)
+                 (exec-path-from-shell-initialize)))))

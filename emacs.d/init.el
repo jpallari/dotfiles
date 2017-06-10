@@ -48,13 +48,6 @@ and writes them to the loaddefs.el file of DIRECTORY"
          (dirs (mapcar 'car dirs-with-info)))
     (apply 'update-directory-autoloads dirs)))
 
-(defun kill-emacs-y-or-n-p (prompt)
-  "The prompt used when killing Emacs.
-Ask user a \"y or n\" question only when server has been started."
-  (or (not (fboundp 'server-running-p))
-      (not (server-running-p))
-      (y-or-n-p (concat "Server is running. " prompt))))
-
 ;;; Commands
 (defun what-face (pos)
   "Displays the current face name under the cursor."
@@ -138,20 +131,18 @@ Ask user a \"y or n\" question only when server has been started."
 ;;; Automode
 (add-to-list 'auto-mode-alist '("\\.emacs.local$" . emacs-lisp-mode))
 
-;;; Settings
-
-;; Auto saving
+;;; Auto saving
 (setq backup-inhibited t
       auto-save-default nil
       auto-save-visited-file-name t
       auto-save-interval 0
       auto-save-timeout 4)
 
-;; Compilation
+;;; Compilation
 (setq compilation-ask-about-save nil
       compilation-save-buffers-predicate '(lambda () nil))
 
-;; Email
+;;; Email
 (setq sendmail-program "/usr/bin/msmtp"
       message-send-mail-function 'message-send-mail-with-sendmail)
 
@@ -161,7 +152,7 @@ Ask user a \"y or n\" question only when server has been started."
 
 (add-hook 'mail-mode-hook #'ms-mail)
 
-;; IDO
+;;; IDO
 (defconst ido-decorations-horizontal
   '("{" "}" " | " " | ..." "[" "]" " [No match]" " [Matched]" " [Not readable]"
     " [Too big]" " [Confirm]")
@@ -202,7 +193,7 @@ IDO. Always switches to vertical style if ARG is non-nil."
 
 (ido-vertical t) ; vertical by default
 
-;; IBuffer
+;;; IBuffer
 (setq ibuffer-saved-filter-groups
       '(("default"
          ("Org" (mode . org-mode))
@@ -229,7 +220,7 @@ IDO. Always switches to vertical style if ARG is non-nil."
 
 (add-hook 'ibuffer-mode-hook #'ms-ibuffer)
 
-;; Hippie expand
+;;; Hippie expand
 (setq hippie-expand-try-functions-list
       '(try-complete-file-name-partially
         try-complete-file-name
@@ -241,33 +232,40 @@ IDO. Always switches to vertical style if ARG is non-nil."
         try-complete-lisp-symbol-partially
         try-complete-lisp-symbol))
 
-;; TRAMP
+;;; TRAMP
 (setq tramp-default-method "sshx"
       tramp-chunkzise 500
       tramp-shell-prompt-pattern "^[^$>\n]*[#$%>] *\\(\[[0-9;]*[a-zA-Z] *\\)*")
 
-;; Bell
+;;; Bell
 (setq visible-bell nil
       ring-bell-function 'ignore)
 
-;; Killing Emacs
+;;; Killing Emacs
+(defun kill-emacs-y-or-n-p (prompt)
+  "The prompt used when killing Emacs.
+Ask user a \"y or n\" question only when server has been started."
+  (or (not (fboundp 'server-running-p))
+      (not (server-running-p))
+      (y-or-n-p (concat "Server is running. " prompt))))
+
 (setq confirm-kill-emacs
       'kill-emacs-y-or-n-p)
 
-;; Indentation
+;;; Indentation
 (setq-default tab-width 4
               indent-tabs-mode nil
               fill-column 80
               whitespace-style '(face trailing lines-tail)
               cursor-type 'bar)
 
-;; Enable disabled features
+;;; Enable disabled features
 (put 'downcase-region 'disabled nil)
 (put 'set-goal-column 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
 (put 'dired-find-alternate-file 'disabled nil)
 
-;; Comint
+;;; Comint
 (setq-default comint-completion-addsuffix t
               comint-completion-autolist t
               comint-input-ignoredups t
@@ -275,7 +273,7 @@ IDO. Always switches to vertical style if ARG is non-nil."
               comint-scroll-to-bottom-on-input t
               comint-scroll-to-bottom-on-output t)
 
-;; Python
+;;; Python
 (setq-default python-indent-offset 4)
 
 (defun ms-python ()
@@ -293,16 +291,16 @@ IDO. Always switches to vertical style if ARG is non-nil."
 
 (add-hook 'python-mode-hook #'ms-python)
 
-;; JavaScript
+;;; JavaScript
 (setq-default js-indent-level 2)
 
-;; ORG
+;;; ORG
 (setq-default org-hide-leading-stars t)
 
-;; CSS
+;;; CSS
 (setq-default css-indent-offset 2)
 
-;; EShell
+;;; EShell
 (defun ms-eshell ()
   "EShell hook function"
   (setq eshell-prompt-function (lambda () "$ "))
@@ -313,14 +311,14 @@ IDO. Always switches to vertical style if ARG is non-nil."
 
 (add-hook 'eshell-mode-hook #'ms-eshell)
 
-;; CC mode
+;;; CC mode
 (setq-default c-default-style
               '((java-mode . "java")
                 (awk-mode . "awk")
                 (other . "k&r"))
               c-basic-offset 4)
 
-;; Misc
+;;; Misc settings
 (setq inhibit-splash-screen t
       completion-cycle-threshold 0
       x-select-enable-clipboard t
@@ -344,17 +342,14 @@ IDO. Always switches to vertical style if ARG is non-nil."
 (define-key input-decode-map "\e[1;5B" (kbd "C-<down>"))
 (define-key input-decode-map "\e[1;5C" (kbd "C-<right>"))
 (define-key input-decode-map "\e[1;5D" (kbd "C-<left>"))
-
 (define-key input-decode-map "\e[1;3A" (kbd "M-<up>"))
 (define-key input-decode-map "\e[1;3B" (kbd "M-<down>"))
 (define-key input-decode-map "\e[1;3C" (kbd "M-<right>"))
 (define-key input-decode-map "\e[1;3D" (kbd "M-<left>"))
-
 (define-key input-decode-map "\e[1;2A" (kbd "S-<up>"))
 (define-key input-decode-map "\e[1;2B" (kbd "S-<down>"))
 (define-key input-decode-map "\e[1;2C" (kbd "S-<right>"))
 (define-key input-decode-map "\e[1;2D" (kbd "S-<left>"))
-
 (define-key input-decode-map "\e[1;7A" (kbd "C-M-<up>"))
 (define-key input-decode-map "\e[1;7B" (kbd "C-M-<down>"))
 (define-key input-decode-map "\e[1;7C" (kbd "C-M-<right>"))

@@ -30,11 +30,16 @@ else
     alias ls='ls -F'
 fi
 
+if [ -f "$HOME/.emacs.d/fast-init.el" ]; then
+    alias emacs="emacs -nw -Q -l $HOME/.emacs.d/fast-init.el"
+else
+    alias emacs="emacs -nw"
+fi
+
 alias ll='ls -lh'
 alias grep='grep --color=auto'
 alias jk='tmux attach -d'
 alias sudo='sudo '
-alias emacs="emacs -nw -Q -l $HOME/.emacs.d/fast-init.el"
 alias remacs='emacsclient -n'
 
 # functions

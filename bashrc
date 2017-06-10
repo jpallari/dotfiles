@@ -42,6 +42,11 @@ alias jk='tmux attach -d'
 alias sudo='sudo '
 alias remacs='emacsclient -n'
 
+# VTE
+if [ "$VTE_VERSION" ] && [ -f /etc/profile.d/vte.sh ]; then
+    . /etc/profile.d/vte.sh
+fi
+
 # functions
 loadbashcompl() {
     local files=(
@@ -145,6 +150,11 @@ __my_prompt_command() {
         xterm*) set_window_title "$title" ;;
         *)
     esac
+
+    # Include VTE specific additions
+    if hash __vte_prompt_command 2>/dev/null; then
+        __vte_prompt_command
+    fi
 }
 
 # exports

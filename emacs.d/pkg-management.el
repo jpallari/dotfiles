@@ -86,7 +86,7 @@
   :init
   (add-hook 'before-save-hook #'gofmt-before-save)
   :config
-  (add-hook 'go-mode-hook #'electric-pair-mode)
+  (add-hook 'go-mode-hook #'electric-pair-local-mode)
   (add-hook 'go-mode-hook #'subword-mode))
 
 (use-package go-eldoc
@@ -106,6 +106,7 @@
                 haskell-indentation-ifte-offset 4)
   (add-hook 'haskell-mode-hook #'turn-on-haskell-indendation)
   (add-hook 'haskell-mode-hook #'turn-on-haskell-doc)
+  (add-hook 'haskell-mode-hook #'electric-pair-local-mode)
   (add-hook 'haskell-mode-hook #'subword-mode))
 
 (use-package AucTex
@@ -142,12 +143,14 @@
       (lambda (output)
         (replace-regexp-in-string "\e\\[[0-9]+[GKJ]" "" output)))
      (setq comint-process-echoes t)))
+  (add-hook 'js2-mode-hook #'electric-pair-local-mode)
   (add-hook 'js2-mode-hook #'subword-mode))
 
 (use-package scala-mode
   :mode ("\\.scala\\'" . scala-mode)
   :interpreter ("scala" . scala-mode)
   :config
+  (add-hook 'scala-mode-hook #'electric-pair-local-mode)
   (add-hook 'scala-mode-hook #'subword-mode))
 
 (use-package exec-path-from-shell

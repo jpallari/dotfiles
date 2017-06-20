@@ -290,6 +290,7 @@ Ask user a \"y or n\" question only when server has been started."
              (buffer-file-name (get-buffer buffer))))))
 
 (add-hook 'python-mode-hook #'ms-python)
+(add-hook 'python-mode-hook #'electric-pair-local-mode)
 
 ;;; JavaScript
 (setq-default js-indent-level 2)

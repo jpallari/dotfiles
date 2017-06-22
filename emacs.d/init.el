@@ -127,6 +127,7 @@ and writes them to the loaddefs.el file of DIRECTORY"
 (winner-mode 1)
 (delete-selection-mode 1)
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+(when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 
 ;;; Automode
 (add-to-list 'auto-mode-alist '("\\.emacs.local$" . emacs-lisp-mode))

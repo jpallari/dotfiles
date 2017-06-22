@@ -357,6 +357,10 @@ Ask user a \"y or n\" question only when server has been started."
 (define-key input-decode-map "\e[1;7C" (kbd "C-M-<right>"))
 (define-key input-decode-map "\e[1;7D" (kbd "C-M-<left>"))
 
+;;; Assuming all terminals have dark background
+(unless (display-graphic-p)
+  (setq frame-background-mode 'dark))
+
 ;;; OS X specific customizations
 (when (eq system-type 'darwin)
   ;; Custom bindings

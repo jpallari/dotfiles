@@ -6,3 +6,17 @@ emacs.d/*
 !emacs.d/fast-init.el
 !emacs.d/pkg-management.el
 !emacs.d/elisp
+weechat/*
+!weechat/alias.conf
+!weechat/aspell.conf
+!weechat/buflist.conf
+!weechat/charset.conf
+!weechat/exec.conf
+!weechat/fifo.conf
+!weechat/irc.conf
+!weechat/logger.conf
+!weechat/plugins.conf
+!weechat/relay.conf
+!weechat/script.conf
+!weechat/trigger.conf
+!weechat/xfer.conf

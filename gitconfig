@@ -18,3 +18,5 @@
 	default = upstream
 [branch]
 	autosetupmerge = false
+[core]
+	excludesfile = ~/.gitignore_global

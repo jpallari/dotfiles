@@ -524,7 +524,7 @@ Ask user a \"y or n\" question only when server has been started."
   (add-hook 'scala-mode-hook #'subword-mode))
 
 (use-package exec-path-from-shell
-  :if (memq window-system '(mac ns))
+  :if (memq window-system '(mac ns x))
   :config
   (exec-path-from-shell-initialize))
 

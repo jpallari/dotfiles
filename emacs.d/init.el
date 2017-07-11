@@ -126,6 +126,7 @@ and writes them to the loaddefs.el file of DIRECTORY"
 (ido-mode 1)
 (winner-mode 1)
 (delete-selection-mode 1)
+(electric-pair-mode 1)
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 
@@ -291,7 +292,6 @@ Ask user a \"y or n\" question only when server has been started."
              (buffer-file-name (get-buffer buffer))))))
 
 (add-hook 'python-mode-hook #'ms-python)
-(add-hook 'python-mode-hook #'electric-pair-local-mode)
 
 ;;; JavaScript
 (setq-default js-indent-level 2)
@@ -456,7 +456,6 @@ Ask user a \"y or n\" question only when server has been started."
   :init
   (add-hook 'before-save-hook #'gofmt-before-save)
   :config
-  (add-hook 'go-mode-hook #'electric-pair-local-mode)
   (add-hook 'go-mode-hook #'subword-mode))
 
 (use-package go-eldoc
@@ -476,7 +475,6 @@ Ask user a \"y or n\" question only when server has been started."
                 haskell-indentation-ifte-offset 4)
   (add-hook 'haskell-mode-hook #'turn-on-haskell-indendation)
   (add-hook 'haskell-mode-hook #'turn-on-haskell-doc)
-  (add-hook 'haskell-mode-hook #'electric-pair-local-mode)
   (add-hook 'haskell-mode-hook #'subword-mode))
 
 (use-package AucTex
@@ -513,14 +511,12 @@ Ask user a \"y or n\" question only when server has been started."
       (lambda (output)
         (replace-regexp-in-string "\e\\[[0-9]+[GKJ]" "" output)))
      (setq comint-process-echoes t)))
-  (add-hook 'js2-mode-hook #'electric-pair-local-mode)
   (add-hook 'js2-mode-hook #'subword-mode))
 
 (use-package scala-mode
   :mode ("\\.scala\\'" . scala-mode)
   :interpreter ("scala" . scala-mode)
   :config
-  (add-hook 'scala-mode-hook #'electric-pair-local-mode)
   (add-hook 'scala-mode-hook #'subword-mode))
 
 (use-package exec-path-from-shell

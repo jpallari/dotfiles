@@ -523,6 +523,21 @@ Ask user a \"y or n\" question only when server has been started."
   :config
   (exec-path-from-shell-initialize))
 
+(use-package projectile
+  :config
+  (if (fboundp 'neotree-projectile-action)
+      (setq projectile-switch-project-action 'neotree-projectile-action))
+  (projectile-global-mode t))
+
+(use-package neotree
+  :bind ("<f9>" . neotree-toggle)
+  :config
+  (setq neo-autorefresh nil
+        neo-force-change-root t
+        neo-show-hidden-files t
+        neo-toggle-window-keep-p t
+        neo-vc-integration '(face char)))
+
 ;;; Load my stuff
 (mapc (lambda (filename) (load filename t t t))
       '("~/.emacs.d/vendor/loaddefs.el"

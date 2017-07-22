@@ -562,8 +562,15 @@ Ask user a \"y or n\" question only when server has been started."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(default ((((type graphic)) (:background "#282a36" :foreground "#eeeefa" :height 90))))
+ '(aw-leading-char-face ((t (:background "red" :foreground "white" :height 2.0))))
  '(fringe ((t nil)))
- '(magit-item-highlight ((t nil)) t))
+ '(magit-item-highlight ((t nil)) t)
+ '(mode-line ((((type graphic)) (:background "#484a76" :foreground "#ffffff" :box (:line-width -1 :style released-button)))))
+ '(mode-line-buffer-id ((((type graphic)) (:foreground "green"))))
+ '(mode-line-inactive ((((type graphic)) (:inherit mode-line :background "#383a76" :foreground "#aaaaaa" :box (:line-width -1 :color "#484a76") :weight light))))
+ '(region ((t (:background "#aaaaff" :foreground "#333333"))))
+ '(vertical-border ((((type graphic)) (:foreground "#484a56")))))
 
 ;;; Encoding
 (prefer-coding-system 'utf-8)

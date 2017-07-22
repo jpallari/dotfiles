@@ -538,6 +538,11 @@ Ask user a \"y or n\" question only when server has been started."
         neo-toggle-window-keep-p t
         neo-vc-integration '(face char)))
 
+(use-package ace-window
+  :bind ("M-P" . ace-window)
+  :config
+  (setq aw-background nil))
+
 ;;; Load my stuff
 (mapc (lambda (filename) (load filename t t t))
       '("~/.emacs.d/vendor/loaddefs.el"
@@ -551,7 +556,7 @@ Ask user a \"y or n\" question only when server has been started."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (neotree projectile terraform-mode smex elm-mode ox-pandoc htmlize yaml-mode win-switch utop use-package scala-mode2 scala-mode sbt-mode rust-mode paredit markdown-mode magit less-css-mode js2-mode js-comint iedit groovy-mode gradle-mode go-mode ghc fuzzy expand-region exec-path-from-shell auctex ag ac-cider clojure-mode cider go-rename go-eldoc go-autocomplete auto-complete))))
+    (ace-window neotree projectile terraform-mode smex elm-mode ox-pandoc htmlize yaml-mode win-switch utop use-package scala-mode2 scala-mode sbt-mode rust-mode paredit markdown-mode magit less-css-mode js2-mode js-comint iedit groovy-mode gradle-mode go-mode ghc fuzzy expand-region exec-path-from-shell auctex ag ac-cider clojure-mode cider go-rename go-eldoc go-autocomplete auto-complete))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

@@ -5,7 +5,7 @@ log_msg() {
 }
 
 cmd_exists() {
-    type "$1" 1>/dev/null 2>&1
+    hash "$1" 2>&1
 }
 
 no_clipboard_found() {
@@ -40,7 +40,7 @@ main() {
         p|paste)
             paste_to_stdout ;;
         *)
-            log_msg "usage: $0 (copy|paste)"
+            log_msg "usage: $(basename "$0") (copy|paste)"
             return 1
             ;;
     esac

@@ -36,10 +36,12 @@ else
     alias emacs="emacs -nw"
 fi
 
+if hash gpg2 2>/dev/null; then
+    alias gpg=gpg2
+fi
+
 alias ll='ls -lh'
 alias grep='grep --color=auto'
-alias jk='tmux attach -d'
-alias sudo='sudo '
 alias remacs='emacsclient -n'
 
 # VTE
@@ -64,7 +66,7 @@ loadbashcompl() {
     done
 
     if [ "$loaded" = 0 ]; then
-        echo 'No bash completion available'
+        echo 'No bash completion available' 1>&2
     fi
 }
 
@@ -158,11 +160,21 @@ __my_prompt_command() {
 }
 
 # exports
-export PROMPT_COMMAND=__my_prompt_command
-export PAGER=less
-export EDITOR="emacs -nw"
-export VISUAL="$EDITOR"
 export NOTES_FILE="$HOME/.notes.txt"
+export PROMPT_COMMAND=__my_prompt_command
+
+if hash emacs 2>/dev/null; then
+    export EDITOR="emacs -nw"
+    export VISUAL="$EDITOR"
+fi
+
+if [ "$TERM" != "dumb" ] && hash less 2>/dev/null; then
+    export PAGER=less
+fi
+
+case "$COLORTERM" in
+    "gnome-terminal"|"xfce4-terminal") export TERM="xterm-256color" ;;
+esac
 
 # custom paths. customize in ~/.local.sh
 export CUSTOM_PATHS=(

@@ -194,6 +194,21 @@ if [ -z "$CUSTOM_PATHS_SET" ]; then
     export CUSTOM_PATHS_SET=1
 fi
 
+# OPAM configuration
+if [ -f "$HOME/.opam/opam-init/init.sh" ] && hash opam 2>/dev/null; then
+   . "$HOME/.opam/opam-init/init.sh" > /dev/null 2> /dev/null || true
+   eval $(opam config env)
+fi
+
+# SDK man
+if [ -f "$HOME/.sdkman/bin/sdkman-init.sh" ]; then
+    export SDKMAN_DIR="$HOME/.sdkman"
+    . "$HOME/.sdkman/bin/sdkman-init.sh"
+fi
+
+# Bash completion
+loadbashcompl
+
 # Who? Where?
 echo -e "User : \e[92m${USER} \e[94m@ \e[96m${HOSTNAME}\e[39m"
 echo -e "Dir  : \e[36m$(dirname "$PWD")/\e[93m$(basename "$PWD")\e[39m"

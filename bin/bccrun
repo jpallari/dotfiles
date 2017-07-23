@@ -1,0 +1,69 @@
+#!/bin/sh
+
+if [ ! "$BCC_DIR" ]; then
+    BCC_DIR="/usr/share/bcc"
+fi
+
+list_tools() {
+    find "$BCC_DIR/tools" \
+         -maxdepth 1 \
+         -executable \
+         -type f \
+         -printf '%f\n' \
+        | sort \
+        | awk 'ORS=NR%4?FS:RS' \
+        | column -t \
+        | sed 's/^/    /'
+}
+
+print_help() {
+    local runner=$(basename "$0")
+    cat <<EOF 1>&2
+BCC tool runner -- Executes BCC tool with sudo privileges
+
+usage:
+    $runner help|h
+    $runner man TOOL
+    $runner TOOL PARAMS
+
+Parameters:
+    TOOL        BCC tool that is executed
+    PARAMS      Parameters for the tool
+
+Environment variables:
+    BCC_DIR     The directory where BCC is installed to
+                default: /usr/share/bcc
+
+Available tools:
+
+$(list_tools)
+EOF
+}
+
+run_tool() {
+    local tool="$1"
+    local toolpath="$BCC_DIR/tools/$tool"
+    shift
+
+    if [ -x "$toolpath" ]; then
+        sudo "$toolpath" "$@"
+    else
+        echo "No such BCC tool: $tool" 1>&2
+        return 1
+    fi
+}
+
+show_tool_man() {
+    MANPATH="$MANPATH:$BCC_DIR/man"
+    man "$1"
+}
+
+main() {
+    case "$1" in
+        help|h|"") print_help ;;
+        man) show_tool_man "$2" ;;
+        *) run_tool "$@" ;;
+    esac
+}
+
+main "$@"

@@ -94,6 +94,7 @@ and writes them to the loaddefs.el file of DIRECTORY"
 (global-set-key (kbd "C-x ,") 'recompile)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 (global-set-key (kbd "C-x O") 'other-window-back)
+(global-set-key (kbd "M-O") 'mode-line-other-buffer)
 (global-set-key (kbd "C-x g") 'compile)
 (global-set-key (kbd "M-/") 'hippie-expand)
 (global-set-key (kbd "M-C") 'region-to-clipboard)

@@ -366,6 +366,7 @@ Ask user a \"y or n\" question only when server has been started."
   ;; Custom bindings
   (global-unset-key (kbd "s-q"))
   (global-unset-key (kbd "s-w"))
+  (global-unset-key (kbd "s-p"))
   (global-set-key (kbd "s-<right>") 'move-end-of-line)
   (global-set-key (kbd "s-<left>") 'move-beginning-of-line)
   (global-set-key (kbd "s-<up>") 'beginning-of-buffer)

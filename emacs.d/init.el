@@ -537,6 +537,8 @@ Ask user a \"y or n\" question only when server has been started."
         neo-force-change-root t
         neo-show-hidden-files t
         neo-toggle-window-keep-p t
+        neo-window-width 40
+        neo-window-fixed-size nil
         neo-vc-integration '(face char)))
 
 (use-package ace-window

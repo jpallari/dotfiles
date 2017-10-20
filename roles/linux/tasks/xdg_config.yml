@@ -1,0 +1,18 @@
+- name: Check if config already exists for {{ xdg_config_item }}
+  stat: path="{{ xdg_config_path }}/{{ xdg_config_item }}"
+  register: prevfile
+  failed_when: False
+
+- name: Backup previous {{ xdg_config_item }}
+  command: mv {{ xdg_config_path|quote }}/{{ xdg_config_item }} {{ xdg_config_path|quote }}/{{ xdg_config_item }}.bak
+  args:
+    creates: "{{ xdg_config_path }}/{{ xdg_config_item }}.bak"
+  when:
+    - prevfile.stat.exists
+    - not prevfile.stat.islnk
+
+- name: Create a symlink for {{ xdg_config_item }}
+  file:
+    src: "{{ dotfiles_path }}/{{ xdg_config_item }}"
+    dest: "{{ xdg_config_path }}/{{ xdg_config_item }}"
+    state: link

@@ -1,0 +1,16 @@
+---
+- hosts: local
+  vars:
+    - symlink_items:
+      - emacs.d
+      - bashrc
+      - inputrc
+      - tmux.conf
+      - vimrc
+      - Xresources
+    - xdg_config_items:
+      - i3
+      - i3status
+  roles:
+    - common
+    - linux

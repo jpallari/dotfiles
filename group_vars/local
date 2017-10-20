@@ -1,0 +1,14 @@
+# User's home directory
+user_home: "{{ '~' | expanduser }}"
+
+# Dotfiles directory inside user home directory
+dotfiles_dir: Projects/dotfiles
+
+# Full path of the dotfiles directory
+dotfiles_path: "{{ user_home }}/{{ dotfiles_dir }}"
+
+# XDG Config directory
+xdg_config_dir: .config
+
+# Full path to users XDG config directory
+xdg_config_path: "{{ user_home }}/{{ xdg_config_dir }}"

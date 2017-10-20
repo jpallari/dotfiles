@@ -20,3 +20,4 @@ weechat/*
 !weechat/script.conf
 !weechat/trigger.conf
 !weechat/xfer.conf
+*.retry

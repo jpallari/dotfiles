@@ -1,0 +1,2 @@
+- include_tasks: xdg_config.yml xdg_config_item="{{ item }}"
+  with_items: "{{ xdg_config_items }}"

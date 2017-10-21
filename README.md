@@ -2,16 +2,15 @@
 
 Here's a bunch of my dotfiles. Some of them I've built myself and some of the
 stuff is recycled from other people's files. Feel free to grab any part of
-these configurations for your own use. Here are the stuff I have configurations
-for:
+these configurations for your own use.
 
-- [Emacs][]
-- [Bash][]
-- [Tmux][]
-- [Readline][]
-- Xresources
+## Installation
 
-[Emacs]: https://www.gnu.org/software/emacs/
-[Bash]: http://www.gnu.org/software/bash/
-[Tmux]: http://tmux.sourceforge.net/
-[Readline]: http://www.gnu.org/software/readline/
+Installation is done using [Ansible](https://www.ansible.com/).
+Clone this repo and the following command on Linux:
+
+    $ ansible-playbook -i hosts linux_playbook.yml
+
+On OS X, run the following:
+
+    $ ansible-playbook -i hosts osx_playbook.yml

@@ -1,0 +1,15 @@
+---
+- hosts: local
+  vars:
+    - symlink_items:
+      - emacs.d
+      - bashrc
+      - inputrc
+      - tmux.conf
+      - vimrc
+    - vscode_config_dir: Library/Application Support/Code
+  roles:
+    - role: common
+      tags: common
+    - role: vscode
+      tags: vscode

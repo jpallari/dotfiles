@@ -1,0 +1,15 @@
+{
+    "editor.fontSize": 14,
+    "workbench.colorTheme": "Visual Studio Light",
+    "files.autoSave": "afterDelay",
+    "workbench.startupEditor": "newUntitledFile",
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "**/*.class": true,
+        "**/.idea": true
+    },
+    "window.restoreWindows": "all",
+    "window.menuBarVisibility": "toggle",
+    "telemetry.enableTelemetry": false
+}

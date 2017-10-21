@@ -1,0 +1,25 @@
+- name: Check if VSCode settings exists
+  stat: path="{{ user_home }}/{{ vscode_config_dir }}/User/settings.json"
+  register: vscode_settings
+  failed_when: False
+
+- name: Merge VSCode user settings
+  script: >
+    vscode_config_merge.py -t settings
+    -o {{ user_home }}/{{ vscode_config_dir|quote }}/User/settings.json
+    {{ user_home }}/{{ vscode_config_dir|quote }}/User/settings.json
+    {{ dotfiles_path }}/vscode/settings.json
+  when: vscode_settings.stat.exists
+
+- name: Check if VSCode keybindings exists
+  stat: path="{{ user_home }}/{{ vscode_config_dir }}/User/keybindings.json"
+  register: vscode_keybindings
+  failed_when: False
+
+- name: Merge VSCode keybindings
+  script: >
+    vscode_config_merge.py -t keybindings
+    -o {{ user_home }}/{{ vscode_config_dir|quote }}/User/keybindings.json
+    {{ user_home }}/{{ vscode_config_dir|quote }}/User/keybindings.json
+    {{ dotfiles_path }}/vscode/keybindings.json
+  when: vscode_keybindings.stat.exists

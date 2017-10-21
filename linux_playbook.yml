@@ -11,6 +11,11 @@
     - xdg_config_items:
       - i3
       - i3status
+    - vscode_config_dir: .config/Code
   roles:
-    - common
-    - linux
+    - role: common
+      tags: common
+    - role: vscode
+      tags: vscode
+    - role: linux
+      tags: linux

@@ -5,6 +5,7 @@
       - emacs.d
       - bashrc
       - inputrc
+      - screenrc
       - tmux.conf
       - vimrc
       - Xresources

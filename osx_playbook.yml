@@ -5,6 +5,7 @@
       - emacs.d
       - bashrc
       - inputrc
+      - screenrc
       - tmux.conf
       - vimrc
     - vscode_config_dir: Library/Application Support/Code

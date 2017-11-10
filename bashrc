@@ -232,20 +232,18 @@ case "$COLORTERM" in
     "gnome-terminal"|"xfce4-terminal") export TERM="xterm-256color" ;;
 esac
 
-# custom paths. customize in ~/.local.sh
-export CUSTOM_PATHS=(
-    "$HOME/bin"
-)
+### custom paths. customize in ~/.local.sh ###
+export CUSTOM_PATH="$HOME/bin:$HOME/.local/bin"
 
 # local configurations
 [[ -f $HOME/.local.sh ]] && source $HOME/.local.sh
 
 
 # init paths
-if [ -z "$CUSTOM_PATHS_SET" ]; then
-    export DEFAULT_PATH="$(join_args : "${CUSTOM_PATHS[@]}"):$PATH"
+if [ -z "$CUSTOM_PATH_SET" ]; then
+    export DEFAULT_PATH="$CUSTOM_PATH:$PATH"
     export PATH="$DEFAULT_PATH"
-    export CUSTOM_PATHS_SET=1
+    export CUSTOM_PATH_SET=1
 fi
 
 ### load bunch of stuff ###
@@ -258,4 +256,3 @@ loadbashcompl
 
 # Who? Where?
 whereami
-

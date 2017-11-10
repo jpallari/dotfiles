@@ -131,6 +131,12 @@ read_notes() {
     cat "$HOME/.notes.txt"
 }
 
+# print user and location
+whereami() {
+    echo -e "User : \e[92m${USER} \e[94m@ \e[96m${HOSTNAME}\e[39m"
+    echo -e "Dir  : \e[36m$(dirname "$PWD")/\e[93m$(basename "$PWD")\e[39m"
+}
+
 set_window_title() {
     echo -ne "\033]0;$@\007"
 }
@@ -215,5 +221,5 @@ fi
 loadbashcompl
 
 # Who? Where?
-echo -e "User : \e[92m${USER} \e[94m@ \e[96m${HOSTNAME}\e[39m"
-echo -e "Dir  : \e[36m$(dirname "$PWD")/\e[93m$(basename "$PWD")\e[39m"
+whereami
+

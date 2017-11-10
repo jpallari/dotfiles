@@ -175,6 +175,11 @@ init_sdkman() {
     fi
 }
 
+# Find currently used SDKs from SDK man in $PATH format
+find_sdkman_paths() {
+    find -L "$HOME/.sdkman/candidates" -maxdepth 3 -type d -path '*/current/bin' -printf ':%p'
+}
+
 __my_prompt_command() {
     local last_exit="$?"
     local status_color="\[\e[102m\]\[\e[30m\]"
@@ -238,6 +243,10 @@ export CUSTOM_PATH="$HOME/bin:$HOME/.local/bin"
 # local configurations
 [[ -f $HOME/.local.sh ]] && source $HOME/.local.sh
 
+# load SDK man paths
+if [ -d "$HOME/.sdkman/candidates" ]; then
+    CUSTOM_PATH+=$(find_sdkman_paths)
+fi
 
 # init paths
 if [ -z "$CUSTOM_PATH_SET" ]; then

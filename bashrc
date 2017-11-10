@@ -20,7 +20,8 @@ shopt -s direxpand
 # flow control
 stty -ixon
 
-# aliases
+### aliases ###
+
 if [ "$(uname)" = 'Linux' ]; then
     alias ls='ls --color=auto -F'
     alias pbcopy='xsel --clipboard --input'
@@ -30,12 +31,14 @@ else
     alias ls='ls -F'
 fi
 
+# emacs in terminal w/ fast init
 if [ -f "$HOME/.emacs.d/fast-init.el" ]; then
     alias emacs="emacs -nw -Q -l $HOME/.emacs.d/fast-init.el"
 else
     alias emacs="emacs -nw"
 fi
 
+# better gpg
 if hash gpg2 2>/dev/null; then
     alias gpg=gpg2
 fi
@@ -44,12 +47,9 @@ alias ll='ls -lh'
 alias grep='grep --color=auto'
 alias remacs='emacsclient -n'
 
-# VTE
-if [ "$VTE_VERSION" ] && [ -f /etc/profile.d/vte.sh ]; then
-    . /etc/profile.d/vte.sh
-fi
+### functions ###
 
-# functions
+# load bash completion libraries from popular locations
 loadbashcompl() {
     local files=(
         '/etc/bash_completion'
@@ -70,6 +70,7 @@ loadbashcompl() {
     fi
 }
 
+# share files over HTTP quickly
 httpserver() {
     local curdir="$PWD"
     local port=${1:-10101}
@@ -79,11 +80,13 @@ httpserver() {
     cd "$curdir"
 }
 
+# print a horizontal line
 hr() {
     printf -v line "%${COLUMNS}s" ""
     echo "${line// /=}"
 }
 
+# quick calculations using BC
 calc() {
     echo "${@}" | bc -l
 }
@@ -93,20 +96,24 @@ pyline() {
     python -c "print $*"
 }
 
+# join arguments 2..n with first argument as the separator
 join_args() {
     local IFS="$1"
     shift
     echo "$*"
 }
 
+# reset PATH variable to DEFAULT_PATH
 reset_path() {
     export PATH="$DEFAULT_PATH"
 }
 
+# add a new PATH for this session
 add_path() {
     export PATH="$1:$PATH"
 }
 
+# add a note to $NOTES_FILE
 add_note() {
     if [ ! -f "$NOTES_FILE" ]; then
         echo "$NOTES_FILE doesn't point to a file!" 1>&2
@@ -122,6 +129,7 @@ add_note() {
     echo "Note added!" 1>&2
 }
 
+# print notes from the $NOTES_FILE
 read_notes() {
     if [ ! -f "$NOTES_FILE" ]; then
         echo "$NOTES_FILE doesn't point to a file!" 1>&2
@@ -137,6 +145,7 @@ whereami() {
     echo -e "Dir  : \e[36m$(dirname "$PWD")/\e[93m$(basename "$PWD")\e[39m"
 }
 
+# set the current window title
 set_window_title() {
     echo -ne "\033]0;$@\007"
 }
@@ -170,10 +179,17 @@ __my_prompt_command() {
     fi
 }
 
-# exports
+# VTE -- this must be loaded before the prompt command is set
+if [ "$VTE_VERSION" ] && [ -f /etc/profile.d/vte.sh ]; then
+    . /etc/profile.d/vte.sh
+fi
+
+### exports ###
+
 export NOTES_FILE="$HOME/.notes.txt"
 export PROMPT_COMMAND=__my_prompt_command
 
+# emacs as the default editor... or vim
 if hash emacs 2>/dev/null; then
     export EDITOR="emacs -nw"
     export VISUAL="$EDITOR"
@@ -195,8 +211,6 @@ export CUSTOM_PATHS=(
 # local configurations
 [[ -f $HOME/.local.sh ]] && source $HOME/.local.sh
 
-# lesspipe
-[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
 # init paths
 if [ -z "$CUSTOM_PATHS_SET" ]; then
@@ -210,12 +224,15 @@ if [ -f "$HOME/.opam/opam-init/init.sh" ] && hash opam 2>/dev/null; then
    . "$HOME/.opam/opam-init/init.sh" > /dev/null 2> /dev/null || true
    eval $(opam config env)
 fi
+### load bunch of stuff ###
 
 # SDK man
 if [ -f "$HOME/.sdkman/bin/sdkman-init.sh" ]; then
     export SDKMAN_DIR="$HOME/.sdkman"
     . "$HOME/.sdkman/bin/sdkman-init.sh"
 fi
+# lesspipe
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
 # Bash completion
 loadbashcompl

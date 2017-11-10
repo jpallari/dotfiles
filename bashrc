@@ -159,6 +159,22 @@ set_window_title() {
     echo -ne "\033]0;$@\007"
 }
 
+# OPAM configuration initialiser
+init_opam() {
+    if [ -f "$HOME/.opam/opam-init/init.sh" ] && hash opam 2>/dev/null; then
+       . "$HOME/.opam/opam-init/init.sh" > /dev/null 2> /dev/null || true
+       eval $(opam config env)
+    fi
+}
+
+# SDK man initialiser
+init_sdkman() {
+    if [ -f "$HOME/.sdkman/bin/sdkman-init.sh" ]; then
+        export SDKMAN_DIR="$HOME/.sdkman"
+        . "$HOME/.sdkman/bin/sdkman-init.sh"
+    fi
+}
+
 __my_prompt_command() {
     local last_exit="$?"
     local status_color="\[\e[102m\]\[\e[30m\]"
@@ -232,18 +248,8 @@ if [ -z "$CUSTOM_PATHS_SET" ]; then
     export CUSTOM_PATHS_SET=1
 fi
 
-# OPAM configuration
-if [ -f "$HOME/.opam/opam-init/init.sh" ] && hash opam 2>/dev/null; then
-   . "$HOME/.opam/opam-init/init.sh" > /dev/null 2> /dev/null || true
-   eval $(opam config env)
-fi
 ### load bunch of stuff ###
 
-# SDK man
-if [ -f "$HOME/.sdkman/bin/sdkman-init.sh" ]; then
-    export SDKMAN_DIR="$HOME/.sdkman"
-    . "$HOME/.sdkman/bin/sdkman-init.sh"
-fi
 # lesspipe
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 

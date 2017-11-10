@@ -88,6 +88,11 @@ calc() {
     echo "${@}" | bc -l
 }
 
+# Python oneliner
+pyline() {
+    python -c "print $*"
+}
+
 join_args() {
     local IFS="$1"
     shift

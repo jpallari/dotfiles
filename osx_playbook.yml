@@ -12,5 +12,3 @@
   roles:
     - role: common
       tags: common
-    - role: vscode
-      tags: vscode

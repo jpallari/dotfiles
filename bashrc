@@ -38,6 +38,15 @@ else
     alias emacs="emacs -nw"
 fi
 
+# vim in terminal w/ clipboard support etc.
+if hash mvim 2>/dev/null; then
+    alias vim='mvim -v'
+elif hash vimx 2>/dev/null; then
+    alias vim='vimx'
+elif hash gvim 2>/dev/null; then
+    alias vim='gvim -v'
+fi
+
 # better gpg
 if hash gpg2 2>/dev/null; then
     alias gpg=gpg2
@@ -192,8 +201,12 @@ export PROMPT_COMMAND=__my_prompt_command
 # emacs as the default editor... or vim
 if hash emacs 2>/dev/null; then
     export EDITOR="emacs -nw"
-    export VISUAL="$EDITOR"
+elif hash vim 2>/dev/null; then
+    export EDITOR="vim"
 fi
+
+# visual = editor
+export VISUAL="$EDITOR"
 
 if [ "$TERM" != "dumb" ] && hash less 2>/dev/null; then
     export PAGER=less

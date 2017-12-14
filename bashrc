@@ -194,9 +194,9 @@ __my_prompt_command() {
         status_color="\[\e[101m\]\[\e[30m\]"
     fi
 
-    PS1="$status_color\h " # host
-    PS1+="\[\e[44m\]\[\e[96m\] \W \$" # directory
-    PS1+="\[\e[0m\] " # end
+    PS1="$status_color"
+    PS1+="\W \$"
+    PS1+="\[\e[0m\] "
 
     case "$TERM" in
         xterm*) set_window_title "$title" ;;

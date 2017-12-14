@@ -10,8 +10,7 @@
       - vimrc
       - Xresources
     - xdg_config_items:
-      - i3
-      - i3status
+      - openbox
     - vscode_config_dir: .config/Code
   roles:
     - role: common

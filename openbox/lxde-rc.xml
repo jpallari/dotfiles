@@ -329,6 +329,9 @@
       <action name="FocusToBottom"/>
       <action name="Unfocus"/>
     </keybind>
+    <keybind key="W-0">
+      <action name="ToggleDecorations"/>
+    </keybind>
     <!-- Keybindings for window switching -->
     <keybind key="A-Tab">
       <action name="NextWindow"/>
@@ -794,5 +797,6 @@
     <!-- show the manage desktops section in the client-list-(combined-)menu -->
   </menu>
   <applications>
+    <application class="*"><decor>no</decor></application>
   </applications>
 </openbox_config>

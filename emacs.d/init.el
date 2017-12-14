@@ -385,14 +385,23 @@ Ask user a \"y or n\" question only when server has been started."
     ;; If use-package is not installed, just create a dummy macro to replace it.
     (defmacro use-package (&rest args) nil)))
 
+(use-package ivy :demand
+  :config
+  (ivy-mode 1)
+  (setq ivy-use-virtual-buffers t
+        ivy-count-format "%d/%d "))
+
+(use-package counsel
+  :bind (("M-x" . counsel-M-x)
+         ("M-X g" . counsel-git)
+         ("M-X a" . counsel-ag)
+         ("M-X l" . counsel-locate)))
+
+(use-package swiper
+  :bind (("C-s" . swiper)))
+
 (use-package expand-region
   :bind ("M-M" . er/expand-region))
-
-(use-package smex
-  :config
-  (global-set-key (kbd "M-x") 'smex)
-  (global-set-key (kbd "M-X") 'smex-major-mode-commands)
-  (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command))
 
 (use-package win-switch
   :bind ("C-x o" . win-switch-dispatch)
@@ -559,7 +568,7 @@ Ask user a \"y or n\" question only when server has been started."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (ace-window neotree projectile terraform-mode smex elm-mode ox-pandoc htmlize yaml-mode win-switch utop use-package scala-mode2 scala-mode sbt-mode rust-mode paredit markdown-mode magit less-css-mode js2-mode js-comint iedit groovy-mode gradle-mode go-mode ghc fuzzy expand-region exec-path-from-shell auctex ag ac-cider clojure-mode cider go-rename go-eldoc go-autocomplete auto-complete)))
+    (counsel ace-window neotree projectile terraform-mode elm-mode ox-pandoc htmlize yaml-mode win-switch utop use-package scala-mode2 scala-mode sbt-mode rust-mode paredit markdown-mode magit less-css-mode js2-mode js-comint iedit groovy-mode gradle-mode go-mode ghc fuzzy expand-region exec-path-from-shell auctex ag ac-cider clojure-mode cider go-rename go-eldoc go-autocomplete auto-complete)))
  '(projectile-global-mode t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

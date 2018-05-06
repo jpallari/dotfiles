@@ -292,6 +292,12 @@ hi statusline term=inverse,bold cterm=inverse,bold ctermfg=darkblue ctermbg=whit
     \ gui=inverse,bold guifg=blue guibg=white
 hi statuslinenc term=inverse,bold cterm=inverse,bold ctermfg=gray ctermbg=black
     \ gui=inverse,bold guifg=lightgray guibg=black
+hi Normal guifg=grey guibg=black
+
+" GUI
+if has("gui_running")
+    set guioptions-=rLT
+endif
 
 " Local conf
 if filereadable($HOME . "/.vimrc.local")

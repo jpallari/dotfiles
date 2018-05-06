@@ -445,6 +445,17 @@
         <command>lxterminal</command>
       </action>
     </keybind>
+    <!-- Session -->
+    <keybind key="XF86PowerOff">
+      <action name="Execute">
+        <command>lxsession-logout</command>
+      </action>
+    </keybind>
+    <keybind key="W-S-P">
+      <action name="Execute">
+        <command>lxlock</command>
+      </action>
+    </keybind>
   </keyboard>
   <mouse>
     <dragThreshold>8</dragThreshold>

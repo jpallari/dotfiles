@@ -59,12 +59,6 @@ set foldlevelstart=10
 set foldnestmax=10
 set foldmethod=indent
 
-augroup filetypedetect
-    au BufRead,BufNewFile *.txt setfiletype text
-    au BufRead,BufNewFile *mutt-* setfiletype mail
-    au BufRead,BufNewFile *.md setfiletype markdown
-augroup END
-
 " Custom function confs
 let g:findcmd = 'find . \( -type f -o -type l \) -iname'
 
@@ -122,19 +116,19 @@ fu! s:CommentSymbol(start, ...)
     endif
 endfunction
 
-fu! s:Indent(i)
-    let n = str2nr(a:i)
-    if a:i ==? 'tab' || a:i ==? 't'
-        setl noet sts=0 sw=8
-        echo 'Using tab indentation'
-    elseif l:n > 0
-        setl et
-        let &sts=l:n
-        let &sw=l:n
-        echo 'Using indentation level ' . l:n
-    else
-        echoerr 'Invalid indentation parameter'
-    endif
+fu! s:SetIndent(...)
+    let level = a:0 >= 1 ? str2nr(a:1) : 4
+    setl et
+    let &sts=l:level
+    let &sw=l:level
+    let &ts=l:level
+endfunction
+
+fu! s:SetIndentTab(...)
+    let level = a:0 >= 1 ? str2nr(a:1) : 4
+    setl noet sts=0
+    let &sw=l:level
+    let &ts=l:level
 endfunction
 
 fu! s:Underline(...)
@@ -225,16 +219,25 @@ command! -nargs=0 BufferInfo call s:BufferInfo()
 command! -nargs=* -range Comment <line1>,<line2>call s:CommentLines(<f-args>)
 command! -nargs=+ CommentSymbol call s:CommentSymbol(<f-args>)
 command! -nargs=0 Here lcd %:p:h
-command! -nargs=1 Indent call s:Indent(<f-args>)
+command! -nargs=* SetIndent call s:SetIndent(<f-args>)
+command! -nargs=* SetIndentTab call s:SetIndentTab(<f-args>)
 command! -nargs=? Underline call s:Underline(<f-args>)
 command! -complete=shellcmd -nargs=+ Shell call s:RunShellCommand(<q-args>)
 command! -nargs=1 Find call s:Find(<q-args>)
 
 " Custom file types
+augroup filetypedetect
+    au BufRead,BufNewFile *.txt setfiletype text
+    au BufRead,BufNewFile *mutt-* setfiletype mail
+    au BufRead,BufNewFile *.md setfiletype markdown
+augroup END
+
+" Config by file type
 au FileType findbuf
     \ nnoremap <buffer> <Return> :call CursorFileInPreviousWindow()<CR> |
     \ setl buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap |
     \ setl cursorline
+au FileType go SetIndentTab 4
 
 " Preferred defaults
 noremap k gk

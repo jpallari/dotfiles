@@ -63,7 +63,7 @@ set foldmethod=indent
 let g:findcmd = 'find . \( -type f -o -type l \) -iname'
 
 " Functions
-fu! s:BufferInfo()
+function! s:BufferInfo()
     let name = expand('%:t')
     let name = empty(l:name) ? '[No Name]' : l:name
     let maininfo = bufnr('%') . ' ' . name
@@ -76,7 +76,7 @@ fu! s:BufferInfo()
     echo l:maininfo . ': ' . l:infos
 endfunction
 
-fu! s:GetConfVar(varname, alternative)
+function! s:GetConfVar(varname, alternative)
     if exists('b:' . a:varname)
         return eval('b:' . a:varname)
     elseif exists('g:' . a:varname)
@@ -86,7 +86,7 @@ fu! s:GetConfVar(varname, alternative)
     endif
 endfunction
 
-fu! s:CommentLines(...) range
+function! s:CommentLines(...) range
     let commentstart = a:0 >= 1 ? a:1 : s:GetConfVar('commentsymbol', '//')
     let commentend = a:0 >= 2 ? a:2 : s:GetConfVar('commentsymbolend', '')
     let beginsWithComment = getline(a:firstline) =~ ('\M^' . l:commentstart)
@@ -107,7 +107,7 @@ fu! s:CommentLines(...) range
     call cursor(a:lastline + 1, 1)
 endfunction
 
-fu! s:CommentSymbol(start, ...)
+function! s:CommentSymbol(start, ...)
     let b:commentsymbol = a:start
     if a:0 >= 1
         let b:commentsymbolend = a:1
@@ -116,7 +116,7 @@ fu! s:CommentSymbol(start, ...)
     endif
 endfunction
 
-fu! s:SetIndent(...)
+function! s:SetIndent(...)
     let level = a:0 >= 1 ? str2nr(a:1) : 4
     setl et
     let &sts=l:level
@@ -124,15 +124,15 @@ fu! s:SetIndent(...)
     let &ts=l:level
 endfunction
 
-fu! s:SetIndentTab(...)
+function! s:SetIndentTab(...)
     let level = a:0 >= 1 ? str2nr(a:1) : 4
     setl noet sts=0
     let &sw=l:level
     let &ts=l:level
 endfunction
 
-fu! s:Underline(...)
-    let underlinestring = a:0 >= 1 ? a:1 : s:GetConfVar('underlinechar', '#')
+function! s:Underline(...)
+    let underlinestring = a:0 >= 1 ? a:1 : s:GetConfVar('underlinechar', '=')
     let underlinechar = l:underlinestring[0]
     let linenr = line('.')
     let line_len = len(getline(l:linenr))
@@ -164,54 +164,27 @@ function! s:RunShellCommand(cmdline)
     1
 endfunction
 
-function! CursorFileInPreviousWindow()
-    let cursorfile = expand('<cfile>')
-    wincmd p
-    execute 'e ' . l:cursorfile
-endfunction
-
-function! s:MinimalWindowSize(maxsize)
-    let buflines = line('$')
-    let wsize = min([a:maxsize, &lines / 2, l:buflines])
-    execute 'resize ' . l:wsize
-endfunction
-
-function! s:InitFindWindow()
-    let startwin = winnr()
-    let findwindownr = 0
-
-    for winnumber in range(1, winnr('$'))
-        execute winnumber . 'wincmd w'
-        if &filetype == 'findbuf'
-            let findwindownr = winnumber
-            break
-        endif
-    endfor
-
-    if !findwindownr
-        execute startwin . 'wincmd w'
-        botright new
-        setfiletype findbuf
-    endif
-endfunction
-
-function! s:ReplaceContentsWithCommand(cmd)
-    silent %d
-    execute 'silent $read !' . a:cmd
-    g/^$/d
-    1
-endfunction
-
 function! s:Find(pattern)
-    let fullcmd = g:findcmd . " '" . a:pattern . "'"
-    let maxwinsize = exists('g:findwinsize') ? g:findwinsize : 10
+    let fullcmd = g:findcmd . " '*" . a:pattern . "*'"
 
-    call s:InitFindWindow()
-    setl modifiable
-    call s:ReplaceContentsWithCommand(l:fullcmd)
-    call s:MinimalWindowSize(l:maxwinsize)
-    let &l:statusline='Find: ' . a:pattern . ' %= %l/%L'
-    setl nomodifiable
+    let files = systemlist(l:fullcmd)
+    if len(l:files) == 0
+        echo 'No files found'
+        return
+    endif
+
+    let results = map(l:files, {entry, file -> {'filename': file, 'lnum': 1}})
+    let id = win_getid()
+    let title = 'Find: ' . a:pattern
+
+    call setloclist(l:id, l:results, 'r')
+    call setloclist(l:id, [], 'a', {'title': l:title})
+    lwindow
+endfunction
+
+function! s:Search(pattern)
+    execute 'silent! lgrep! ' . a:pattern
+    lwindow
 endfunction
 
 " Commands
@@ -224,6 +197,7 @@ command! -nargs=* SetIndentTab call s:SetIndentTab(<f-args>)
 command! -nargs=? Underline call s:Underline(<f-args>)
 command! -complete=shellcmd -nargs=+ Shell call s:RunShellCommand(<q-args>)
 command! -nargs=1 Find call s:Find(<q-args>)
+command! -nargs=1 Search call s:Search(<q-args>)
 
 " Custom file types
 augroup filetypedetect
@@ -233,10 +207,6 @@ augroup filetypedetect
 augroup END
 
 " Config by file type
-au FileType findbuf
-    \ nnoremap <buffer> <Return> :call CursorFileInPreviousWindow()<CR> |
-    \ setl buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap |
-    \ setl cursorline
 au FileType go SetIndentTab 4
 
 " Preferred defaults
@@ -261,7 +231,7 @@ vnoremap <silent> <M-;> :Comment<cr>
 vnoremap <silent> <Esc>; :Comment<cr>
 
 " Autocompleted commands
-nnoremap <Leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
+nnoremap <Leader>e :e <C-R>=expand("%:p:h") . "/" <cr>
 
 " Copy/paste
 vnoremap <Leader>c "+y
@@ -286,6 +256,17 @@ nnoremap <Leader>ts :setl spell! spell?<cr>
 
 " Replace commands
 nnoremap <Leader>rw :%s/\s\+$//e<cr>
+
+" Finding files
+autocmd VimEnter *
+            \ if exists(':FZF') | nnoremap <Leader>f :FZF<cr> |
+            \ else | nnoremap <Leader>f :Find | endif
+
+" Grep
+nnoremap <Leader>s :Search<space>
+if executable('rg')
+    set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
+endif
 
 " Mouse
 set mouse=a

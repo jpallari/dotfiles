@@ -150,9 +150,9 @@ read_notes() {
 
 # print user and location
 whereami() {
-    echo -e "User : \e[92m${USER} \e[94m@ \e[96m${HOSTNAME}\e[39m"
-    echo -e "Dir  : \e[36m$(dirname "$PWD")/\e[93m$(basename "$PWD")\e[39m"
+    echo -e "\e[92m${USER} \e[94m@ \e[96m${HOSTNAME} : \e[36m$(dirname "$PWD")/\e[93m$(basename "$PWD")\e[39m"
 }
+alias wai=whereami
 
 # set the current window title
 set_window_title() {
@@ -181,30 +181,17 @@ find_sdkman_paths() {
 }
 
 __my_prompt_command() {
-    local last_exit="$?"
+    local last_exit=$?
     local status_color="\[\e[102m\]\[\e[30m\]"
-    local dir_name=$(basename "$PWD")
-    local title="$dir_name - ${USER}@${HOSTNAME}"
-
-    if [ "$PWD" = "$HOME" ]; then
-        dir_name="~"
-    fi
 
     if [ "$last_exit" != 0 ]; then
         status_color="\[\e[101m\]\[\e[30m\]"
     fi
 
-    PS1="$status_color"
-    PS1+="\W \$"
-    PS1+="\[\e[0m\] "
-
-    case "$TERM" in
-        xterm*) set_window_title "$title" ;;
-        *)
-    esac
+    PS1="${status_color}\h \$\[\e[0m\] "
 
     # Include VTE specific additions
-    if hash __vte_prompt_command 2>/dev/null; then
+    if [ "$VTE_VERSION" ] && hash __vte_prompt_command 2>/dev/null; then
         __vte_prompt_command
     fi
 }

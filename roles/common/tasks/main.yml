@@ -1,3 +1,0 @@
-- import_tasks: gitconfig.yml
-- include_tasks: symlink.yml symlink_item="{{ item }}"
-  with_items: "{{ symlink_items}}"

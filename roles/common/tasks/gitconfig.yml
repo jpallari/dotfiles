@@ -1,8 +1,0 @@
-- name: Check if gitconfig is included
-  command: git config --global --get-all include.path '^{{ dotfiles_path }}/gitconfig$'
-  register: includepath
-  failed_when: False
-
-- name: Include gitconfig
-  command: git config --global --add include.path {{ dotfiles_path|quote }}/gitconfig
-  when: includepath.stdout == ""

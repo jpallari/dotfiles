@@ -107,7 +107,7 @@ function! s:CommentLines(...) range
     call cursor(a:lastline + 1, 1)
 endfunction
 
-function! s:CommentSymbol(start, ...)
+function! s:SetCommentSymbol(start, ...)
     let b:commentsymbol = a:start
     if a:0 >= 1
         let b:commentsymbolend = a:1
@@ -190,7 +190,7 @@ endfunction
 " Commands
 command! -nargs=0 BufferInfo call s:BufferInfo()
 command! -nargs=* -range Comment <line1>,<line2>call s:CommentLines(<f-args>)
-command! -nargs=+ CommentSymbol call s:CommentSymbol(<f-args>)
+command! -nargs=+ SetCommentSymbol call s:SetCommentSymbol(<f-args>)
 command! -nargs=0 Here lcd %:p:h
 command! -nargs=* SetIndent call s:SetIndent(<f-args>)
 command! -nargs=* SetIndentTab call s:SetIndentTab(<f-args>)
@@ -198,6 +198,7 @@ command! -nargs=? Underline call s:Underline(<f-args>)
 command! -complete=shellcmd -nargs=+ Shell call s:RunShellCommand(<q-args>)
 command! -nargs=1 Find call s:Find(<q-args>)
 command! -nargs=1 Search call s:Search(<q-args>)
+command! -nargs=1 -range Surround call s:Surround(<q-args>)
 
 " Custom file types
 augroup filetypedetect
@@ -208,6 +209,7 @@ augroup END
 
 " Config by file type
 au FileType go SetIndentTab 4
+au FileType yaml SetIndent 2
 
 " Preferred defaults
 noremap k gk
@@ -256,6 +258,14 @@ nnoremap <Leader>ts :setl spell! spell?<cr>
 
 " Replace commands
 nnoremap <Leader>rw :%s/\s\+$//e<cr>
+
+" Surround
+vnoremap <Leader>q" c"<c-r>""<Esc>
+vnoremap <Leader>q' c'<c-r>"'<Esc>
+vnoremap <Leader>q( c(<c-r>")<Esc>
+vnoremap <Leader>q[ c[<c-r>"]<Esc>
+vnoremap <Leader>q{ c{<c-r>"}<Esc>
+vnoremap <Leader>q< c<<c-r>"><Esc>
 
 " Finding files
 autocmd VimEnter *

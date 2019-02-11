@@ -159,6 +159,13 @@ set_window_title() {
     echo -ne "\033]0;$@\007"
 }
 
+# Current time zone
+get_current_time_zone() {
+    timedatectl status | \
+        grep "Time zone" | \
+        sed 's/.*Time zone: \([^ ]\+\) .*/\1/'
+}
+
 # OPAM configuration initialiser
 init_opam() {
     if [ -f "$HOME/.opam/opam-init/init.sh" ] && hash opam 2>/dev/null; then
@@ -181,6 +188,7 @@ find_sdkman_paths() {
 }
 
 __my_prompt_command() {
+    history -a
     local last_exit=$?
     local status_color="\[\e[102m\]\[\e[30m\]"
 
@@ -247,8 +255,19 @@ fi
 # lesspipe
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
+# fzf
+if [ -f /usr/share/fzf/shell/key-bindings.bash ]; then
+    . /usr/share/fzf/shell/key-bindings.bash
+fi
+
 # Bash completion
 loadbashcompl
 
+# Kubernetes
+if hash kubectl >/dev/null; then
+    source <(kubectl completion bash)
+fi
+
 # Who? Where?
 whereami
+

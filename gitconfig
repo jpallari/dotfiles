@@ -1,12 +1,8 @@
 [alias]
-	co = checkout
 	ci = commit
 	st = status
-	br = branch
-	aa = add --all
 	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
-	di = diff
-	diw = diff --word-diff
+	diffw = diff --word-diff
 	dc = diff --cached
 	amend = commit --amend
 	ff = merge --ff-only
@@ -14,8 +10,6 @@
 	fa = fetch --all
 [color]
 	ui = true
-[push]
-	default = upstream
 [branch]
 	autosetupmerge = false
 [core]

@@ -214,14 +214,8 @@ fi
 export NOTES_FILE="$HOME/.notes.txt"
 export PROMPT_COMMAND=__my_prompt_command
 
-# emacs as the default editor... or vim
-if hash emacs 2>/dev/null; then
-    export EDITOR="emacs -nw"
-elif hash vim 2>/dev/null; then
-    export EDITOR="vim"
-fi
-
-# visual = editor
+# Default editor
+export EDITOR=vim
 export VISUAL="$EDITOR"
 
 if [ "$TERM" != "dumb" ] && hash less 2>/dev/null; then

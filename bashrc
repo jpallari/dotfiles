@@ -188,9 +188,9 @@ find_sdkman_paths() {
 }
 
 __my_prompt_command() {
-    history -a
     local last_exit=$?
     local status_color="\[\e[102m\]\[\e[30m\]"
+    history -a
 
     if [ "$last_exit" != 0 ]; then
         status_color="\[\e[101m\]\[\e[30m\]"

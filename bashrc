@@ -58,27 +58,6 @@ alias remacs='emacsclient -n'
 
 ### functions ###
 
-# load bash completion libraries from popular locations
-loadbashcompl() {
-    local files=(
-        '/etc/bash_completion'
-        '/usr/local/etc/bash_completion'
-        '/usr/share/bash-completion/bash_completion'
-    )
-    local loaded=0
-
-    for f in "${files[@]}"; do
-        if [ -f "$f" ]; then
-            . "$f"
-            loaded=1
-        fi
-    done
-
-    if [ "$loaded" = 0 ]; then
-        echo 'No bash completion available' 1>&2
-    fi
-}
-
 # share files over HTTP quickly
 httpserver() {
     local curdir="$PWD"
@@ -219,7 +198,7 @@ export EDITOR=vim
 export VISUAL="$EDITOR"
 
 if [ "$TERM" != "dumb" ] && hash less 2>/dev/null; then
-    export PAGER=less
+    export PAGER='less -R'
 fi
 
 case "$COLORTERM" in
@@ -255,7 +234,21 @@ if [ -f /usr/share/fzf/shell/key-bindings.bash ]; then
 fi
 
 # Bash completion
-loadbashcompl
+BASH_COMPLETION_SOURCES=(
+    '/etc/bash_completion'
+    '/usr/local/etc/bash_completion'
+    '/usr/share/bash-completion/bash_completion'
+)
+for f in "${BASH_COMPLETION_SOURCES[@]}"; do
+    if [ -f "$f" ]; then
+        . "$f"
+    fi
+done
+
+# AWS CLI
+if hash aws_completer >/dev/null; then
+    complete -C aws_completer aws
+fi
 
 # Kubernetes
 if hash kubectl >/dev/null; then

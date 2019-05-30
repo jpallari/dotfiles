@@ -4,13 +4,16 @@
 	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
 	diffw = diff --word-diff
 	dc = diff --cached
+	dcw = diff --cached --word-diff
 	amend = commit --amend
-	ff = merge --ff-only
-	pullff = pull --ff-only
 	fa = fetch --all
 [color]
 	ui = true
 [branch]
-	autosetupmerge = false
+	autoSetupMerge = false
+[pull]
+	ff = only
+[merge]
+	ff = only
 [core]
 	excludesfile = ~/.gitignore_global

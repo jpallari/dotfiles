@@ -226,11 +226,8 @@ fi
 ### load bunch of stuff ###
 
 # lesspipe
-[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
-
-# fzf
-if [ -f /usr/share/fzf/shell/key-bindings.bash ]; then
-    . /usr/share/fzf/shell/key-bindings.bash
+if hash lesspipe.sh >/dev/null; then
+    export LESSOPEN="|lesspipe.sh %s"
 fi
 
 # Bash completion

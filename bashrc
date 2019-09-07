@@ -166,6 +166,37 @@ find_sdkman_paths() {
     find -L "$HOME/.sdkman/candidates" -maxdepth 3 -type d -path '*/current/bin' -printf ':%p'
 }
 
+# Create a Python virtualenv
+pyvenv_create() {
+    if [ -z "$1" ]; then
+        echo "No virtualenv name given!" >&2
+        return 1
+    fi
+    mkdir -p "$PYVENVS_DIR"
+    python3 -m venv "$PYVENVS_DIR/$1"
+}
+
+# Activate a Python virtualenv
+pyvenv_activate() {
+    if [ -z "$1" ]; then
+        echo "No virtualenv name given!" >&2
+        return 1
+    fi
+    . "$PYVENVS_DIR/$1/bin/activate"
+}
+
+# Execute a command in a Python virtualenv
+pyvenv_exec() {
+    if [ -z "$1" ]; then
+        echo "No virtualenv name given!" >&2
+        return 1
+    fi
+    local venv=$1
+    shift
+    pyvenv_activate "$venv"
+    "$@"
+}
+
 __my_prompt_command() {
     local last_exit=$?
     local status_color="\[\e[102m\]\[\e[30m\]"
@@ -190,6 +221,7 @@ fi
 
 ### exports ###
 
+export PYVENVS_DIR="$HOME/.local/share/pyvenvs"
 export NOTES_FILE="$HOME/.notes.txt"
 export PROMPT_COMMAND=__my_prompt_command
 
@@ -250,6 +282,11 @@ fi
 # Kubernetes
 if hash kubectl >/dev/null; then
     source <(kubectl completion bash)
+fi
+
+# Pipenv
+if hash pipenv 2>/dev/null; then
+    eval "$(pipenv --completion)"
 fi
 
 # Who? Where?

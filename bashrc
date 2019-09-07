@@ -101,32 +101,6 @@ add_path() {
     export PATH="$1:$PATH"
 }
 
-# add a note to $NOTES_FILE
-add_note() {
-    if [ ! -f "$NOTES_FILE" ]; then
-        echo "$NOTES_FILE doesn't point to a file!" 1>&2
-        return 1
-    fi
-
-    if [ ! "$@" ]; then
-        echo "Nothing to add to notes file!" 1>&2
-        return 1
-    fi
-
-    echo "$@" >> "$NOTES_FILE"
-    echo "Note added!" 1>&2
-}
-
-# print notes from the $NOTES_FILE
-read_notes() {
-    if [ ! -f "$NOTES_FILE" ]; then
-        echo "$NOTES_FILE doesn't point to a file!" 1>&2
-        return 1
-    fi
-
-    cat "$HOME/.notes.txt"
-}
-
 # print user and location
 whereami() {
     echo -e "\e[92m${USER} \e[94m@ \e[96m${HOSTNAME} : \e[36m$(dirname "$PWD")/\e[93m$(basename "$PWD")\e[39m"
@@ -222,7 +196,6 @@ fi
 ### exports ###
 
 export PYVENVS_DIR="$HOME/.local/share/pyvenvs"
-export NOTES_FILE="$HOME/.notes.txt"
 export PROMPT_COMMAND=__my_prompt_command
 
 # Default editor

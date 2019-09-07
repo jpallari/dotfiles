@@ -289,6 +289,11 @@ if hash pipenv 2>/dev/null; then
     eval "$(pipenv --completion)"
 fi
 
+# Direnv
+if hash direnv 2>/dev/null; then
+    eval "$(direnv hook bash)"
+fi
+
 # Who? Where?
 whereami
 

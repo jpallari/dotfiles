@@ -171,19 +171,23 @@ pyvenv_exec() {
     "$@"
 }
 
+set_prompt_extra() {
+    export PS_EXTRA="$1"
+}
+
 __my_prompt_command() {
     local last_exit=$?
-    local status_color="\[\e[102m\]\[\e[30m\]"
+    local local status_color="\[\e[92m\]"
     history -a
 
     if [ "$last_exit" != 0 ]; then
-        status_color="\[\e[101m\]\[\e[30m\]"
+        status_color="\[\e[91m\]"
     fi
 
-    PS1="${status_color}\h \$\[\e[0m\] "
+    PS1="${status_color}${PS_EXTRA}\$\[\e[0m\] "
 
     # Include VTE specific additions
-    if [ "$VTE_VERSION" ] && hash __vte_prompt_command 2>/dev/null; then
+    if [ -n "$VTE_VERSION" ] && hash __vte_prompt_command 2>/dev/null; then
         __vte_prompt_command
     fi
 }

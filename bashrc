@@ -64,7 +64,7 @@ httpserver() {
     local port=${1:-10101}
     local dir=${2:-.}
     cd "$dir"
-    python -m SimpleHTTPServer "$port"
+    python3 -m http.server "$port"
     cd "$curdir"
 }
 
@@ -235,7 +235,7 @@ fi
 ### load bunch of stuff ###
 
 # lesspipe
-if hash lesspipe.sh >/dev/null; then
+if hash lesspipe.sh 2>/dev/null; then
     export LESSOPEN="|lesspipe.sh %s"
 fi
 
@@ -252,12 +252,12 @@ for f in "${BASH_COMPLETION_SOURCES[@]}"; do
 done
 
 # AWS CLI
-if hash aws_completer >/dev/null; then
+if hash aws_completer 2>/dev/null; then
     complete -C aws_completer aws
 fi
 
 # Kubernetes
-if hash kubectl >/dev/null; then
+if hash kubectl 2>/dev/null; then
     source <(kubectl completion bash)
 fi
 

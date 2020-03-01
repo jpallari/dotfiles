@@ -240,11 +240,12 @@ vnoremap <Leader>c "+y
 nnoremap <Leader>v "+p
 
 " Ctrl+Space for omnicompletion
-inoremap <expr> <C-Space> pumvisible() \|\| &omnifunc == '' ?
-            \ "\<lt>C-n>" :
-            \ "\<lt>C-x>\<lt>C-o><c-r>=pumvisible() ?" .
-            \ "\"\\<lt>c-n>\\<lt>c-p>\\<lt>c-n>\" :" .
-            \ "\" \\<lt>bs>\\<lt>C-n>\"\<CR>"
+inoremap <expr> <C-Space>
+    \ pumvisible() \|\| &omnifunc == '' ?
+    \ "\<lt>C-n>" :
+    \ "\<lt>C-x>\<lt>C-o><c-r>=pumvisible() ?" .
+    \ "\"\\<lt>c-n>\\<lt>c-p>\\<lt>c-n>\" :" .
+    \ "\" \\<lt>bs>\\<lt>C-n>\"\<CR>"
 imap <C-@> <C-Space>
 
 " Toggles
@@ -269,8 +270,8 @@ vnoremap <Leader>q< c<<c-r>"><Esc>
 
 " Finding files
 autocmd VimEnter *
-            \ if exists(':FZF') | nnoremap <Leader>f :FZF<cr> |
-            \ else | nnoremap <Leader>f :Find | endif
+    \ if exists(':FZF') | nnoremap <Leader>f :FZF<cr> |
+    \ else | nnoremap <Leader>f :Find | endif
 
 " Grep
 nnoremap <Leader>s :Search<space>
@@ -282,9 +283,11 @@ endif
 set mouse=a
 
 " Colors
-hi statusline term=inverse,bold cterm=inverse,bold ctermfg=darkblue ctermbg=white
+hi statusline
+    \ term=inverse,bold cterm=inverse,bold ctermfg=darkblue ctermbg=white
     \ gui=inverse,bold guifg=blue guibg=white
-hi statuslinenc term=inverse,bold cterm=inverse,bold ctermfg=gray ctermbg=black
+hi statuslinenc
+    \ term=inverse,bold cterm=inverse,bold ctermfg=gray ctermbg=black
     \ gui=inverse,bold guifg=lightgray guibg=black
 hi Normal guifg=grey guibg=black
 

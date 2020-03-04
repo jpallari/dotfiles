@@ -210,6 +210,11 @@ augroup END
 " Config by file type
 au FileType go SetIndentTab 4
 au FileType yaml SetIndent 2
+au FileType c SetCommentSymbol /* */
+au FileType h SetCommentSymbol /* */
+au FileType sh SetCommentSymbol #
+au FileType python SetCommentSymbol #
+au FileType vim SetCommentSymbol "
 
 " Preferred defaults
 noremap k gk
@@ -270,11 +275,11 @@ vnoremap <Leader>q< c<<c-r>"><Esc>
 
 " Finding files
 autocmd VimEnter *
-    \ if exists(':FZF') | nnoremap <Leader>f :FZF<cr> |
-    \ else | nnoremap <Leader>f :Find | endif
+    \ if exists(':FZF') | nnoremap <Esc>F :FZF<cr> |
+    \ else | nnoremap <Esc>F :Find<space> | endif
 
 " Grep
-nnoremap <Leader>s :Search<space>
+nnoremap <Esc>/ :Search<space>
 if executable('rg')
     set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
 endif

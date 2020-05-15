@@ -7,6 +7,8 @@
 	dcw = diff --cached --word-diff
 	amend = commit --amend
 	fa = fetch --all
+	edit = rebase -i
+	editm = rebase -i origin/master
 [color]
 	ui = true
 [branch]

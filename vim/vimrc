@@ -193,6 +193,20 @@ function! s:ToggleAutosave()
     echo "(Autosave) " . l:enabled_text
 endfunction
 
+function! s:FileBrowser(...)
+    if a:0 >= 1
+        Vexplore a:1
+        return
+    endif
+
+    let path = trim(system('git rev-parse --show-toplevel'))
+    if l:path != ""
+        execute 'silent Vexplore ' . l:path
+    else
+        silent Vexplore
+    endif
+endfunction
+
 " Commands
 command! -nargs=* -range Comment <line1>,<line2>call s:CommentLines(<f-args>)
 command! -nargs=+ SetCommentSymbol call s:SetCommentSymbol(<f-args>)
@@ -205,6 +219,7 @@ command! -nargs=1 Find call s:Find(<q-args>)
 command! -nargs=1 Search call s:Search(<q-args>)
 command! -nargs=1 -range Surround call s:Surround(<q-args>)
 command! -nargs=0 ToggleAutosave call s:ToggleAutosave()
+command! -nargs=? FileBrowser call s:FileBrowser(<f-args>)
 
 " Custom file types
 augroup filetypedetect
@@ -245,6 +260,7 @@ vnoremap <silent> <C-/> :Comment<cr>
 nnoremap ; :e<space>
 nnoremap <Leader>b :ls<cr>:b<space>
 nnoremap <Leader>/ :Search<space>
+nnoremap <Leader>q :FileBrowser<cr>
 
 " Autocompleted commands
 nnoremap <Leader>e :e <C-R>=expand("%:p:h") . "/" <cr>
@@ -261,6 +277,14 @@ inoremap <expr> <C-Space>
     \ "\"\\<lt>c-n>\\<lt>c-p>\\<lt>c-n>\" :" .
     \ "\" \\<lt>bs>\\<lt>C-n>\"\<CR>"
 imap <C-@> <C-Space>
+
+" Netrw
+let g:netrw_banner = 0
+let g:netrw_liststyle = 3
+let g:netrw_browse_split = 4
+let g:netrw_altv = 1
+let g:netrw_winsize = 25
+let g:netrw_list_hide = &wildignore
 
 " Toggles
 nnoremap <Leader>th :set hlsearch! hlsearch?<cr>

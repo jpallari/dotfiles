@@ -159,7 +159,7 @@ function! s:RunShellCommand(cmdline)
 endfunction
 
 function! s:Find(pattern)
-    let fullcmd = g:findcmd . " '*" . a:pattern . "*'"
+    let fullcmd = g:findcmd . ' ' . shellescape('*' . a:pattern . '*')
 
     let files = systemlist(l:fullcmd)
     if len(l:files) == 0

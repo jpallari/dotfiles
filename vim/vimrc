@@ -63,19 +63,6 @@ set foldmethod=indent
 let g:findcmd = 'find . \( -type f -o -type l \) -iname'
 
 " Functions
-function! s:BufferInfo()
-    let name = expand('%:t')
-    let name = empty(l:name) ? '[No Name]' : l:name
-    let maininfo = bufnr('%') . ' ' . name
-    let infos = join([
-        \ empty(&ft) ? '-' : &ft,
-        \ empty(&fenc) ? '-' : &fenc,
-        \ empty(&ff) ? '-' : &ff,
-        \ &modified ? 'modified' : 'unmodified'
-        \ ], ', ')
-    echo l:maininfo . ': ' . l:infos
-endfunction
-
 function! s:GetConfVar(varname, alternative)
     if exists('b:' . a:varname)
         return eval('b:' . a:varname)
@@ -188,7 +175,6 @@ function! s:Search(pattern)
 endfunction
 
 " Commands
-command! -nargs=0 BufferInfo call s:BufferInfo()
 command! -nargs=* -range Comment <line1>,<line2>call s:CommentLines(<f-args>)
 command! -nargs=+ SetCommentSymbol call s:SetCommentSymbol(<f-args>)
 command! -nargs=0 Here lcd %:p:h
@@ -226,9 +212,7 @@ map Y y$
 vnoremap < <gv
 vnoremap > >gv
 inoremap <M-Backspace> <C-w>
-inoremap <Esc><Backspace> <C-w>
 cnoremap <M-Backspace> <C-w>
-cnoremap <Esc><Backspace> <C-w>
 
 " Custom command mappings
 nnoremap <Leader>i :BufferInfo<cr>
@@ -286,15 +270,6 @@ endif
 
 " Mouse
 set mouse=a
-
-" Colors
-hi statusline
-    \ term=inverse,bold cterm=inverse,bold ctermfg=darkblue ctermbg=white
-    \ gui=inverse,bold guifg=blue guibg=white
-hi statuslinenc
-    \ term=inverse,bold cterm=inverse,bold ctermfg=gray ctermbg=black
-    \ gui=inverse,bold guifg=lightgray guibg=black
-hi Normal guifg=grey guibg=black
 
 " GUI
 if has("gui_running")

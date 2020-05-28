@@ -238,7 +238,6 @@ inoremap <M-Backspace> <C-w>
 cnoremap <M-Backspace> <C-w>
 
 " Custom command mappings
-nnoremap <Leader>i :BufferInfo<cr>
 nnoremap <silent> <C-_> :Comment<cr>
 nnoremap <silent> <C-/> :Comment<cr>
 vnoremap <silent> <C-_> :Comment<cr>

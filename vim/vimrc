@@ -334,3 +334,32 @@ if filereadable($HOME . "/.vimrc.local")
     source $HOME/.vimrc.local
 endif
 
+" Plugins
+try
+    call plug#begin()
+    Plug 'dracula/vim', { 'as': 'dracula' }
+    Plug 'tpope/vim-fugitive'
+    Plug 'junegunn/fzf'
+    Plug 'junegunn/fzf.vim'
+    Plug 'itchyny/lightline.vim'
+    Plug 'editorconfig/editorconfig-vim'
+    Plug 'airblade/vim-gitgutter'
+    Plug 'terryma/vim-expand-region'
+    call plug#end()
+catch
+endtry
+
+" Lightline
+let g:lightline = {
+            \ 'active': {
+            \    'left': [ [ 'mode', 'paste' ],
+            \              [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+            \ },
+            \ 'component_function': {
+            \   'gitbranch': 'FugitiveHead'
+            \ },
+            \ }
+
+" Plugin settings found here:
+" ~/.vim/after/plugin/settings.vim
+

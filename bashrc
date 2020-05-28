@@ -115,6 +115,11 @@ whereami() {
 }
 alias wai=whereami
 
+# vim update plugins
+vim_plug_update() {
+    vim -c ':PlugUpdate'
+}
+
 # set the current window title
 set_window_title() {
     echo -ne "\033]0;$@\007"

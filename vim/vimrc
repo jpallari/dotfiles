@@ -27,6 +27,8 @@ set visualbell t_vb=
 set noerrorbells
 set shortmess+=I
 set title
+set laststatus=2
+set shortmess+=c
 
 " Menu
 set wildmenu
@@ -58,6 +60,9 @@ set foldenable
 set foldlevelstart=10
 set foldnestmax=10
 set foldmethod=indent
+
+" Misc
+set updatetime=1000
 
 " Custom function confs
 let g:findcmd = 'find . \( -type f -o -type l \) -iname'
@@ -234,10 +239,13 @@ cnoremap <M-Backspace> <C-w>
 
 " Custom command mappings
 nnoremap <Leader>i :BufferInfo<cr>
-nnoremap <silent> <M-;> :Comment<cr>
-nnoremap <silent> <Esc>; :Comment<cr>
-vnoremap <silent> <M-;> :Comment<cr>
-vnoremap <silent> <Esc>; :Comment<cr>
+nnoremap <silent> <C-_> :Comment<cr>
+nnoremap <silent> <C-/> :Comment<cr>
+vnoremap <silent> <C-_> :Comment<cr>
+vnoremap <silent> <C-/> :Comment<cr>
+nnoremap ; :e<space>
+nnoremap <Leader>b :ls<cr>:b<space>
+nnoremap <Leader>/ :Search<space>
 
 " Autocompleted commands
 nnoremap <Leader>e :e <C-R>=expand("%:p:h") . "/" <cr>
@@ -268,20 +276,13 @@ nnoremap <Leader>ts :setl spell! spell?<cr>
 nnoremap <Leader>rw :%s/\s\+$//e<cr>
 
 " Surround
-vnoremap <Leader>q" c"<c-r>""<Esc>
-vnoremap <Leader>q' c'<c-r>"'<Esc>
-vnoremap <Leader>q( c(<c-r>")<Esc>
-vnoremap <Leader>q[ c[<c-r>"]<Esc>
-vnoremap <Leader>q{ c{<c-r>"}<Esc>
-vnoremap <Leader>q< c<<c-r>"><Esc>
-
-" Finding files
-autocmd VimEnter *
-    \ if exists(':FZF') | nnoremap <Esc>F :FZF<cr> |
-    \ else | nnoremap <Esc>F :Find<space> | endif
+vnoremap " c"<c-r>""<Esc>
+vnoremap ' c'<c-r>"'<Esc>
+vnoremap ( c(<c-r>")<Esc>
+vnoremap [ c[<c-r>"]<Esc>
+vnoremap { c{<c-r>"}<Esc>
 
 " Grep
-nnoremap <Esc>/ :Search<space>
 if executable('rg')
     set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
 endif

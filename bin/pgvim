@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+WORKDIR="."
+if [ -d "${1:-}" ]; then
+    WORKDIR="$1"
+    shift
+fi
+
+export PGVIM_MODE=1
+nohup alacritty \
+    --class NeoVim \
+    -d 140 60 \
+    --working-directory "$WORKDIR" \
+    -e pvim "$@" \
+    >/dev/null 2>&1 &
+

@@ -208,6 +208,10 @@ function! s:FileBrowser(...)
     endif
 endfunction
 
+function! s:ProjectOpen(dir)
+    call system('pgvim ' . shellescape(a:dir))
+endfunction
+
 function! s:ProjectLoadSettings()
     let session_dir = getcwd() . '/.vimsession'
     let session_settings_file = l:session_dir . '/settings.vim'
@@ -255,6 +259,7 @@ command! -nargs=1 Search call s:Search(<q-args>)
 command! -nargs=1 -range Surround call s:Surround(<q-args>)
 command! -nargs=0 ToggleAutosave call s:ToggleAutosave()
 command! -nargs=? FileBrowser call s:FileBrowser(<f-args>)
+command! -nargs=1 -complete=dir ProjectOpen call s:ProjectOpen(<f-args>)
 command! -nargs=0 ProjectSessionSave call s:ProjectSessionSave()
 command! -nargs=0 ProjectLoadSettings call s:ProjectLoadSettings()
 command! -nargs=0 MarkdownPreview call s:MarkdownPreview()
@@ -358,6 +363,11 @@ set mouse=a
 " GUI
 if has("gui_running")
     set guioptions-=rLT
+endif
+
+" PGVim settings
+if $PGVIM_MODE
+    nnoremap <c-z> <nop>
 endif
 
 " Local conf

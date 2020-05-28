@@ -67,6 +67,7 @@ set updatetime=1000
 " Custom function confs
 let g:findcmd = 'find . \( -type f -o -type l \) -iname'
 let g:autosave_enabled = 1
+let g:session_mode_enabled = 0
 
 " Functions
 function! s:GetConfVar(varname, alternative)
@@ -207,6 +208,31 @@ function! s:FileBrowser(...)
     endif
 endfunction
 
+function! s:ProjectLoadSettings()
+    let session_dir = getcwd() . '/.vimsession'
+    let session_settings_file = l:session_dir . '/settings.vim'
+    if filereadable(l:session_settings_file)
+        execute 'source ' . l:session_settings_file
+    endif
+endfunction
+
+function! s:ProjectSessionSave()
+    let session_dir = getcwd() . '/.vimsession'
+    call mkdir(l:session_dir, 'p', 0700)
+    execute 'mks! ' . l:session_dir . '/session.vim'
+endfunction
+
+function! SessionModeStart()
+    call s:ProjectLoadSettings()
+    let g:session_mode_enabled = 1
+endfunction
+
+function! s:SessionModeExitHook()
+    if g:session_mode_enabled
+        call s:ProjectSessionSave()
+    endif
+endfunction
+
 function! s:MarkdownPreview()
     let filename = expand('%:t')
     let html_path = shellescape('/tmp/' . l:filename . '.html')
@@ -229,6 +255,8 @@ command! -nargs=1 Search call s:Search(<q-args>)
 command! -nargs=1 -range Surround call s:Surround(<q-args>)
 command! -nargs=0 ToggleAutosave call s:ToggleAutosave()
 command! -nargs=? FileBrowser call s:FileBrowser(<f-args>)
+command! -nargs=0 ProjectSessionSave call s:ProjectSessionSave()
+command! -nargs=0 ProjectLoadSettings call s:ProjectLoadSettings()
 command! -nargs=0 MarkdownPreview call s:MarkdownPreview()
 
 " Custom file types
@@ -250,6 +278,9 @@ au FileType markdown nnoremap gp :MarkdownPreview<cr>
 
 " Autosave
 au CursorHold,InsertLeave,TextChanged * call s:Autosave()
+
+" Session
+au VimLeave * call s:SessionModeExitHook()
 
 " Preferred defaults
 noremap k gk

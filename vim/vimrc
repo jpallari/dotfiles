@@ -61,6 +61,7 @@ set foldmethod=indent
 
 " Custom function confs
 let g:findcmd = 'find . \( -type f -o -type l \) -iname'
+let g:autosave_enabled = 1
 
 " Functions
 function! s:GetConfVar(varname, alternative)
@@ -174,6 +175,19 @@ function! s:Search(pattern)
     lwindow
 endfunction
 
+function! s:Autosave()
+    if !g:autosave_enabled
+        return
+    end
+    silent! update
+endfunction
+
+function! s:ToggleAutosave()
+    let g:autosave_enabled = !g:autosave_enabled
+    let enabled_text = g:autosave_enabled ? 'ON' : 'OFF'
+    echo "(Autosave) " . l:enabled_text
+endfunction
+
 " Commands
 command! -nargs=* -range Comment <line1>,<line2>call s:CommentLines(<f-args>)
 command! -nargs=+ SetCommentSymbol call s:SetCommentSymbol(<f-args>)
@@ -185,6 +199,7 @@ command! -complete=shellcmd -nargs=+ Shell call s:RunShellCommand(<q-args>)
 command! -nargs=1 Find call s:Find(<q-args>)
 command! -nargs=1 Search call s:Search(<q-args>)
 command! -nargs=1 -range Surround call s:Surround(<q-args>)
+command! -nargs=0 ToggleAutosave call s:ToggleAutosave()
 
 " Custom file types
 augroup filetypedetect
@@ -201,6 +216,9 @@ au FileType h SetCommentSymbol /* */
 au FileType sh SetCommentSymbol #
 au FileType python SetCommentSymbol #
 au FileType vim SetCommentSymbol "
+
+" Autosave
+au CursorHold,InsertLeave,TextChanged * call s:Autosave()
 
 " Preferred defaults
 noremap k gk

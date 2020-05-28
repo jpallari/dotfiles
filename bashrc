@@ -39,7 +39,9 @@ else
 fi
 
 # vim in terminal w/ clipboard support etc.
-if hash mvim 2>/dev/null; then
+if hash nvim 2>/dev/null; then
+    alias vim='nvim'
+elif hash mvim 2>/dev/null; then
     alias vim='mvim -v'
 elif hash vimx 2>/dev/null; then
     alias vim='vimx'

@@ -104,6 +104,12 @@ add_path() {
 # print user and location
 whereami() {
     echo -e "\e[92m${USER} \e[94m@ \e[96m${HOSTNAME} : \e[36m$(dirname "$PWD")/\e[93m$(basename "$PWD")\e[39m"
+    if [ -n "$VIRTUAL_ENV" ]; then
+        echo "Python virtualenv : $VIRTUAL_ENV"
+    fi
+    if [ -n "$AWS_VAULT" ]; then
+        echo "AWS vault : $AWS_VAULT"
+    fi
 }
 alias wai=whereami
 

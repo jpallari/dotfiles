@@ -195,6 +195,12 @@ function! s:ToggleAutosave()
 endfunction
 
 function! s:FileBrowser(...)
+    if exists(':NERDTreeFocus')
+        NERDTreeFocus
+        call g:NERDTree.ForCurrentTab().getRoot().refresh()
+        return
+    endif
+
     if a:0 >= 1
         Vexplore a:1
         return
@@ -386,6 +392,7 @@ try
     Plug 'editorconfig/editorconfig-vim'
     Plug 'airblade/vim-gitgutter'
     Plug 'terryma/vim-expand-region'
+    Plug 'preservim/nerdtree'
     call plug#end()
 catch
 endtry
@@ -401,11 +408,15 @@ let g:lightline = {
             \ },
             \ }
 
-" Plugin settings found here:
+" NERDTree
+let NERDTreeHijackNetrw = 1
+let NERDTreeMinimalUI = 1
+
 " Git gutter customizations
 highlight GitGutterAdd    guifg=#009900 ctermfg=2
 highlight GitGutterChange guifg=#bbbb00 ctermfg=3
 highlight GitGutterDelete guifg=#ff2222 ctermfg=1
 
+" More plugin settings found here:
 " ~/.vim/after/plugin/settings.vim
 

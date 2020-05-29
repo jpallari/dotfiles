@@ -36,6 +36,7 @@ set wildmode=list:longest,full
 set wildignore+=*.so,*.dll,*.o,*.a,*.obj,*.exe,*.pyc,*.class
 set wildignore+=.git,.hg,.svn
 set wildignore+=*.bak,*.swp,.DS_Store,*.tmp,*~
+set wildignorecase
 
 " Completion
 set ofu=syntaxcomplete#Complete
@@ -239,6 +240,9 @@ endfunction
 
 function! s:SessionModeExitHook()
     if g:session_mode_enabled
+        if exists(':NERDTreeClose')
+            NERDTreeClose
+        endif
         call s:ProjectSessionSave()
     endif
 endfunction
@@ -297,9 +301,9 @@ au VimLeave * call s:SessionModeExitHook()
 noremap k gk
 noremap j gj
 nnoremap <space> za
-map x "_dl
-map X "_dh
-map Y y$
+noremap x "_dl
+noremap X "_dh
+noremap Y y$
 vnoremap < <gv
 vnoremap > >gv
 inoremap <M-Backspace> <C-w>
@@ -311,6 +315,7 @@ nnoremap <silent> <C-/> :Comment<cr>
 vnoremap <silent> <C-_> :Comment<cr>
 vnoremap <silent> <C-/> :Comment<cr>
 nnoremap ; :e<space>
+nnoremap <Leader>x :b#<bar>bd#<cr>
 nnoremap <Leader>b :ls<cr>:b<space>
 nnoremap <Leader>/ :Search<space>
 nnoremap <Leader>q :FileBrowser<cr>

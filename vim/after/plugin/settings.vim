@@ -1,10 +1,10 @@
 " FZF overrides
-if exists(':GFiles')
-    nnoremap ; :GFiles<cr>
+if exists(':Files')
+    nnoremap ; :Files<cr>
 endif
 
-if exists(':Files')
-    nnoremap <Leader>; :Files<cr>
+if exists(':GFiles')
+    nnoremap <Leader>; :GFiles<cr>
 endif
 
 if executable('rg') && exists(':Rg')

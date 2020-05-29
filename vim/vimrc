@@ -289,7 +289,7 @@ au FileType h SetCommentSymbol /* */
 au FileType sh SetCommentSymbol #
 au FileType python SetCommentSymbol #
 au FileType vim SetCommentSymbol "
-au FileType markdown nnoremap gp :MarkdownPreview<cr>
+au FileType markdown nnoremap <buffer> gp :MarkdownPreview<cr>
 
 " Autosave
 au CursorHold,InsertLeave,TextChanged * call s:Autosave()

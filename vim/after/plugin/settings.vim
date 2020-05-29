@@ -46,4 +46,5 @@ let g:lightline = {
 " NERDTree
 let NERDTreeHijackNetrw = 1
 let NERDTreeMinimalUI = 1
+au FileType nerdtree nnoremap <buffer> <Leader>q :NERDTreeClose<cr>
 

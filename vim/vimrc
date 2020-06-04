@@ -416,6 +416,10 @@ try
     Plug 'terryma/vim-expand-region'
     Plug 'preservim/nerdtree'
     Plug 'shime/vim-livedown'
+    Plug 'Vimjas/vim-python-pep8-indent'
+    if has('nvim')
+        Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
+    endif
     call plug#end()
 catch
     echo 'Plugin setup failed!'

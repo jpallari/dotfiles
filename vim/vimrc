@@ -142,6 +142,17 @@ function! s:Underline(...)
     endif
 endfunction
 
+function! s:Format()
+    let format_command = s:GetConfVar('format_command', '')
+    if l:format_command == ''
+        echo 'No format command specified'
+        return 1
+    endif
+    let pos = getpos('.')
+    execute '%!' . l:format_command . ' 2>/dev/null'
+    call setpos('.', pos)
+endfunction
+
 function! s:RunShellCommand(cmdline)
     let expanded_cmdline = a:cmdline
     for part in split(a:cmdline, ' ')
@@ -254,6 +265,7 @@ command! -nargs=0 Here lcd %:p:h
 command! -nargs=* SetIndent call s:SetIndent(<f-args>)
 command! -nargs=* SetIndentTab call s:SetIndentTab(<f-args>)
 command! -nargs=? Underline call s:Underline(<f-args>)
+command! -nargs=0 Format call s:Format()
 command! -complete=shellcmd -nargs=+ Shell call s:RunShellCommand(<q-args>)
 command! -nargs=1 Find call s:Find(<q-args>)
 command! -nargs=1 Search call s:Search(<q-args>)

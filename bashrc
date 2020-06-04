@@ -271,6 +271,12 @@ if hash direnv 2>/dev/null; then
     eval "$(direnv hook bash)"
 fi
 
+# FZF
+export FZF_DEFAULT_OPTS='--min-height=5'
+if [ -f /usr/share/fzf/shell/key-bindings.bash ]; then
+    . /usr/share/fzf/shell/key-bindings.bash
+fi
+
 # Who? Where?
 whereami
 

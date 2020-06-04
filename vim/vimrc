@@ -241,6 +241,10 @@ function! s:ProjectSettingsFile()
     return s:ProjectSessionDir() . '/settings.vim'
 endfunction
 
+function! s:ProjectOpenSettings()
+    execute 'edit ' . s:ProjectSettingsFile()
+endfunction
+
 function! s:ProjectLoadSettings()
     let filename = s:ProjectSettingsFile()
     if filereadable(l:filename)
@@ -283,6 +287,7 @@ command! -nargs=0 ToggleAutosave call s:ToggleAutosave()
 command! -nargs=? FileBrowser call s:FileBrowser(<f-args>)
 command! -nargs=1 -complete=dir ProjectOpen call s:ProjectOpen(<f-args>)
 command! -nargs=0 ProjectSessionSave call s:ProjectSessionSave()
+command! -nargs=0 ProjectOpenSettings call s:ProjectOpenSettings()
 command! -nargs=0 ProjectLoadSettings call s:ProjectLoadSettings()
 command! -nargs=0 Cheat execute '!cat ~/.vim/cheat.txt'
 

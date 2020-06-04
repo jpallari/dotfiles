@@ -247,15 +247,6 @@ function! s:SessionModeExitHook()
     endif
 endfunction
 
-function! s:MarkdownPreview()
-    let filename = expand('%:t')
-    let html_path = shellescape('/tmp/' . l:filename . '.html')
-    let css_path = shellescape($HOME . '/.vim/pandoc.css')
-    let command = 'pandoc -s -f gfm -t html5 -c ' . l:css_path . ' -o ' . l:html_path
-    execute 'silent write !' . command
-    call system('xdg-open ' . html_path)
-endfunction
-
 " Commands
 command! -nargs=* -range Comment <line1>,<line2>call s:CommentLines(<f-args>)
 command! -nargs=+ SetCommentSymbol call s:SetCommentSymbol(<f-args>)
@@ -272,7 +263,6 @@ command! -nargs=? FileBrowser call s:FileBrowser(<f-args>)
 command! -nargs=1 -complete=dir ProjectOpen call s:ProjectOpen(<f-args>)
 command! -nargs=0 ProjectSessionSave call s:ProjectSessionSave()
 command! -nargs=0 ProjectLoadSettings call s:ProjectLoadSettings()
-command! -nargs=0 MarkdownPreview call s:MarkdownPreview()
 
 " Custom file types
 augroup filetypedetect
@@ -289,7 +279,6 @@ au FileType h SetCommentSymbol /* */
 au FileType sh SetCommentSymbol #
 au FileType python SetCommentSymbol #
 au FileType vim SetCommentSymbol "
-au FileType markdown nnoremap <buffer> gp :MarkdownPreview<cr>
 
 " Autosave
 au CursorHold,InsertLeave,TextChanged * call s:Autosave()
@@ -398,6 +387,7 @@ try
     Plug 'airblade/vim-gitgutter'
     Plug 'terryma/vim-expand-region'
     Plug 'preservim/nerdtree'
+    Plug 'shime/vim-livedown'
     call plug#end()
 catch
 endtry

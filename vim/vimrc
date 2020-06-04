@@ -5,6 +5,7 @@ set hidden
 set autowrite
 set nobackup
 set noswapfile
+set path=.,,
 
 " Editing
 set backspace=indent,eol,start
@@ -19,7 +20,8 @@ set showcmd
 set ruler
 set splitbelow
 set splitright
-set listchars=tab:▸\ ,eol:¬,trail:⋅,extends:❯,precedes:❮
+set listchars=tab:▸\ ,trail:⋅,extends:❯,precedes:❮
+set list
 let &showbreak='↳'
 set wrap
 set linebreak
@@ -29,6 +31,7 @@ set shortmess+=I
 set title
 set laststatus=2
 set shortmess+=c
+set signcolumn=yes
 
 " Menu
 set wildmenu
@@ -49,7 +52,7 @@ set ignorecase
 set infercase
 set smartcase
 set incsearch
-set nohls
+set hls
 
 " File type detection
 filetype on
@@ -63,7 +66,7 @@ set foldnestmax=10
 set foldmethod=indent
 
 " Misc
-set updatetime=1000
+set updatetime=300
 
 " Custom function confs
 let g:findcmd = 'find . \( -type f -o -type l \) -iname'
@@ -209,7 +212,7 @@ endfunction
 function! s:FileBrowser(...)
     if exists(':NERDTreeFocus')
         NERDTreeFocus
-        call g:NERDTree.ForCurrentTab().getRoot().refresh()
+        NERDTreeRefreshRoot
         return
     endif
 
@@ -296,7 +299,6 @@ au FileType yaml SetIndent 2
 au FileType c SetCommentSymbol /* */
 au FileType h SetCommentSymbol /* */
 au FileType sh SetCommentSymbol #
-au FileType python SetCommentSymbol #
 au FileType vim SetCommentSymbol "
 
 " Autosave
@@ -308,7 +310,6 @@ au VimLeave * call s:SessionModeExitHook()
 " Preferred defaults
 noremap k gk
 noremap j gj
-nnoremap <space> za
 noremap x "_dl
 noremap X "_dh
 noremap Y y$
@@ -316,20 +317,22 @@ vnoremap < <gv
 vnoremap > >gv
 inoremap <M-Backspace> <C-w>
 cnoremap <M-Backspace> <C-w>
+nnoremap <Leader>? :map <leader><cr>
+nnoremap ; :e<space>
+nnoremap <Leader>x :bp<bar>sp<bar>bn<bar>bd<cr>
+nnoremap <Leader>b :ls<cr>:b<space>
 
 " Custom command mappings
 nnoremap <silent> <C-_> :Comment<cr>
 nnoremap <silent> <C-/> :Comment<cr>
 vnoremap <silent> <C-_> :Comment<cr>
 vnoremap <silent> <C-/> :Comment<cr>
-nnoremap ; :e<space>
-nnoremap <Leader>x :b#<bar>bd#<cr>
-nnoremap <Leader>b :ls<cr>:b<space>
 nnoremap <Leader>/ :Search<space>
 nnoremap <Leader>q :FileBrowser<cr>
+nnoremap <Leader>I :Format<cr>
 
 " Autocompleted commands
-nnoremap <Leader>e :e <C-R>=expand("%:p:h") . "/" <cr>
+nnoremap <Leader>e :e <C-R>=expand('%:p:h') . '/' <cr>
 
 " Copy/paste
 vnoremap <Leader>c "+y
@@ -356,7 +359,6 @@ let g:netrw_list_hide = &wildignore
 nnoremap <Leader>th :set hlsearch! hlsearch?<cr>
 nnoremap <Leader>tp :setl paste! paste?<cr>
 nnoremap <Leader>tn :set number!<cr>
-nnoremap <Leader>tl :set list! list?<cr>
 nnoremap <Leader>tw :set wrap! wrap?<cr>
 nnoremap <Leader>tc :set cursorline! cursorline?<cr>
 nnoremap <Leader>ts :setl spell! spell?<cr>
@@ -365,11 +367,13 @@ nnoremap <Leader>ts :setl spell! spell?<cr>
 nnoremap <Leader>rw :%s/\s\+$//e<cr>
 
 " Surround
-vnoremap " c"<c-r>""<Esc>
-vnoremap ' c'<c-r>"'<Esc>
-vnoremap ( c(<c-r>")<Esc>
-vnoremap [ c[<c-r>"]<Esc>
-vnoremap { c{<c-r>"}<Esc>
+vnoremap S" c"<c-r>""<Esc>
+vnoremap S' c'<c-r>"'<Esc>
+vnoremap S( c(<c-r>")<Esc>
+vnoremap S[ c[<c-r>"]<Esc>
+vnoremap S{ c{<c-r>"}<Esc>
+vnoremap S< c<<c-r>"><Esc>
+vnoremap S` c`<c-r>"`<Esc>
 
 " Grep
 if executable('rg')

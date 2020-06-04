@@ -1,10 +1,13 @@
 " FZF overrides
 if exists(':Files')
-    nnoremap ; :Files<cr>
+    if executable('rg')
+        let $FZF_DEFAULT_COMMAND="rg --files --hidden --glob '!.git/*'"
+    endif
+    nnoremap <Leader>; :Files<cr>
 endif
 
 if exists(':GFiles')
-    nnoremap <Leader>; :GFiles<cr>
+    nnoremap ; :GFiles --cached --others --exclude-standard<cr>
 endif
 
 if executable('rg') && exists(':Rg')

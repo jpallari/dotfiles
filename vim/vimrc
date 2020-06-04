@@ -263,6 +263,7 @@ command! -nargs=? FileBrowser call s:FileBrowser(<f-args>)
 command! -nargs=1 -complete=dir ProjectOpen call s:ProjectOpen(<f-args>)
 command! -nargs=0 ProjectSessionSave call s:ProjectSessionSave()
 command! -nargs=0 ProjectLoadSettings call s:ProjectLoadSettings()
+command! -nargs=0 Cheat execute '!cat ~/.vim/cheat.txt'
 
 " Custom file types
 augroup filetypedetect

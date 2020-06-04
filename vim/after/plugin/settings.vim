@@ -32,17 +32,6 @@ highlight GitGutterAdd    guifg=#009900 ctermfg=2
 highlight GitGutterChange guifg=#bbbb00 ctermfg=3
 highlight GitGutterDelete guifg=#ff2222 ctermfg=1
 
-" Lightline
-let g:lightline = {
-            \ 'active': {
-            \    'left': [ [ 'mode', 'paste' ],
-            \              [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
-            \ },
-            \ 'component_function': {
-            \   'gitbranch': 'FugitiveHead'
-            \ },
-            \ }
-
 " NERDTree
 let NERDTreeHijackNetrw = 1
 let NERDTreeMinimalUI = 1

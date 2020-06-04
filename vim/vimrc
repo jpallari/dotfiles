@@ -203,7 +203,7 @@ endfunction
 function! s:ToggleAutosave()
     let g:autosave_enabled = !g:autosave_enabled
     let enabled_text = g:autosave_enabled ? 'ON' : 'OFF'
-    echo "(Autosave) " . l:enabled_text
+    echo '(Autosave) ' . l:enabled_text
 endfunction
 
 function! s:FileBrowser(...)
@@ -219,7 +219,7 @@ function! s:FileBrowser(...)
     endif
 
     let path = trim(system('git rev-parse --show-toplevel'))
-    if l:path != ""
+    if l:path != ''
         execute 'silent Vexplore ' . l:path
     else
         silent Vexplore
@@ -230,16 +230,23 @@ function! s:ProjectOpen(dir)
     call system('pgvim ' . shellescape(a:dir))
 endfunction
 
+function! s:ProjectSessionDir()
+    return getcwd() . '/.vimsession'
+endfunction
+
+function! s:ProjectSettingsFile()
+    return s:ProjectSessionDir() . '/settings.vim'
+endfunction
+
 function! s:ProjectLoadSettings()
-    let session_dir = getcwd() . '/.vimsession'
-    let session_settings_file = l:session_dir . '/settings.vim'
-    if filereadable(l:session_settings_file)
-        execute 'source ' . l:session_settings_file
+    let filename = s:ProjectSettingsFile()
+    if filereadable(l:filename)
+        execute 'source ' . l:filename
     endif
 endfunction
 
 function! s:ProjectSessionSave()
-    let session_dir = getcwd() . '/.vimsession'
+    let session_dir = s:ProjectSessionDir()
     call mkdir(l:session_dir, 'p', 0700)
     execute 'mks! ' . l:session_dir . '/session.vim'
 endfunction
@@ -269,7 +276,6 @@ command! -nargs=0 Format call s:Format()
 command! -complete=shellcmd -nargs=+ Shell call s:RunShellCommand(<q-args>)
 command! -nargs=1 Find call s:Find(<q-args>)
 command! -nargs=1 Search call s:Search(<q-args>)
-command! -nargs=1 -range Surround call s:Surround(<q-args>)
 command! -nargs=0 ToggleAutosave call s:ToggleAutosave()
 command! -nargs=? FileBrowser call s:FileBrowser(<f-args>)
 command! -nargs=1 -complete=dir ProjectOpen call s:ProjectOpen(<f-args>)
@@ -374,17 +380,17 @@ endif
 set mouse=a
 
 " GUI
-if has("gui_running")
+if has('gui_running')
     set guioptions-=rLT
 endif
 
-" PGVim settings
-if $PGVIM_MODE
+" Running in terminal without shell
+if $NONINTERACTIVE_SHELL != ''
     nnoremap <c-z> <nop>
 endif
 
 " Local conf
-if filereadable($HOME . "/.vimrc.local")
+if filereadable($HOME . '/.vimrc.local')
     source $HOME/.vimrc.local
 endif
 
@@ -403,8 +409,24 @@ try
     Plug 'shime/vim-livedown'
     call plug#end()
 catch
+    echo 'Plugin setup failed!'
 endtry
 
-" Plugin settings found here:
-" ~/.vim/after/plugin/settings.vim
+" Lightline
+" This has to be loaded before the plugin settings
+let g:lightline = {
+\   'active': {
+\      'left': [
+\        [ 'mode', 'paste' ],
+\        [ 'gitbranch', 'readonly', 'filename', 'modified' ]
+\      ]
+\   },
+\   'component_function': {
+\     'gitbranch': 'FugitiveHead'
+\   },
+\ }
+
+" More settings:
+" Plugin: ~/.vim/after/plugin/settings.vim
+" FileType: ~/.vim/after/ftplugin
 

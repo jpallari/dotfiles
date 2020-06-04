@@ -7,7 +7,8 @@ if [ -d "${1:-}" ]; then
     shift
 fi
 
-export PGVIM_MODE=1
+export WINIT_UNIX_BACKEND=x11
+export NONINTERACTIVE_SHELL=1
 nohup alacritty \
     --class NeoVim \
     -d 140 60 \

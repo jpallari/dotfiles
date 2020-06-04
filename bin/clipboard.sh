@@ -1,4 +1,5 @@
 #!/bin/sh
+set -eu
 
 log_msg() {
     echo "$1" 1>&2
@@ -34,7 +35,7 @@ paste_to_stdout() {
 }
 
 main() {
-    case "$1" in
+    case "${1:-}" in
         c|copy)
             copy_from_stdin ;;
         p|paste)
@@ -47,3 +48,4 @@ main() {
 }
 
 main "$@"
+

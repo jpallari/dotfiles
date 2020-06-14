@@ -18,6 +18,10 @@ if exists(':Commands')
     nnoremap <Leader>: :Commands<cr>
 endif
 
+if exists(':Buffers')
+    nnoremap <Leader>b :Buffers<cr>
+endif
+
 " Dracula theme
 try
     let g:dracula_colorterm = 0

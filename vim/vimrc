@@ -354,15 +354,17 @@ augroup filetypedetect
     au BufRead,BufNewFile *.txt setfiletype text
     au BufRead,BufNewFile *mutt-* setfiletype mail
     au BufRead,BufNewFile *.md setfiletype markdown
+    au BufRead,BufNewFile Jenkinsfile setfiletype groovy
 augroup END
 
 " Config by file type
+" More configs here: ~/.vim/after/ftplugin
 au FileType go SetIndentTab 4
-au FileType yaml SetIndent 2
 au FileType c SetCommentSymbol /* */
 au FileType h SetCommentSymbol /* */
 au FileType sh SetCommentSymbol #
 au FileType vim SetCommentSymbol "
+au FileType dockerfile SetCommentSymbol #
 
 " Autosave
 au CursorHold,InsertLeave,TextChanged * call s:Autosave()
@@ -463,6 +465,7 @@ if filereadable($HOME . '/.vimrc.local')
 endif
 
 " Plugins
+" Plugin settings here: ~/.vim/after/plugin/settings.vim
 try
     call plug#begin()
     Plug 'dracula/vim', { 'as': 'dracula' }
@@ -497,8 +500,4 @@ let g:lightline = {
 \     'gitbranch': 'FugitiveHead'
 \   },
 \ }
-
-" More settings:
-" Plugin: ~/.vim/after/plugin/settings.vim
-" FileType: ~/.vim/after/ftplugin
 

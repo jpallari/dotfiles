@@ -117,16 +117,16 @@ endfunction
 function! s:SetIndent(...)
     let level = a:0 >= 1 ? str2nr(a:1) : 4
     setl et
-    let &sts=l:level
-    let &sw=l:level
-    let &ts=l:level
+    let &l:sts=l:level
+    let &l:sw=l:level
+    let &l:ts=l:level
 endfunction
 
 function! s:SetIndentTab(...)
     let level = a:0 >= 1 ? str2nr(a:1) : 4
     setl noet sts=0
-    let &sw=l:level
-    let &ts=l:level
+    let &l:sw=l:level
+    let &l:ts=l:level
 endfunction
 
 function! s:Underline(...)
@@ -349,17 +349,10 @@ command! -nargs=0 ProjectLoadSettings call s:ProjectLoadSettings()
 command! -nargs=0 Cheat execute '!cat ~/.vim/cheat.txt'
 command! -bang -complete=buffer -nargs=? Bclose call <SID>Bclose('<bang>', '<args>')
 
-" Custom file types
-augroup filetypedetect
-    au BufRead,BufNewFile *.txt setfiletype text
-    au BufRead,BufNewFile *mutt-* setfiletype mail
-    au BufRead,BufNewFile *.md setfiletype markdown
-    au BufRead,BufNewFile Jenkinsfile setfiletype groovy
-augroup END
-
 " Config by file type
-" More configs here: ~/.vim/after/ftplugin
-au FileType go SetIndentTab 4
+" More configs here:
+" ~/.vim/filetype.vim
+" ~/.vim/after/ftplugin
 au FileType c SetCommentSymbol /* */
 au FileType h SetCommentSymbol /* */
 au FileType sh SetCommentSymbol #
@@ -479,6 +472,7 @@ try
     Plug 'preservim/nerdtree'
     Plug 'shime/vim-livedown'
     Plug 'Vimjas/vim-python-pep8-indent'
+    Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
     if has('nvim')
         Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
     endif

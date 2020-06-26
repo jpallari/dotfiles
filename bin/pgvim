@@ -10,7 +10,7 @@ fi
 export WINIT_UNIX_BACKEND=x11
 export NONINTERACTIVE_SHELL=1
 nohup alacritty \
-    --class NeoVim \
+    --class nvim \
     -d 140 60 \
     --working-directory "$WORKDIR" \
     -e pvim "$@" \

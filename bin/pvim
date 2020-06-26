@@ -11,6 +11,8 @@ launch_neovim() {
 if [ -d "${1:-}" ]; then
     cd "$1"
     shift
+elif [ -f "${1:-}" ]; then
+    cd "$(dirname "$1")"
 fi
 
 if [ -f "$SESSION_PATH" ]; then

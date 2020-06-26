@@ -1,8 +1,12 @@
 #!/usr/bin/env perl
 use warnings;
+use utf8;
 use strict;
 use autodie;
 use feature qw(say);
+use open qw(:std :utf8);
+use feature qw(signatures);
+no warnings qw(experimental::signatures);
 
 require Carp;
 require Cwd;
@@ -13,8 +17,20 @@ require File::Spec;
 
 ### Targets BEGIN ###
 
-my @xdg_targets     = ("nvim",);
-my @dotfile_targets = ("bashrc", "emacs.d", "inputrc", "screenrc", "tmux.conf", "vim", "Xresources",);
+my @xdg_targets = (
+    "nvim",
+    "alacritty",
+);
+my @dotfile_targets = (
+    ["bashrc", "zshrc"],
+    "bashrc",
+    "emacs.d",
+    "inputrc",
+    "screenrc",
+    "tmux.conf",
+    "vim",
+    "Xresources",
+);
 
 ### Targets END ###
 
@@ -38,7 +54,7 @@ sub update_link {
     # If the file system path and the dotfile path resolve to same the path,
     # it means that we already have the link in place.
     if (Cwd::abs_path($fs_target_path) eq $dotfile_target_path) {
-        say "Already linked: " . $dotfile_target_path;
+        say "Already linked: " . $fs_target_path . " => " . $dotfile_target_name;
         return 1;
     }
 
@@ -62,11 +78,11 @@ sub link_gitconfig {
     my $current_git_includes = `git config --global --get-all include.path`;
 
     if (index($current_git_includes, $gitconfig_target) >= 0) {
-        say "Already linked: " . $gitconfig_target;
+        say "Already linked: gitconfig";
         return 1;
     }
 
-    say "Linking: " . $gitconfig_target;
+    say "Linking: gitconfig";
     return system("git", "config", "--global", "--add", "include.path", $gitconfig_target);
 }
 
@@ -90,8 +106,19 @@ sub main {
     }
 
     foreach (@dotfile_targets) {
-        my $dotfile_target = $_;
-        my $fs_target_path = File::Spec->catfile($home_dir, "." . $dotfile_target);
+        my $dotfile_target;
+        my $fs_target;
+
+        if (ref($_) eq 'ARRAY') {
+            $dotfile_target = $_->[0];
+            $fs_target      = "." . $_->[1];
+        }
+        else {
+            $dotfile_target = $_;
+            $fs_target      = "." . $_;
+        }
+
+        my $fs_target_path = File::Spec->catfile($home_dir, $fs_target);
         update_link($dotfile_target, $fs_target_path);
     }
 

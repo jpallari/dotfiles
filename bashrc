@@ -115,7 +115,7 @@ calc() {
 
 # Python oneliner
 pyline() {
-    python -c "print $*"
+    python -c "print($*)"
 }
 
 # join arguments 2..n with first argument as the separator

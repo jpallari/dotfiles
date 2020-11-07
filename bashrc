@@ -135,19 +135,25 @@ add_path() {
     export PATH="$1:$PATH"
 }
 
+# print out a key-value pair
+# used in whereami
+__print_kvpair() {
+    printf  "${__COLOR_PURPLE}%-12s: ${__COLOR_CYAN}%s${__COLOR_RESTORE}\n" "$@"
+}
+
 # print user and location
 whereami() {
-    echo -e "Who & Where : ${__COLOR_GREEN}${USER} ${__COLOR_LPURPLE}@ ${__COLOR_CYAN}${HOSTNAME}${__COLOR_RESTORE}"
-    echo -e "Directory   : ${__COLOR_CYAN}$(dirname "$PWD")/${__COLOR_YELLOW}$(basename "$PWD")${__COLOR_RESTORE}"
-    echo -e "Time        : ${__COLOR_CYAN}$(date)${__COLOR_RESTORE}"
-    if [ -n "$VIRTUAL_ENV" ]; then
-        echo -e "Python venv : ${__COLOR_CYAN}${VIRTUAL_ENV}${__COLOR_RESTORE}"
+    __print_kvpair "who & where" "${USER} @ ${HOSTNAME}"
+    __print_kvpair "directory" "${PWD}"
+    __print_kvpair "time" "$(date)"
+    if [ -n "${VIRTUAL_ENV}" ]; then
+        __print_kvpair "python venv" "${VIRTUAL_ENV}"
     fi
-    if [ -n "$AWS_VAULT" ]; then
-        echo -e "AWS vault   : ${__COLOR_CYAN}${AWS_VAULT}${__COLOR_RESTORE}"
+    if [ -n "${AWS_VAULT}" ]; then
+        __print_kvpair "aws vault" "${AWS_VAULT}"
     fi
     if [ "$(git rev-parse --is-inside-work-tree 2>/dev/null)" = "true" ]; then
-        echo -e "Git branch  : ${__COLOR_CYAN}$(git rev-parse --abbrev-ref HEAD)${__COLOR_RESTORE}"
+        __print_kvpair "git branch" "$(git rev-parse --abbrev-ref HEAD)"
     fi
 }
 alias wai=whereami
@@ -242,7 +248,7 @@ precmd() {
         fi
 
         PS1+=$'\n'
-        PS1+="${__PRC_TIME}$(date "+%H:%M") "
+        PS1+="${__PRC_TIME}$(date "+%H:%M:%S") "
         PS1+="${fulldir}"
         PS1+=$'\n'
     fi
@@ -279,12 +285,12 @@ __COLOR_LCYAN='\033[01;36m'
 __COLOR_WHITE='\033[01;37m'
 
 if [ -n "$BASH_VERSION" ]; then
-    __PRC_OK=${__COLOR_GREEN}
-    __PRC_FAIL=${__COLOR_RED}
-    __PRC_RESTORE=${__COLOR_RESTORE}
-    __PRC_BASEDIR=${__COLOR_CYAN}
-    __PRC_TOPDIR=${__COLOR_YELLOW}
-    __PRC_TIME=${__COLOR_PURPLE}
+    __PRC_OK="\[${__COLOR_GREEN}\]"
+    __PRC_FAIL="\[${__COLOR_RED}\]"
+    __PRC_RESTORE="\[${__COLOR_RESTORE}\]"
+    __PRC_BASEDIR="\[${__COLOR_CYAN}\]"
+    __PRC_TOPDIR="\[${__COLOR_YELLOW}\]"
+    __PRC_TIME="\[${__COLOR_PURPLE}\]"
 elif [ -n "$ZSH_VERSION" ]; then
     __PRC_OK="%{%F{green}%}"
     __PRC_FAIL="%{%F{red}%}"

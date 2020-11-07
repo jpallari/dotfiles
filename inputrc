@@ -7,8 +7,16 @@ set output-meta on
 set input-meta on
 set bind-tty-special-chars off
 set blink-matching-paren on
+set completion-ignore-case on
+set completion-map-case on
+set show-all-if-ambiguous on
+set show-all-if-unmodified on
+set menu-complete-display-prefix on
+set completion-prefix-display-length 2
 
 # keybindings
+TAB: menu-complete
+"\e[Z": menu-complete-backward
 "\ep": previous-history
 "\en": next-history
 "\C- ": set-mark

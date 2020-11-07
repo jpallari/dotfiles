@@ -254,14 +254,21 @@ precmd() {
     fi
     PS1+="${status_color}${PS_EXTRA}>${__PRC_RESTORE} "
 
-    # Include VTE specific additions
-    if [ -n "$VTE_VERSION" ] && hash __vte_prompt_command 2>/dev/null; then
+    # TODO: set title in zsh
+    # TODO: send notification on command completion
+
+    # Include VTE specific additions (bash only)
+    if [ -n "$BASH_VERSION" ] \
+        && [ -n "$VTE_VERSION" ] \
+        && type __vte_prompt_command >/dev/null 2>&1; then
         __vte_prompt_command
     fi
 }
 
 # VTE -- this must be loaded before the prompt command is set
-if [ "$VTE_VERSION" ] && [ -f /etc/profile.d/vte.sh ]; then
+if [ -n "$VTE_VERSION" ] \
+    && ! type __vte_prompt_command >/dev/null 2>&1 \
+    && [ -f /etc/profile.d/vte.sh ]; then
     . /etc/profile.d/vte.sh
 fi
 

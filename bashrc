@@ -361,11 +361,6 @@ if [ -n "$BASH_VERSION" ]; then
         fi
     done
 
-    # AWS CLI
-    if hash aws_completer 2>/dev/null; then
-        complete -C aws_completer aws
-    fi
-
     # Kubernetes
     if hash kubectl 2>/dev/null; then
         source <(kubectl completion bash)
@@ -387,17 +382,9 @@ if [ -n "$BASH_VERSION" ]; then
         . /usr/share/fzf/shell/key-bindings.bash
     fi
 elif [ -n "$ZSH_VERSION" ]; then
-    # Compinit (updated daily)
-    autoload -Uz compinit
-    typeset -i __compinit_updated_at=$(\
-        date +'%j' -r ~/.zcompdump 2>/dev/null \
-        || stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null \
-    )
-    if [ "$(date +'%j')" != "$__compinit_updated_at" ]; then
-      compinit -i
-    else
-      compinit -C -i
-    fi
+    # Compinit
+    autoload -Uz compinit && compinit
+    autoload -Uz bashcompinit && bashcompinit
 
     # Kubernetes
     if hash kubectl 2>/dev/null; then
@@ -413,5 +400,10 @@ elif [ -n "$ZSH_VERSION" ]; then
     if [ -f /usr/share/fzf/shell/key-bindings.zsh ]; then
         . /usr/share/fzf/shell/key-bindings.zsh
     fi
+fi
+
+# AWS CLI
+if hash aws_completer 2>/dev/null; then
+    complete -C aws_completer aws
 fi
 

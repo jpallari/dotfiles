@@ -19,6 +19,8 @@ copy_from_stdin() {
         xsel -i -p -b
     elif cmd_exists "pbcopy"; then
         pbcopy
+    elif [ -n "$WSLENV" ] && cmd_exists "clip.exe"; then
+        clip.exe
     else
         no_clipboard_found
     fi
@@ -29,6 +31,8 @@ paste_to_stdout() {
         xsel -o -b
     elif cmd_exists "pbpaste"; then
         pbpaste
+    elif [ -n "$WSLENV" ] && cmd_exists powershell.exe; then
+        powershell.exe get-clipboard | sed 's/\r//' | head -c -1
     else
         no_clipboard_found
     fi

@@ -50,9 +50,15 @@ fi
 
 if [ "$(uname)" = 'Linux' ]; then
     alias ls='ls --color=auto -F'
-    alias pbcopy='xsel --clipboard --input'
-    alias pbpaste='xsel --clipboard --output'
-    alias open='xdg-open >/dev/null 2>&1'
+    if [ -n "${WSLENV:-}" ]; then
+        alias pbcopy='clip.exe'
+        alias pbpaste='powershell.exe get-clipboard | sed "s/\r//" | head -c -1'
+        alias open='explorer.exe'
+    else
+        alias pbcopy='xsel --clipboard --input'
+        alias pbpaste='xsel --clipboard --output'
+        alias open='xdg-open >/dev/null 2>&1'
+    fi
 else
     alias ls='ls -F'
 fi

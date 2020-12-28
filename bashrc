@@ -224,7 +224,7 @@ set_prompt_extra() {
 precmd() {
     local last_exit=$?
     local status_color=$__PRC_OK
-    local basedir topdir fulldir
+    local basedir topdir fulldir fulldirnocolor
 
     # Update history (bash only)
     if [ -n "$BASH_VERSION" ]; then
@@ -240,11 +240,13 @@ precmd() {
         # Current directory
         if [ "$PWD" = "$HOME" ]; then
             fulldir="${__PRC_BASEDIR}~"
+            fulldirnocolor="~"
         else
             basedir=$(dirname "$PWD")
             basedir=${basedir/${HOME}/"~"}
             topdir=$(basename "$PWD")
             fulldir="${__PRC_BASEDIR}${basedir}/${__PRC_RESTORE}${__PRC_TOPDIR_}${topdir}"
+            fulldirnocolor="${basedir}/${topdir}"
         fi
 
         PS1+=$'\n'
@@ -254,14 +256,14 @@ precmd() {
     fi
     PS1+="${status_color}${PS_EXTRA}>${__PRC_RESTORE} "
 
-    # TODO: set title in zsh
-    # TODO: send notification on command completion
-
-    # Include VTE specific additions (bash only)
+    # Include VTE specific additions
     if [ -n "$BASH_VERSION" ] \
         && [ -n "$VTE_VERSION" ] \
         && type __vte_prompt_command >/dev/null 2>&1; then
         __vte_prompt_command
+    else
+        # Print terminal title (vte has its own implementation)
+        echo -n -e "\033]0;${USER}@${HOSTNAME}:${fulldirnocolor}\007"
     fi
 }
 

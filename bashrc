@@ -229,7 +229,7 @@ set_prompt_extra() {
 
 precmd() {
     local last_exit=$?
-    local status_color=$__PRC_OK
+    local status_warning
     local basedir topdir fulldir fulldirnocolor
 
     # Update history (bash only)
@@ -238,7 +238,7 @@ precmd() {
     fi
 
     if [ "$last_exit" != 0 ]; then
-        status_color=$__PRC_FAIL
+        status_warning="$__PRC_FAIL !"
     fi
 
     PS1=""
@@ -258,9 +258,11 @@ precmd() {
         PS1+=$'\n'
         PS1+="${__PRC_TIME}$(date "+%H:%M:%S") "
         PS1+="${fulldir}"
+        PS1+="${status_warning:-}"
+        PS1+="${__PRC_RESTORE}"
         PS1+=$'\n'
     fi
-    PS1+="${status_color}${PS_EXTRA}>${__PRC_RESTORE} "
+    PS1+="${PS_EXTRA}>${__PRC_RESTORE} "
 
     # Include VTE specific additions
     if [ -n "$BASH_VERSION" ] \

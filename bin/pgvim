@@ -9,10 +9,9 @@ fi
 
 export WINIT_UNIX_BACKEND=x11
 export NONINTERACTIVE_SHELL=1
-nohup alacritty \
+nohup kitty \
     --class nvim \
-    -d 140 60 \
-    --working-directory "$WORKDIR" \
-    -e pvim "$@" \
+    --directory "$WORKDIR" \
+    pvim "$@" \
     >/dev/null 2>&1 &
 

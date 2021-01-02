@@ -86,10 +86,10 @@ Update-ConfigLink `
     -TargetPath (Join-Path $env:USERPROFILE ".vim")
 Update-ConfigLink `
     -TargetSource "nvim" `
-    -TargetPath (Join-Path $env:USERPROFILE "\AppData\Local\nvim")
+    -TargetPath (Join-Path $env:LOCALAPPDATA "\nvim")
 Update-ConfigLink `
     -TargetSource "windows-terminal.json" `
-    -TargetPath (Join-Path $env:USERPROFILE "\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json")
+    -TargetPath (Join-Path $env:LOCALAPPDATA "\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json")
 
 # Links to Gitconfig
 Update-GitConfig

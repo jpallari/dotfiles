@@ -8,17 +8,31 @@ Set-PSReadLineOption -EditMode Emacs
 Set-PSReadLineKeyHandler -Key Ctrl+q -Function TabCompleteNext
 Set-PSReadLineKeyHandler -Key Ctrl+Q -Function TabCompletePrevious
 function global:prompt {
-    $Success = $?
-    $TimeStamp = Get-Date -Format "HH:mm:ss"
-    $PwdBase = Split-Path -Path $pwd
-    $PwdCurDir = Split-Path -Path $pwd -Leaf
-    Write-Host -Object "$TimeStamp " -NoNewLine -ForegroundColor Magenta
-    Write-Host -Object "$PwdBase\" -NoNewLine -ForegroundColor Cyan
-    Write-Host -Object "$PwdCurDir" -NoNewLine
-    if (!$Success) {
-        Write-Host -Object " !" -ForegroundColor Red -NoNewLine
+    $success = $?
+    $timestamp = Get-Date -Format "HH:mm:ss"
+
+    if (! $env:NO_LONG_PROMPT) {
+        $basedir = $pwd.Path.Replace($HOME, "~")
+        $dirseparator = "\"
+        $topdir = ""
+        
+        if ($basedir -ne "~") {
+            $basedir = Split-Path -Path $basedir
+            $topdir = Split-Path -Path $pwd -Leaf
+        }
+        if ($topdir -eq "" -or $basedir -eq "" -or $basedir.EndsWith("\")) {
+            $dirseparator = ""
+        }
+    
+        Write-Host -Object ""
+        Write-Host -Object "$timestamp " -NoNewLine -ForegroundColor DarkMagenta
+        Write-Host -Object "${basedir}${dirseparator}" -NoNewLine -ForegroundColor DarkCyan
+        Write-Host -Object "$topdir" -NoNewLine -ForegroundColor DarkYellow
+        if (!$success) {
+            Write-Host -Object " !" -ForegroundColor Red -NoNewLine
+        }
+        Write-Host -Object ""    
     }
-    Write-Host -Object ""
     return "> "
 }
 

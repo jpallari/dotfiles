@@ -243,7 +243,6 @@ precmd() {
 
     PS1=""
     if [ -z "$NO_LONG_PROMPT" ]; then
-        # Current directory
         if [ "$PWD" = "$HOME" ]; then
             fulldir="${__PRC_BASEDIR}~"
             fulldirnocolor="~"
@@ -251,7 +250,7 @@ precmd() {
             basedir=$(dirname "$PWD")
             basedir=${basedir/${HOME}/"~"}
             topdir=$(basename "$PWD")
-            fulldir="${__PRC_BASEDIR}${basedir}/${__PRC_RESTORE}${__PRC_TOPDIR_}${topdir}"
+            fulldir="${__PRC_BASEDIR}${basedir}/${__PRC_RESTORE}${__PRC_TOPDIR}${topdir}"
             fulldirnocolor="${basedir}/${topdir}"
         fi
 
@@ -262,7 +261,7 @@ precmd() {
         PS1+="${__PRC_RESTORE}"
         PS1+=$'\n'
     fi
-    PS1+="${PS_EXTRA}>${__PRC_RESTORE} "
+    PS1+="${PS_EXTRA}\$${__PRC_RESTORE} "
 
     # Include VTE specific additions
     if [ -n "$BASH_VERSION" ] \
@@ -285,21 +284,21 @@ fi
 ### exports ###
 
 # Colors
-__COLOR_RESTORE='\033[0m'
-__COLOR_RED='\033[00;31m'
-__COLOR_GREEN='\033[00;32m'
-__COLOR_YELLOW='\033[00;33m'
-__COLOR_BLUE='\033[00;34m'
-__COLOR_PURPLE='\033[00;35m'
-__COLOR_CYAN='\033[00;36m'
-__COLOR_LIGHTGRAY='\033[00;37m'
-__COLOR_LRED='\033[01;31m'
-__COLOR_LGREEN='\033[01;32m'
-__COLOR_LYELLOW='\033[01;33m'
-__COLOR_LBLUE='\033[01;34m'
-__COLOR_LPURPLE='\033[01;35m'
-__COLOR_LCYAN='\033[01;36m'
-__COLOR_WHITE='\033[01;37m'
+__COLOR_RESTORE='\e[0m'
+__COLOR_RED='\e[0;31m'
+__COLOR_GREEN='\e[0;32m'
+__COLOR_YELLOW='\e[0;33m'
+__COLOR_BLUE='\e[0;34m'
+__COLOR_PURPLE='\e[0;35m'
+__COLOR_CYAN='\e[0;36m'
+__COLOR_LIGHTGRAY='\e[0;37m'
+__COLOR_LRED='\e[1;31m'
+__COLOR_LGREEN='\e[1;32m'
+__COLOR_LYELLOW='\e[1;33m'
+__COLOR_LBLUE='\e[1;34m'
+__COLOR_LPURPLE='\e[1;35m'
+__COLOR_LCYAN='\e[1;36m'
+__COLOR_WHITE='\e[1;37m'
 
 if [ -n "$BASH_VERSION" ]; then
     __PRC_OK="\[${__COLOR_GREEN}\]"

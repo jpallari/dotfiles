@@ -79,7 +79,7 @@ if ($env:OS -ne "Windows_NT") {
 
 # Links to dotfiles
 Update-ConfigLink `
-    -TargetSource "pwsh_profile.ps1" `
+    -TargetSource ".\powershell\Microsoft.PowerShell_profile.ps1" `
     -TargetPath (Join-Path $env:USERPROFILE "\Documents\PowerShell\Microsoft.PowerShell_profile.ps1")
 Update-ConfigLink `
     -TargetSource "vim" `

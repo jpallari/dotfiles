@@ -20,14 +20,14 @@ function global:prompt {
 
     if (! $env:NO_LONG_PROMPT) {
         $basedir = $pwd.Path.Replace($HOME, "~")
-        $dirseparator = "\"
+        $dirseparator = [IO.Path]::DirectorySeparatorChar
         $topdir = ""
 
         if ($basedir -ne "~") {
             $basedir = Split-Path -Path $basedir
             $topdir = Split-Path -Path $pwd -Leaf
         }
-        if ($topdir -eq "" -or $basedir -eq "" -or $basedir.EndsWith("\")) {
+        if ($topdir -eq "" -or $basedir -eq "" -or $basedir.EndsWith($dirseparator)) {
             $dirseparator = ""
         }
 
@@ -44,7 +44,12 @@ function global:prompt {
 }
 
 # Load machine local settings
-$localProfilePath = Join-Path $env:USERPROFILE ".local.ps1"
+$private:localProfileDir = if ($env:USERPROFILE) {
+    $env:USERPROFILE
+} else {
+    $env:HOME
+}
+$private:localProfilePath = Join-Path $localProfileDir ".local.ps1"
 if (Test-Path $localProfilePath) {
-    . $localProfilePath
+    . $private:localProfilePath
 }

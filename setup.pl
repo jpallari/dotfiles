@@ -20,6 +20,7 @@ require File::Spec;
 my @xdg_targets = (
     "nvim",
     "kitty",
+    "powershell",
 );
 my @dotfile_targets = (
     ["bashrc", "zshrc"],

@@ -7,6 +7,13 @@ Import-Module PSReadLine
 Set-PSReadLineOption -EditMode Emacs
 Set-PSReadLineKeyHandler -Key Ctrl+q -Function TabCompleteNext
 Set-PSReadLineKeyHandler -Key Ctrl+Q -Function TabCompletePrevious
+Set-PSReadLineOption -BellStyle None
+
+# Unicode input and output
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+[Console]::InputEncoding = [System.Text.Encoding]::UTF8
+
+# prompt
 function global:prompt {
     $success = $?
     $timestamp = Get-Date -Format "HH:mm:ss"
@@ -15,7 +22,7 @@ function global:prompt {
         $basedir = $pwd.Path.Replace($HOME, "~")
         $dirseparator = "\"
         $topdir = ""
-        
+
         if ($basedir -ne "~") {
             $basedir = Split-Path -Path $basedir
             $topdir = Split-Path -Path $pwd -Leaf
@@ -23,7 +30,7 @@ function global:prompt {
         if ($topdir -eq "" -or $basedir -eq "" -or $basedir.EndsWith("\")) {
             $dirseparator = ""
         }
-    
+
         Write-Host -Object ""
         Write-Host -Object "$timestamp " -NoNewLine -ForegroundColor DarkMagenta
         Write-Host -Object "${basedir}${dirseparator}" -NoNewLine -ForegroundColor DarkCyan
@@ -31,9 +38,9 @@ function global:prompt {
         if (!$success) {
             Write-Host -Object " !" -ForegroundColor Red -NoNewLine
         }
-        Write-Host -Object ""    
+        Write-Host -Object ""
     }
-    return "> "
+    return "PS> "
 }
 
 # Load machine local settings

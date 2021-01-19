@@ -30,7 +30,8 @@
             "colorScheme" : "Dracula",
             "bellStyle": "none",
             "cursorShape": "filledBox",
-            "fontSize": 10
+            "fontSize": 10,
+            "fontFace": "Fira Code"
         },
         "list":
         [
@@ -44,7 +45,8 @@
                 "guid": "{2c4de342-38b7-51cf-b940-2309a097f518}",
                 "hidden": false,
                 "name": "Ubuntu",
-                "source": "Windows.Terminal.Wsl"
+                "source": "Windows.Terminal.Wsl",
+                "startingDirectory": "\\\\wsl$\\Ubuntu\\home\\jkpl"
             },
             {
                 // Make changes here to the powershell.exe profile.

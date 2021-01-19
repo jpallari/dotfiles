@@ -11,7 +11,7 @@ function Initialize-BaseDirectory {
         [string]$TargetPath
     )
     $targetDir = Split-Path $TargetPath
-    
+
     if (Test-Path $targetDir) {
         return
     }
@@ -32,14 +32,14 @@ function Update-ConfigLink {
             Write-Information "Already linked: $TargetPath => $TargetSource"
             return
         }
-    
+
         if ($targetItem.Exists) {
             if ($targetItem.LinkType -eq "SymbolicLink") {
                 Remove-Item $TargetPath
             } else {
                 Rename-Item -Path $TargetPath -NewName "$TargetPath.bak"
             }
-        }    
+        }
     } else {
         # Create the target config directory if it doesn't exist
         Initialize-BaseDirectory $TargetPath
@@ -57,7 +57,7 @@ function Update-Gitconfig {
         Write-Information "Already linked: gitconfig"
         return
     }
-    
+
     Write-Information "Linking: gitconfig"
     git config --global --add include.path $gitConfigSourcePath
     return
@@ -90,6 +90,9 @@ Update-ConfigLink `
 Update-ConfigLink `
     -TargetSource "windows-terminal.json" `
     -TargetPath (Join-Path $env:LOCALAPPDATA "\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json")
+    Update-ConfigLink `
+    -TargetSource "windows-terminal.json" `
+    -TargetPath (Join-Path $env:LOCALAPPDATA "\Packages\Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe\LocalState\settings.json")
 
 # Links to Gitconfig
 Update-GitConfig

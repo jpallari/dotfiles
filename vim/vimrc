@@ -449,7 +449,12 @@ endif
 
 " Running in terminal without shell
 if $NONINTERACTIVE_SHELL != ''
-    nnoremap <c-z> <nop>
+    nmap <c-z> <nop>
+endif
+
+" Windows specific settings
+if has('win32')
+    nmap <c-z> <nop>
 endif
 
 " Local conf

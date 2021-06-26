@@ -13,6 +13,7 @@ set show-all-if-ambiguous on
 set show-all-if-unmodified on
 set menu-complete-display-prefix on
 set completion-prefix-display-length 2
+set enable-bracketed-paste on
 
 # keybindings
 TAB: menu-complete

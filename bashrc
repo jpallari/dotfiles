@@ -53,7 +53,9 @@ if [ "$(uname)" = 'Linux' ]; then
     if [ -n "${WSLENV:-}" ]; then
         alias pbcopy='clip.exe'
         alias pbpaste='powershell.exe get-clipboard | sed "s/\r//" | head -c -1'
-        alias open='explorer.exe'
+        open() {
+            explorer.exe "$(wslpath -w "$1")"
+        }
     else
         alias pbcopy='xsel --clipboard --input'
         alias pbpaste='xsel --clipboard --output'
@@ -386,7 +388,6 @@ if [ -n "$BASH_VERSION" ]; then
     fi
 
     # FZF
-    export FZF_DEFAULT_OPTS='--min-height=5'
     if [ -f /usr/share/fzf/shell/key-bindings.bash ]; then
         . /usr/share/fzf/shell/key-bindings.bash
     fi

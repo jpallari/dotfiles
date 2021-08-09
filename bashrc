@@ -127,11 +127,6 @@ hr() {
     echo "${line// /=}"
 }
 
-# quick calculations using BC
-calc() {
-    echo "${@}" | bc -l
-}
-
 # Python oneliner
 pyline() {
     python -c "print($*)"
@@ -216,25 +211,6 @@ find_sdkman_paths() {
         -maxdepth 3 -type d -path '*/current/bin' \
         -printf ':%p'
 }
-
-# Execute a command in a Python virtualenv
-python_venv_exec() (
-    local venvdir
-    if [ -d "$1" ]; then
-        venvdir=$1
-        shift
-    elif [ -f ".venv/bin/activate" ]; then
-        venvdir=".venv"
-    elif [ -f "virtualenv/bin/activate" ]; then
-        venvdir="virtualenv"
-    else
-        echo "No virtualenv name given!" >&2
-        return 1
-    fi
-
-    . "$venvdir/bin/activate"
-    "$@"
-)
 
 set_prompt_extra() {
     export PS_EXTRA="$1"
@@ -412,7 +388,7 @@ if [ -n "$BASH_VERSION" ]; then
     fi
 elif [ -n "$ZSH_VERSION" ]; then
     # Compinit
-    autoload -Uz compinit && compinit
+    autoload -Uz compinit && compinit -C
     autoload -Uz bashcompinit && bashcompinit
 
     # Kubernetes
@@ -435,4 +411,3 @@ fi
 if hash aws_completer 2>/dev/null; then
     complete -C aws_completer aws
 fi
-

@@ -127,7 +127,7 @@ hr() {
     echo "${line// /=}"
 }
 
-# Python oneliner
+# python oneliner
 pyline() {
     python -c "print($*)"
 }
@@ -182,14 +182,14 @@ set_window_title() {
     echo -ne "\033]0;$@\007"
 }
 
-# Current time zone
+# current time zone
 get_current_time_zone() {
     timedatectl status | \
         grep "Time zone" | \
         sed 's/.*Time zone: \([^ ]\+\) .*/\1/'
 }
 
-# OPAM configuration initialiser
+# opam configuration initialiser
 init_opam() {
     if [ -f "$HOME/.opam/opam-init/init.sh" ] && hash opam 2>/dev/null; then
        . "$HOME/.opam/opam-init/init.sh" > /dev/null 2> /dev/null || true
@@ -197,7 +197,7 @@ init_opam() {
     fi
 }
 
-# SDK man initialiser
+# sdk man initialiser
 init_sdkman() {
     if [ -f "$HOME/.sdkman/bin/sdkman-init.sh" ]; then
         export SDKMAN_DIR="$HOME/.sdkman"
@@ -205,7 +205,7 @@ init_sdkman() {
     fi
 }
 
-# Find currently used SDKs from SDK man in $PATH format
+# find currently used SDKs from SDK man in $PATH format
 find_sdkman_paths() {
     find -L "$HOME/.sdkman/candidates" \
         -maxdepth 3 -type d -path '*/current/bin' \
@@ -221,7 +221,7 @@ precmd() {
     local status_warning
     local basedir topdir fulldir fulldirnocolor
 
-    # Update history (bash only)
+    # update history (bash only)
     if [ -n "$BASH_VERSION" ]; then
         history -a
     fi
@@ -257,18 +257,18 @@ precmd() {
     fi
     PS1+="${PS_EXTRA}\$${__PRC_RESTORE} "
 
-    # Include VTE specific additions
+    # include VTE specific additions
     if [ -n "$BASH_VERSION" ] \
         && [ -n "$VTE_VERSION" ] \
         && type __vte_prompt_command >/dev/null 2>&1; then
         __vte_prompt_command
     else
-        # Print terminal title (vte has its own implementation)
+        # print terminal title (vte has its own implementation)
         echo -n -e "\033]0;${USER}@${HOSTNAME:-$HOST}:${fulldirnocolor}\007"
     fi
 }
 
-# VTE -- this must be loaded before the prompt command is set
+# vte -- this must be loaded before the prompt command is set
 if [ -n "$VTE_VERSION" ] \
     && ! type __vte_prompt_command >/dev/null 2>&1 \
     && [ -f /etc/profile.d/vte.sh ]; then
@@ -277,7 +277,7 @@ fi
 
 ### exports ###
 
-# Colors
+# colors
 __COLOR_RESTORE='\e[0m'
 __COLOR_RED='\e[0;31m'
 __COLOR_GREEN='\e[0;32m'
@@ -310,25 +310,40 @@ elif [ -n "$ZSH_VERSION" ]; then
     __PRC_TIME="%{%F{magenta}%}"
 fi
 
-# Colors for ls
+# colors for ls
 export LS_COLORS='rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'
 
-# Prompt command (bash only)
+# prompt command (bash only)
 if [ -n "$BASH_VERSION" ]; then
     export PROMPT_COMMAND=precmd
 fi
 
-# Default editor
+# default editor
 export EDITOR
 export VISUAL="$EDITOR"
 
-# FZF
+# fzf
 export FZF_DEFAULT_OPTS='--min-height=5'
 
+# python
+export PIPENV_VENV_IN_PROJECT=1
+
+# nvm
+export NVM_DIR="$HOME/.nvm"
+NVM_BIN_PATHS=($NVM_DIR/versions/node/*/bin) 2>/dev/null
+LATEST_NVM_BIN_PATH=${NVM_BIN_PATHS[-1]}
+
 ### custom paths. customize in ~/.local.sh ###
-export CUSTOM_PATH
+CUSTOM_PATH=""
+
+# add ~/.local/bin if not added already
 if ! [[ "$PATH" =~ .*"$HOME/.local/bin".* ]]; then
     CUSTOM_PATH="$HOME/.local/bin"
+fi
+
+# default nvm node bin
+if [ -n "$LATEST_NVM_BIN_PATH" ]; then
+    CUSTOM_PATH+=":$LATEST_NVM_BIN_PATH"
 fi
 
 # local configurations
@@ -338,6 +353,10 @@ fi
 if [ -d "$HOME/.sdkman/candidates" ]; then
     CUSTOM_PATH+=$(find_sdkman_paths)
 fi
+
+# drop hanging semicolons from custom path
+CUSTOM_PATH=${CUSTOM_PATH%:}
+CUSTOM_PATH=${CUSTOM_PATH#:}
 
 # init paths
 if [ -z "$CUSTOM_PATH_SET" ] && [ -n "$CUSTOM_PATH" ]; then
@@ -353,7 +372,12 @@ if hash lesspipe.sh 2>/dev/null; then
     export LESSOPEN="|lesspipe.sh %s"
 fi
 
-# Completion
+# load nvm
+if [ -s "$NVM_DIR/nvm.sh" ]; then
+    . "$NVM_DIR/nvm.sh" --no-use
+fi
+
+# completion
 if [ -n "$BASH_VERSION" ]; then
     # Load general bash completion package
     BASH_COMPLETION_SOURCES=(
@@ -367,47 +391,48 @@ if [ -n "$BASH_VERSION" ]; then
         fi
     done
 
-    # Kubernetes
+    # kubernetes
     if hash kubectl 2>/dev/null; then
         source <(kubectl completion bash)
     fi
 
-    # Pipenv
+    # pipenv
     if hash pipenv 2>/dev/null; then
         eval "$(pipenv --completion)"
     fi
 
-    # Direnv
+    # direnv
     if hash direnv 2>/dev/null; then
         eval "$(direnv hook bash)"
     fi
 
-    # FZF
+    # fzf
     if [ -f /usr/share/fzf/shell/key-bindings.bash ]; then
         . /usr/share/fzf/shell/key-bindings.bash
     fi
 elif [ -n "$ZSH_VERSION" ]; then
-    # Compinit
+    # compinit
     autoload -Uz compinit && compinit -C
     autoload -Uz bashcompinit && bashcompinit
 
-    # Kubernetes
+    # kubernetes
     if hash kubectl 2>/dev/null; then
         source <(kubectl completion zsh)
     fi
 
-    # Direnv
+    # direnv
     if hash direnv 2>/dev/null; then
         eval "$(direnv hook zsh)"
     fi
 
-    # FZF
+    # fzf
     if [ -f /usr/share/fzf/shell/key-bindings.zsh ]; then
         . /usr/share/fzf/shell/key-bindings.zsh
     fi
 fi
 
-# AWS CLI
+# aws cli
 if hash aws_completer 2>/dev/null; then
     complete -C aws_completer aws
 fi
+

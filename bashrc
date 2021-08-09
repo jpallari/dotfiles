@@ -343,7 +343,10 @@ export VISUAL="$EDITOR"
 export FZF_DEFAULT_OPTS='--min-height=5'
 
 ### custom paths. customize in ~/.local.sh ###
-export CUSTOM_PATH="$HOME/bin:$HOME/.local/bin"
+export CUSTOM_PATH
+if ! [[ "$PATH" =~ .*"$HOME/.local/bin".* ]]; then
+    CUSTOM_PATH="$HOME/.local/bin"
+fi
 
 # local configurations
 [[ -f $HOME/.local.sh ]] && source $HOME/.local.sh
@@ -354,7 +357,7 @@ if [ -d "$HOME/.sdkman/candidates" ]; then
 fi
 
 # init paths
-if [ -z "$CUSTOM_PATH_SET" ]; then
+if [ -z "$CUSTOM_PATH_SET" ] && [ -n "$CUSTOM_PATH" ]; then
     export DEFAULT_PATH="$CUSTOM_PATH:$PATH"
     export PATH="$DEFAULT_PATH"
     export CUSTOM_PATH_SET=1

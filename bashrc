@@ -1,3 +1,5 @@
+# Configuration for both bash and zsh
+
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
@@ -24,11 +26,18 @@ elif [ -n "$ZSH_VERSION" ]; then
     # setopt
     setopt hist_ignore_all_dups
     setopt hist_reduce_blanks
+    setopt hist_verify
+    setopt hist_ignore_space
     setopt inc_append_history
     setopt share_history
     setopt auto_list
     setopt auto_menu
     setopt always_to_end
+    setopt share_history
+    setopt interactive_comments
+    setopt complete_in_word
+    setopt extended_history
+    setopt prompt_subst
 
     # autoloads
     autoload -U colors && colors

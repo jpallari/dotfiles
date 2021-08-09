@@ -160,7 +160,7 @@ __print_kvpair() {
 
 # print user and location
 whereami() {
-    __print_kvpair "who & where" "${USER} @ ${HOSTNAME}"
+    __print_kvpair "who & where" "${USER} @ ${HOSTNAME:-$HOST}"
     __print_kvpair "directory" "${PWD}"
     __print_kvpair "time" "$(date)"
     if [ -n "${VIRTUAL_ENV}" ]; then
@@ -281,7 +281,7 @@ precmd() {
         __vte_prompt_command
     else
         # Print terminal title (vte has its own implementation)
-        echo -n -e "\033]0;${USER}@${HOSTNAME}:${fulldirnocolor}\007"
+        echo -n -e "\033]0;${USER}@${HOSTNAME:-$HOST}:${fulldirnocolor}\007"
     fi
 }
 

@@ -57,22 +57,24 @@ fi
 
 ### aliases ###
 
-if [ "$(uname)" = 'Linux' ]; then
-    alias ls='ls --color=auto -F'
-    if [ -n "${WSLENV:-}" ]; then
-        alias pbcopy='clip.exe'
-        alias pbpaste='powershell.exe get-clipboard | sed "s/\r//" | head -c -1'
-        open() {
-            explorer.exe "$(wslpath -w "$1")"
-        }
-    else
-        alias pbcopy='xsel --clipboard --input'
-        alias pbpaste='xsel --clipboard --output'
-        alias open='xdg-open >/dev/null 2>&1'
-    fi
-else
-    alias ls='ls -F'
-fi
+case "${OSTYPE}" in
+    linux*)
+        alias ls='ls --color=auto -F'
+        if [ -n "${WSLENV:-}" ]; then
+            alias pbcopy='clip.exe'
+            alias pbpaste='powershell.exe get-clipboard | sed "s/\r//" | head -c -1'
+            open() {
+                explorer.exe "$(wslpath -w "$1")"
+            }
+        else
+            alias pbcopy='xsel --clipboard --input'
+            alias pbpaste='xsel --clipboard --output'
+            alias open='xdg-open >/dev/null 2>&1'
+        fi
+        ;;
+    *)
+        alias ls='ls -F'
+esac
 
 # emacs in terminal w/ fast init
 if [ -f "$HOME/.emacs.d/fast-init.el" ]; then
@@ -258,16 +260,21 @@ precmd() {
             fulldir="${__PRC_BASEDIR}~"
             fulldirnocolor="~"
         else
-            basedir=$(dirname "$PWD")
+            basedir=${PWD%/*}
             basedir=${basedir/${HOME}/"~"}
-            topdir=$(basename "$PWD")
+            topdir=${PWD##*/}
             fulldir="${__PRC_BASEDIR}${basedir}/${__PRC_RESTORE}${__PRC_TOPDIR}${topdir}"
             fulldirnocolor="${basedir}/${topdir}"
         fi
 
         PS1+=$'\n'
-        PS1+="${__PRC_TIME}$(date "+%H:%M:%S") "
-        PS1+="${fulldir}"
+        PS1+="${__PRC_TIME}"
+        if [ -n "$BASH_VERSION" ]; then
+            PS1+="\D{%H:%M:%S}"
+        elif [ -n "$ZSH_VERSION" ]; then
+            PS1+="%D{%H:%M:%S}"
+        fi
+        PS1+=" ${fulldir}"
         PS1+="${status_warning:-}"
         PS1+="${__PRC_RESTORE}"
         PS1+=$'\n'

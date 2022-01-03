@@ -266,6 +266,11 @@ precmd() {
         # print terminal title (vte has its own implementation)
         echo -n -e "\033]0;${USER}@${HOSTNAME:-$HOST}:${fulldirnocolor}\007"
     fi
+
+    # include WSL specific additions
+    if [ -n "${WSLENV:-}" ]; then
+        printf "\e]9;9;%s\e\\" "$(wslpath -w "$PWD")"
+    fi
 }
 
 # vte -- this must be loaded before the prompt command is set

@@ -4,7 +4,7 @@
 [ -z "$PS1" ] && return
 
 # history
-HISTFILE="$HOME/.bash_history"
+HISTFILE="$HOME/.shell_history"
 HISTCONTROL=ignoreboth
 HISTIGNORE='bg:fg:history'
 HISTSIZE=100000
@@ -347,7 +347,7 @@ if [ -n "$LATEST_NVM_BIN_PATH" ]; then
 fi
 
 # local configurations
-[[ -f $HOME/.local.sh ]] && source $HOME/.local.sh
+[[ -f $HOME/.local.sh ]] && source "$HOME/.local.sh"
 
 # load SDK man paths
 if [ -d "$HOME/.sdkman/candidates" ]; then

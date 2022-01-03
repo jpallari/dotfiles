@@ -403,6 +403,11 @@ if [ -n "$BASH_VERSION" ]; then
         source <(kubectl completion bash)
     fi
 
+    # k3d
+    if hash k3d 2>/dev/null; then
+        source <(k3d completion bash)
+    fi
+
     # pipenv
     if hash pipenv 2>/dev/null; then
         eval "$(pipenv --completion)"
@@ -427,6 +432,11 @@ elif [ -n "$ZSH_VERSION" ]; then
         source <(kubectl completion zsh)
     fi
 
+    # k3d
+    if hash k3d 2>/dev/null; then
+        source <(k3d completion zsh)
+    fi
+
     # direnv
     if hash direnv 2>/dev/null; then
         eval "$(direnv hook zsh)"
@@ -441,5 +451,11 @@ fi
 # aws cli
 if hash aws_completer 2>/dev/null; then
     complete -C aws_completer aws
+fi
+
+# Terraform
+if [ -n "$TERRAFORM_PATH" ]; then
+    complete -C "$TERRAFORM_PATH" terraform
+    complete -o nospace -C "$TERRAFORM_PATH" terraform
 fi
 

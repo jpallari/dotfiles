@@ -335,8 +335,10 @@ export PIPENV_VENV_IN_PROJECT=1
 
 # nvm
 export NVM_DIR="$HOME/.nvm"
-NVM_BIN_PATHS=($NVM_DIR/versions/node/*/bin) 2>/dev/null
-LATEST_NVM_BIN_PATH=${NVM_BIN_PATHS[-1]}
+if [ -d "$NVM_DIR/versions/node" ]; then
+    NVM_BIN_PATHS=("$NVM_DIR"/versions/node/*/bin) 2>/dev/null
+    LATEST_NVM_BIN_PATH=${NVM_BIN_PATHS[-1]}
+fi
 
 ### custom paths. customize in ~/.local.sh ###
 CUSTOM_PATH=""

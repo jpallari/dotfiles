@@ -451,6 +451,11 @@ if [ -n "$BASH_VERSION" ]; then
         eval "$(direnv hook bash)"
     fi
 
+    # hcloud
+    if hash hcloud 2>/dev/null; then
+        source <(hcloud completion bash)
+    fi
+
     # fzf
     if [ -f /usr/share/fzf/shell/key-bindings.bash ]; then
         . /usr/share/fzf/shell/key-bindings.bash
@@ -475,6 +480,11 @@ elif [ -n "$ZSH_VERSION" ]; then
     # direnv
     if hash direnv 2>/dev/null; then
         eval "$(direnv hook zsh)"
+    fi
+
+    # hcloud
+    if hash hcloud 2>/dev/null; then
+        source <(hcloud completion zsh)
     fi
 
     # fzf

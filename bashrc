@@ -205,6 +205,17 @@ init_sdkman() {
     fi
 }
 
+# ssh but don't track known hosts (useful for temporary servers)
+ssh_no_save() {
+    ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$@"
+}
+
+# keychain setup to remember SSH keys (mostly for WSL)
+init_keychain() {
+    eval $(keychain --eval --agents ssh id_ed25519)
+}
+
+
 # find currently used SDKs from SDK man in $PATH format
 find_sdkman_paths() {
     find -L "$HOME/.sdkman/candidates" \
@@ -333,12 +344,26 @@ export FZF_DEFAULT_OPTS='--min-height=5'
 # python
 export PIPENV_VENV_IN_PROJECT=1
 
-# nvm
+# node
+export NPM_PACKAGES="$HOME/.local/share/npm-global"
 export NVM_DIR="$HOME/.nvm"
 if [ -d "$NVM_DIR/versions/node" ]; then
     NVM_BIN_PATHS=("$NVM_DIR"/versions/node/*/bin) 2>/dev/null
     LATEST_NVM_BIN_PATH=${NVM_BIN_PATHS[-1]}
 fi
+
+# go
+if [ -x "$HOME/Apps/go/bin/go" ]; then
+    export GOROOT="$HOME/Apps/go"
+fi
+export GOPATH="$HOME/go"
+
+# aws
+if [ -n "${WSLENV:-}" ]; then
+    export AWS_VAULT_BACKEND=wincred
+fi
+export AWS_SESSION_TOKEN_TTL=8h
+export AWS_ASSUME_ROLE_TTL=8h
 
 ### custom paths. customize in ~/.local.sh ###
 CUSTOM_PATH=""
@@ -351,6 +376,14 @@ fi
 # default nvm node bin
 if [ -n "$LATEST_NVM_BIN_PATH" ]; then
     CUSTOM_PATH+=":$LATEST_NVM_BIN_PATH"
+fi
+
+# go path and custom go root in path
+if [ -n "$GOROOT" ]; then
+    CUSTOM_PATH+=":$GOROOT/bin"
+fi
+if [ -d "$GOPATH/bin" ]; then
+    CUSTOM_PATH+=":$GOPATH/bin"
 fi
 
 # local configurations
@@ -421,6 +454,8 @@ if [ -n "$BASH_VERSION" ]; then
     # fzf
     if [ -f /usr/share/fzf/shell/key-bindings.bash ]; then
         . /usr/share/fzf/shell/key-bindings.bash
+    elif [ -f "$HOME/.local/share/fzf/shell/key-bindings.bash" ]; then
+        . "$HOME/.local/share/fzf/shell/key-bindings.bash"
     fi
 elif [ -n "$ZSH_VERSION" ]; then
     # compinit
@@ -445,8 +480,13 @@ elif [ -n "$ZSH_VERSION" ]; then
     # fzf
     if [ -f /usr/share/fzf/shell/key-bindings.zsh ]; then
         . /usr/share/fzf/shell/key-bindings.zsh
+    elif [ -f "$HOME/.local/share/fzf/shell/key-bindings.zsh" ]; then
+        . "$HOME/.local/share/fzf/shell/key-bindings.zsh"
     fi
 fi
+
+# nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 # aws cli
 if hash aws_completer 2>/dev/null; then

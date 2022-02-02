@@ -8,6 +8,8 @@ Set-PSReadLineOption -EditMode Emacs
 Set-PSReadLineKeyHandler -Key Ctrl+q -Function TabCompleteNext
 Set-PSReadLineKeyHandler -Key Ctrl+Q -Function TabCompletePrevious
 Set-PSReadLineOption -BellStyle None
+Set-PSReadlineOption -PredictionSource History
+Set-PSReadlineOption -PredictionViewStyle ListView
 
 # Unicode input and output
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8

@@ -7,12 +7,13 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
 wsl --shutdown
-$timestamp = Get-Date -Format "yyyy-MM-dd-HHmmss"
-foreach ($distro in $distros) {
-    $distroBackupPath = Join-Path $Path $distro "$timestamp.tar"
-    Write-Information "Backing up $distro to $distroBackupPath"
-    wsl --export $distro $distroBackupPath
-    New-Item -Type SymbolicLink -Path (Join-Path $distroBackupDir "latest.tar") -Target $distroBackupPath -Force
+$Timestamp = Get-Date -Format "yyyy-MM-dd-HHmmss"
+foreach ($Distro in $Distros) {
+    $DistroBackupDir = Join-Path $Path $Distro
+    $DistroBackupPath = Join-Path $DistroBackupDir "$Timestamp.tar"
+    Write-Information "Backing up $Distro to $DistroBackupPath"
+    wsl --export $Distro $DistroBackupPath
+    New-Item -Type SymbolicLink -Path (Join-Path $DistroBackupDir "latest.tar") -Target $DistroBackupPath -Force
 }
 
 # To restore a distro from the backup:

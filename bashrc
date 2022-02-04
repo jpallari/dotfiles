@@ -237,12 +237,12 @@ precmd() {
         history -a
     fi
 
-    if [ "$last_exit" != 0 ]; then
-        status_warning="$__PRC_FAIL !"
-    fi
-
     PS1=""
     if [ -z "$NO_LONG_PROMPT" ]; then
+        if [ "$last_exit" != 0 ]; then
+            status_warning="$__PRC_FAIL !"
+        fi
+
         if [ "$PWD" = "$HOME" ]; then
             fulldir="${__PRC_BASEDIR}~"
             fulldirnocolor="~"
@@ -255,18 +255,17 @@ precmd() {
         fi
 
         PS1+=$'\n'
-        PS1+="${__PRC_TIME}"
-        if [ -n "$BASH_VERSION" ]; then
-            PS1+="\D{%H:%M:%S}"
-        elif [ -n "$ZSH_VERSION" ]; then
-            PS1+="%D{%H:%M:%S}"
-        fi
-        PS1+=" ${fulldir}"
+        PS1+="${fulldir}"
         PS1+="${status_warning:-}"
         PS1+="${__PRC_RESTORE}"
         PS1+=$'\n'
+        PS1+="${PS_EXTRA}\$${__PRC_RESTORE} "
+    else
+        if [ "$last_exit" != 0 ]; then
+            status_warning="$__PRC_FAIL"
+        fi
+        PS1+="${PS_EXTRA}${status_warning:-}\$${__PRC_RESTORE} "
     fi
-    PS1+="${PS_EXTRA}\$${__PRC_RESTORE} "
 
     # include VTE specific additions
     if [ -n "$BASH_VERSION" ] \

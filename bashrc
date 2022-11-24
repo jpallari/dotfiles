@@ -10,6 +10,13 @@ HISTIGNORE='bg:fg:history'
 HISTSIZE=100000
 HISTFILESIZE=100000
 
+# detected shell in one variable
+if [ -n "$BASH_VERSION" ]; then
+    _dotfile_shell=bash
+elif [ -n "$ZSH_VERSION" ]; then
+    _dotfile_shell=zsh
+fi
+
 # bash and zsh configs
 if [ -n "$BASH_VERSION" ]; then
     # shopt
@@ -203,17 +210,6 @@ init_sdkman() {
     fi
 }
 
-# ssh but don't track known hosts (useful for temporary servers)
-ssh_no_save() {
-    ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$@"
-}
-
-# keychain setup to remember SSH keys (mostly for WSL)
-init_keychain() {
-    eval $(keychain --eval --agents ssh id_ed25519)
-}
-
-
 # find currently used SDKs from SDK man in $PATH format
 find_sdkman_paths() {
     find -L "$HOME/.sdkman/candidates" \
@@ -221,6 +217,55 @@ find_sdkman_paths() {
         -printf ':%p'
 }
 
+# build hook shell scripts for all the relevant tools
+build_tool_hooks() {
+    local script_path
+
+    for dotfile_shell in zsh bash; do
+        script_path="$HOME/.local_tools.$dotfile_shell"
+
+        # init
+        echo "# script for loading $dotfile_shell tool hooks" > "$script_path"
+        echo "" >> "$script_path"
+
+        # pipenv
+        if hash pipenv 2>/dev/null; then
+            pipenv --completion >> "$script_path"
+        fi
+
+        # kubernetes
+        if hash kubectl 2>/dev/null; then
+            kubectl completion "$dotfile_shell" >> "$script_path"
+        fi
+
+        # k3d
+        if hash k3d 2>/dev/null; then
+            k3d completion "$dotfile_shell" >> "$script_path"
+        fi
+
+        # direnv
+        if hash direnv 2>/dev/null; then
+            direnv hook "$dotfile_shell" >> "$script_path"
+        fi
+
+        # hcloud
+        if hash hcloud 2>/dev/null; then
+            hcloud completion "$dotfile_shell" >> "$script_path"
+        fi
+    done
+}
+
+# ssh but don't track known hosts (useful for temporary servers)
+ssh_no_save() {
+    ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$@"
+}
+
+# keychain setup to remember SSH keys (mostly for WSL)
+init_keychain() {
+    eval "$(keychain --eval --agents ssh id_ed25519)"
+}
+
+# add extra content to the prompt
 set_prompt_extra() {
     export PS_EXTRA="$1"
 }
@@ -427,68 +472,28 @@ if [ -n "$BASH_VERSION" ]; then
             . "$f"
         fi
     done
-
-    # kubernetes
-    if hash kubectl 2>/dev/null; then
-        source <(kubectl completion bash)
-    fi
-
-    # k3d
-    if hash k3d 2>/dev/null; then
-        source <(k3d completion bash)
-    fi
-
-    # pipenv
-    if hash pipenv 2>/dev/null; then
-        eval "$(pipenv --completion)"
-    fi
-
-    # direnv
-    if hash direnv 2>/dev/null; then
-        eval "$(direnv hook bash)"
-    fi
-
-    # hcloud
-    if hash hcloud 2>/dev/null; then
-        source <(hcloud completion bash)
-    fi
-
-    # fzf
-    if [ -f /usr/share/fzf/shell/key-bindings.bash ]; then
-        . /usr/share/fzf/shell/key-bindings.bash
-    elif [ -f "$HOME/.local/share/fzf/shell/key-bindings.bash" ]; then
-        . "$HOME/.local/share/fzf/shell/key-bindings.bash"
-    fi
 elif [ -n "$ZSH_VERSION" ]; then
     # compinit
     autoload -Uz compinit && compinit -C
     autoload -Uz bashcompinit && bashcompinit
+fi
 
-    # kubernetes
-    if hash kubectl 2>/dev/null; then
-        source <(kubectl completion zsh)
+if [ -n "$_dotfile_shell" ]; then
+    # build local tool hooks, if not present
+    if [ ! -s "$HOME/.local_tools.$_dotfile_shell" ]; then
+        build_tool_hooks
     fi
 
-    # k3d
-    if hash k3d 2>/dev/null; then
-        source <(k3d completion zsh)
-    fi
-
-    # direnv
-    if hash direnv 2>/dev/null; then
-        eval "$(direnv hook zsh)"
-    fi
-
-    # hcloud
-    if hash hcloud 2>/dev/null; then
-        source <(hcloud completion zsh)
+    # load local tool hooks
+    if [ -s "$HOME/.local_tools.$_dotfile_shell" ]; then
+        . "$HOME/.local_tools.$_dotfile_shell"
     fi
 
     # fzf
-    if [ -f /usr/share/fzf/shell/key-bindings.zsh ]; then
-        . /usr/share/fzf/shell/key-bindings.zsh
-    elif [ -f "$HOME/.local/share/fzf/shell/key-bindings.zsh" ]; then
-        . "$HOME/.local/share/fzf/shell/key-bindings.zsh"
+    if [ -f "/usr/share/fzf/shell/key-bindings.$_dotfile_shell" ]; then
+        . "/usr/share/fzf/shell/key-bindings.$_dotfile_shell"
+    elif [ -f "$HOME/.local/share/fzf/shell/key-bindings.$_dotfile_shell" ]; then
+        . "$HOME/.local/share/fzf/shell/key-bindings.$_dotfile_shell"
     fi
 fi
 
@@ -500,9 +505,8 @@ if hash aws_completer 2>/dev/null; then
     complete -C aws_completer aws
 fi
 
-# Terraform
+# terraform
 if [ -n "$TERRAFORM_PATH" ]; then
     complete -C "$TERRAFORM_PATH" terraform
     complete -o nospace -C "$TERRAFORM_PATH" terraform
 fi
-

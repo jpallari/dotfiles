@@ -112,14 +112,12 @@ alias remacs='emacsclient -n'
 ### functions ###
 
 # share files over HTTP quickly
-httpserver() {
-    local curdir="$PWD"
+httpserver() (
     local port=${1:-10101}
     local dir=${2:-.}
-    cd "$dir"
+    cd "$dir" || return
     python3 -m http.server "$port"
-    cd "$curdir"
-}
+)
 
 # print a horizontal line
 hr() {

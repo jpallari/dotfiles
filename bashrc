@@ -115,8 +115,40 @@ fi
 alias ll='ls -lh'
 alias grep='grep --color=auto'
 alias remacs='emacsclient -n'
+alias assume=". assume" # granted.dev
 
 ### functions ###
+
+# poll a given command every n seconds
+poll_cmd() {
+    local interval
+    case "$1" in
+        [0-9]*)
+            interval=$1
+            shift
+            ;;
+        *)
+            interval=4
+            ;;
+    esac
+    while true; do
+        "$@"
+        sleep "$interval"
+    done
+}
+
+# run jq and pipe it to less (with colors)
+jqless() {
+    jq -C "${@}" | less -R
+}
+
+# live preview jq results
+jqpreview() {
+    local query="$(echo '' | fzf --layout reverse --info=inline --print-query --preview-window "down,99%,wrap" --preview "jq {q} ${1}")"
+    if [ -n "${query}" ]; then
+        jq "${query}" "${1}"
+    fi
+}
 
 # share files over HTTP quickly
 httpserver() (

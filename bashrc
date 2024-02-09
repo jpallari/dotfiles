@@ -249,7 +249,11 @@ init_sdkman() {
 
 # find currently used SDKs from SDK man in $PATH format
 find_sdkman_paths() {
-    find -L "$HOME/.sdkman/candidates" \
+    local find_cmd=find
+    if command -v gfind >/dev/null; then
+        find_cmd=gfind
+    fi
+    "$find_cmd" -L "$HOME/.sdkman/candidates" \
         -maxdepth 3 -type d -path '*/current/bin' \
         -printf ':%p'
 }

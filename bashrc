@@ -79,6 +79,11 @@ case "${OSTYPE}" in
             alias open='xdg-open >/dev/null 2>&1'
         fi
         ;;
+    darwin*)
+        if command -v python3 >/dev/null; then
+            alias python=python3
+        fi
+        ;;
     *)
         alias ls='ls -F'
 esac

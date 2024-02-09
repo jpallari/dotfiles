@@ -155,6 +155,27 @@ jqpreview() {
     fi
 }
 
+# jump to a git project directory
+gcd() {
+    local project_dir=$HOME/Projects
+    local dir
+    dir=$(\
+        find "$project_dir" -type d -maxdepth 4 -name '.git' \
+        | sed -e "s#^$project_dir/##" -e 's#/\.git$##' \
+        | sort \
+        | fzf --query="$1" \
+    )
+    cd "$project_dir/$dir"
+}
+
+# open the git origin in a browser
+gbrowse() (
+    if [ -n "${1}" ]; then
+        cd "${1}"
+    fi
+    open "$(git config --get remote.origin.url)"
+)
+
 # share files over HTTP quickly
 httpserver() (
     local port=${1:-10101}

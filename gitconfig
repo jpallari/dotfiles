@@ -8,11 +8,18 @@
 	amend = commit --amend
 	fa = fetch --all
 	edit = rebase -i
-	editm = rebase -i origin/master
+	editm = rebase -i origin/main
+	fixup = commit --amend --no-edit
+	currentbranch = rev-parse --abbrev-ref HEAD
+	resetupstream = "!git branch -u origin/\"$(git currentbranch)\""
+	pushf = push --force-with-lease
+[commit]
+	verbose = true
 [color]
 	ui = true
 [branch]
-	autoSetupMerge = false
+	autoSetupMerge = simple
+	autoSetupRebase = always
 [pull]
 	ff = only
 [merge]

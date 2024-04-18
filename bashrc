@@ -88,13 +88,6 @@ case "${OSTYPE}" in
         alias ls='ls -F'
 esac
 
-# emacs in terminal w/ fast init
-if [ -f "$HOME/.emacs.d/fast-init.el" ]; then
-    alias emacs="emacs -nw -Q -l $HOME/.emacs.d/fast-init.el"
-else
-    alias emacs="emacs -nw"
-fi
-
 # vim in terminal w/ clipboard support etc.
 if hash nvim 2>/dev/null; then
     alias vim='nvim'
@@ -119,7 +112,6 @@ fi
 
 alias ll='ls -lh'
 alias grep='grep --color=auto'
-alias remacs='emacsclient -n'
 alias assume=". assume" # granted.dev
 
 ### functions ###

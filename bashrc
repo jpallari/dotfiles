@@ -162,7 +162,11 @@ gcd() {
         | sort \
         | fzf --query="$1" \
     )
-    cd "$project_dir/$dir"
+    if [ -n "${dir:-}" ]; then
+        cd "$project_dir/$dir"
+    else
+        return 1
+    fi
 }
 
 # open the git origin in a browser

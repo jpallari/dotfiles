@@ -9,22 +9,36 @@
 	fa = fetch --all
 	edit = rebase -i
 	editm = rebase -i origin/main
-	fixup = commit --amend --no-edit
+	fixlast = commit --amend --no-edit
+	fixup = commit --fixup
 	currentbranch = rev-parse --abbrev-ref HEAD
 	resetupstream = "!git branch -u origin/\"$(git currentbranch)\""
 	pushf = push --force-with-lease
-[commit]
-	verbose = true
-[color]
-	ui = true
 [branch]
 	autoSetupMerge = simple
 	autoSetupRebase = always
-[pull]
-	ff = only
-[merge]
-	ff = only
+[color]
+	ui = true
+[commit]
+	verbose = true
 [core]
 	excludesfile = ~/.gitignore_global
+[diff]
+	algorithm = histogram
+[fetch]
+	prune = true
+[gpg]
+	format = ssh
 [init]
 	defaultBranch = main
+[log]
+	date = iso
+[merge]
+	ff = only
+[pull]
+	ff = only
+[rebase]
+	autosquash = true
+	updateRefs = true
+[rerere]
+	enabled = true

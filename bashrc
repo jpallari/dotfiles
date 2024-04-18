@@ -169,6 +169,22 @@ gcd() {
     fi
 }
 
+# run a command in a directory
+gcdr() (
+    local query
+    if [ "${1}" = '-q' ]; then
+        query="${2}"
+        shift
+        shift
+    fi
+    if [ -z "${1:-}" ]; then
+        echo "no command specified" >&2
+        return 1
+    fi
+    gcd "${query}"
+    "${@}"
+)
+
 # open the git origin in a browser
 gbrowse() (
     if [ -n "${1}" ]; then

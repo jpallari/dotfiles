@@ -9,4 +9,5 @@ emacs.d/*
 vim/plugged/
 vim/autoload/plug.vim
 nvim/plugged/
+vim/undodir/
 

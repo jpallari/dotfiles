@@ -134,6 +134,11 @@ poll_cmd() {
     done
 }
 
+# run ripgrep and pipe it to less (with colors)
+rgless() {
+    rg -p "${@}" | less -R
+}
+
 # run jq and pipe it to less (with colors)
 jqless() {
     jq -C "${@}" | less -R

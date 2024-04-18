@@ -1,4 +1,0 @@
-#!/bin/sh -l
-# Wrap Emacs in shell to prevent this:
-# https://lepo.io/posts/2013-01-20-prevent-emacs-from-killing-git-commit-on-c-g.html
-/usr/bin/emacs -nw "$@"

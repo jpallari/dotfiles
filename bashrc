@@ -470,8 +470,17 @@ export PIPENV_VENV_IN_PROJECT=1
 export NPM_PACKAGES="$HOME/.local/share/npm-global"
 export NVM_DIR="$HOME/.nvm"
 if [ -d "$NVM_DIR/versions/node" ]; then
-    NVM_BIN_PATHS=("$NVM_DIR"/versions/node/*/bin) 2>/dev/null
-    LATEST_NVM_BIN_PATH=${NVM_BIN_PATHS[-1]}
+    if [ -s "$NVM_DIR/alias/default" ]; then
+        DEFAULT_NVM_BIN_PATH=$(\
+            printf \
+            '%s/versions/node/%s/bin' \
+            "$NVM_DIR" \
+            "$(cat "$NVM_DIR/alias/default")"
+        )
+    else
+        NVM_BIN_PATHS=("$NVM_DIR"/versions/node/*/bin) 2>/dev/null
+        DEFAULT_NVM_BIN_PATH=${NVM_BIN_PATHS[-1]}
+    fi
 fi
 
 # go
@@ -496,8 +505,8 @@ if ! [[ "$PATH" =~ .*"$HOME/.local/bin".* ]]; then
 fi
 
 # default nvm node bin
-if [ -n "$LATEST_NVM_BIN_PATH" ]; then
-    CUSTOM_PATH+=":$LATEST_NVM_BIN_PATH"
+if [ -n "$DEFAULT_NVM_BIN_PATH" ]; then
+    CUSTOM_PATH+=":$DEFAULT_NVM_BIN_PATH"
 fi
 
 # go path and custom go root in path
@@ -534,10 +543,11 @@ if hash lesspipe.sh 2>/dev/null; then
     export LESSOPEN="|lesspipe.sh %s"
 fi
 
-# load nvm
+# nvm
 if [ -s "$NVM_DIR/nvm.sh" ]; then
     . "$NVM_DIR/nvm.sh" --no-use
 fi
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 # completion
 if [ -n "$BASH_VERSION" ]; then
@@ -577,9 +587,6 @@ if [ -n "$_dotfile_shell" ]; then
     fi
 fi
 
-# nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-
 # aws cli
 if hash aws_completer 2>/dev/null; then
     complete -C aws_completer aws
@@ -590,3 +597,4 @@ if [ -n "$TERRAFORM_PATH" ]; then
     complete -C "$TERRAFORM_PATH" terraform
     complete -o nospace -C "$TERRAFORM_PATH" terraform
 fi
+

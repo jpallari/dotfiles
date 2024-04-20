@@ -3,9 +3,6 @@
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-$vimPlugUri = "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
-$vimPlugPath = Join-Path $env:USERPROFILE "\AppData\Local\nvim-data\site\autoload\plug.vim"
-
 function Initialize-BaseDirectory {
     param(
         [string]$TargetPath
@@ -63,16 +60,6 @@ function Update-Gitconfig {
     return
 }
 
-function Initialize-VimPlug {
-    if (Test-Path $vimPlugPath) {
-        Write-Information "VimPlug already downloaded"
-        return
-    }
-    Initialize-BaseDirectory $vimPlugPath
-    Write-Information "Downloading VimPlug from $vimPlugUri to $vimPlugPath"
-    Invoke-WebRequest -Uri $vimPlugUri -Outfile $vimPlugPath
-}
-
 if ($env:OS -ne "Windows_NT") {
     Write-Error "This script only works in Windows" -ErrorAction Stop
 }
@@ -81,9 +68,6 @@ if ($env:OS -ne "Windows_NT") {
 Update-ConfigLink `
     -TargetSource ".\powershell\Microsoft.PowerShell_profile.ps1" `
     -TargetPath (Join-Path $env:USERPROFILE "\Documents\PowerShell\Microsoft.PowerShell_profile.ps1")
-Update-ConfigLink `
-    -TargetSource "vim" `
-    -TargetPath (Join-Path $env:USERPROFILE ".vim")
 Update-ConfigLink `
     -TargetSource "nvim" `
     -TargetPath (Join-Path $env:LOCALAPPDATA "\nvim")
@@ -97,5 +81,3 @@ Update-ConfigLink `
 # Links to Gitconfig
 Update-GitConfig
 
-# Neovim plugins bootstrap
-Initialize-VimPlug

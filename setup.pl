@@ -25,11 +25,9 @@ my @xdg_targets = (
 my @dotfile_targets = (
     ["bashrc", "zshrc"],
     "bashrc",
-    "emacs.d",
     "inputrc",
     "screenrc",
     "tmux.conf",
-    "vim",
     "Xresources",
 );
 
@@ -39,10 +37,6 @@ my $home_dir          = $ENV{"HOME"};
 my $xdg_config_dir    = $ENV{"XDG_CONFIG_HOME"} || File::Spec->catdir($home_dir, ".config");
 my $xdg_data_dir      = $ENV{"XDG_DATA_HOME"} || File::Spec->catdir($home_dir, ".local", "share");
 my $dotfile_dir       = File::Basename::dirname(Cwd::abs_path(__FILE__));
-my $vimplug_uri       = "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim";
-my $vimplug_path      = File::Spec->catdir($home_dir, ".vim", "autoload", "plug.vim");
-my $nvim_autoload_dir = File::Spec->catdir($xdg_data_dir, "nvim", "site", "autoload");
-my $nvimplug_path     = File::Spec->catfile($nvim_autoload_dir, "plug.vim");
 
 sub update_link {
     my ($dotfile_target_name, $fs_target_path) = @_;
@@ -87,18 +81,6 @@ sub link_gitconfig {
     return system("git", "config", "--global", "--add", "include.path", $gitconfig_target);
 }
 
-sub setup_vimplug {
-    unless (-f $vimplug_path) {
-        say "Downloading vimplug from " . $vimplug_uri;
-        system("curl", "-sSfLo", $vimplug_path, "--create-dirs", $vimplug_uri);
-    }
-    unless (-f $nvimplug_path) {
-        say "Setting up vimplug for NVim";
-        File::Path::make_path($nvim_autoload_dir);
-        File::Copy::copy($vimplug_path, $nvimplug_path);
-    }
-}
-
 sub main {
     foreach (@xdg_targets) {
         my $dotfile_target = $_;
@@ -124,7 +106,6 @@ sub main {
     }
 
     link_gitconfig();
-    setup_vimplug();
 }
 
 main();

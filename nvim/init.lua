@@ -894,6 +894,11 @@ require('lazy').setup({
       },
     },
   },
+
+  {
+    -- Local plugins
+    import = 'local.plugins'
+  }
 }, {
   ui = {
     icons = vim.g.have_nerd_font and {} or {

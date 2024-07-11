@@ -60,6 +60,10 @@ elif [ -n "$ZSH_VERSION" ]; then
     bindkey '^[[3~' delete-char
     bindkey '^[3;5~' delete-char
     bindkey '^[[Z' reverse-menu-complete
+    bindkey '\e[H'  beginning-of-line
+    bindkey '\eOH'  beginning-of-line
+    bindkey '\e[F'  end-of-line
+    bindkey '\eOF'  end-of-line
 fi
 
 ### aliases ###
@@ -112,7 +116,8 @@ fi
 
 alias ll='ls -lh'
 alias grep='grep --color=auto'
-alias assume=". assume" # granted.dev
+alias assume='. assume' # granted.dev
+alias hexfiend='open -a "Hex Fiend"'
 
 ### functions ###
 
@@ -160,13 +165,25 @@ gcd() {
         find "$project_dir" -type d -maxdepth 4 -name '.git' \
         | sed -e "s#^$project_dir/##" -e 's#/\.git$##' \
         | sort \
-        | fzf --query="$1" \
+        | fzf --query="$1" --select-1 \
     )
     if [ -n "${dir:-}" ]; then
         cd "$project_dir/$dir"
     else
         return 1
     fi
+}
+_gcd() {
+    local project_dir=$HOME/Projects
+    local projects
+    declare -a values
+    projects=$(\
+        find "$project_dir" -type d -maxdepth 4 -name '.git' \
+        | sed -e "s#^$project_dir/##" -e 's#/\.git$##' \
+        | sort
+    )
+    values=(${(f)projects})
+    _values 'projects' $values
 }
 
 # run a command in a directory
@@ -305,31 +322,43 @@ build_tool_hooks() {
 
         # init
         echo "# script for loading $dotfile_shell tool hooks" > "$script_path"
+        echo "# generated on $(date)" >> "$script_path"
         echo "" >> "$script_path"
 
         # pipenv
         if hash pipenv 2>/dev/null; then
+            echo "pipenv found" >&2
             pipenv --completion >> "$script_path"
         fi
 
         # kubernetes
         if hash kubectl 2>/dev/null; then
+            echo "kubectl found" >&2
             kubectl completion "$dotfile_shell" >> "$script_path"
         fi
 
         # k3d
         if hash k3d 2>/dev/null; then
+            echo "k3d found" >&2
             k3d completion "$dotfile_shell" >> "$script_path"
         fi
 
         # direnv
         if hash direnv 2>/dev/null; then
+            echo "direnv found" >&2
             direnv hook "$dotfile_shell" >> "$script_path"
         fi
 
         # hcloud
         if hash hcloud 2>/dev/null; then
+            echo "hcloud found" >&2
             hcloud completion "$dotfile_shell" >> "$script_path"
+        fi
+
+        # wezterm
+        if hash wezterm 2>/dev/null; then
+            echo "wezterm found" >&2
+            wezterm shell-completion --shell "$dotfile_shell" >> "$script_path"
         fi
     done
 }
@@ -566,6 +595,9 @@ elif [ -n "$ZSH_VERSION" ]; then
     # compinit
     autoload -Uz compinit && compinit -C
     autoload -Uz bashcompinit && bashcompinit
+
+    # custom completions
+    compdef _gcd gcd
 fi
 
 if [ -n "$_dotfile_shell" ]; then

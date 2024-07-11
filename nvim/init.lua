@@ -10,10 +10,10 @@ vim.opt.signcolumn = 'yes'
 vim.opt.list = true
 vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 vim.opt.cursorline = false
-vim.opt.wrap = false
+vim.opt.wrap = true
 vim.opt.termguicolors = true
 vim.opt.shortmess:append 'I'
-vim.opt.title = true
+vim.opt.title = false
 
 --
 -- UI
@@ -23,7 +23,7 @@ vim.opt.timeoutlen = 300 -- Faster popup
 vim.opt.splitright = true
 vim.opt.splitbelow = true
 vim.opt.inccommand = 'split' -- preview subtitutions
-vim.opt.scrolloff = 10 -- min screen lines
+vim.opt.scrolloff = 10       -- min screen lines
 vim.opt.errorbells = false
 vim.opt.ignorecase = true
 vim.opt.wildignorecase = true
@@ -37,7 +37,7 @@ vim.g.netrw_winsize = 25
 -- Controls
 --
 vim.opt.mouse = 'a'
--- vim.opt.clipboard = 'unnamedplus' -- global clipboard
+vim.opt.clipboard = 'unnamedplus' -- global clipboard
 
 --
 -- File management
@@ -113,6 +113,14 @@ do
   cmd('TrimWhitespace', function()
     vim.cmd '%s/\\s\\+$//e'
   end, { desc = 'Trim trailing whitespace characters' })
+  cmd('CopyFullPath', function()
+    local path = vim.fn.expand('%:p')
+    vim.fn.setreg('+', path)
+  end, { desc = 'Copy full path to clipboard' })
+  cmd('CopyRelPath', function()
+    local path = vim.fn.expand('%:.')
+    vim.fn.setreg('+', path)
+  end, { desc = 'Copy relative path to clipboard' })
 end
 
 --
@@ -154,8 +162,8 @@ do
   local mapk = vim.keymap.set
 
   -- Leader key
-  vim.g.mapleader = ';'
-  vim.g.maplocalleader = ';'
+  vim.g.mapleader = ' '
+  vim.g.maplocalleader = ' '
 
   -- Set highlight on search, but clear on pressing <Esc> in normal mode
   mapk('n', '<Esc>', '<cmd>nohlsearch<CR>')
@@ -193,8 +201,10 @@ do
   mapk('c', '<M-Backspace>', '<C-w>', { desc = 'Delete word' })
   mapk('v', '<leader>c', '"+y', { desc = 'Copy to system clipboard' })
   mapk('n', '<leader>v', '"+p', { desc = 'Paste from system clipboard' })
-  mapk('n', 'x', '"_dl', { noremap = true, desc = 'Delete' })
-  mapk('n', 'X', '"_dh', { noremap = true, desc = 'Delete the rest of the line' })
+  mapk('n', 'x', '"_dl', { noremap = true, desc = 'Delete character' })
+  mapk('n', 'X', '"_dh', { noremap = true, desc = 'Backspace' })
+  mapk('n', '<leader>x', '"_d', { noremap = true, desc = 'Delete (w/o yank)' })
+  mapk('n', '<leader>X', '"_D', { noremap = true, desc = 'Delete to EOL (w/o yank)' })
   mapk('n', 'Y', 'y$', { noremap = true, desc = 'Yank the rest of the line' })
 
   -- Keep selection on indentation
@@ -206,7 +216,6 @@ do
   mapk('v', 'K', ":m '<-2<CR>gv=gv", { desc = 'Move lines up' })
 
   -- Files and buffers
-  mapk('n', '<leader>x', ':bd<cr>', { desc = 'Close buffer' })
   mapk('n', '<leader>e', ":e <C-R>=expand('%:p:h') . '/' <cr>", { desc = 'Open file from current buffer directory' })
   mapk('n', '<leader>J', '<cmd>lnext<cr>zz', { desc = 'Location list next' })
   mapk('n', '<leader>K', '<cmd>lprev<cr>zz', { desc = 'Location list previous' })
@@ -222,12 +231,12 @@ do
   mapk('c', '<M-left>', '<c-left>', { desc = 'Move cursor one word left' })
 
   -- Toggles
-  mapk('n', '<leader>th', '<cmd>set hlsearch! hlsearch', { desc = '[T]oggle search [h]ilight' })
-  mapk('n', '<leader>tp', '<cmd>set paste! paste', { desc = '[T]oggle [p]aste mode' })
-  mapk('n', '<leader>tn', '<cmd>set number! number', { desc = '[T]oggle [n]umbers' })
-  mapk('n', '<leader>tr', '<cmd>set relativenumber! relativenumber', { desc = '[T]oggle [r]elative numbers' })
-  mapk('n', '<leader>tw', '<cmd>set wrap! wrap', { desc = '[T]oggle line [w]rapping' })
-  mapk('n', '<leader>tc', '<cmd>set cursorline! cursorline', { desc = '[T]oggle [c]ursor line' })
+  mapk('n', '<leader>th', '<cmd>set hlsearch!<cr>', { desc = '[T]oggle search [h]ilight' })
+  mapk('n', '<leader>tp', '<cmd>set paste!<cr>', { desc = '[T]oggle [p]aste mode' })
+  mapk('n', '<leader>tn', '<cmd>set number!<cr>', { desc = '[T]oggle [n]umbers' })
+  mapk('n', '<leader>tr', '<cmd>set relativenumber!<cr>', { desc = '[T]oggle [r]elative numbers' })
+  mapk('n', '<leader>tw', '<cmd>set wrap!<cr>', { desc = '[T]oggle line [w]rapping' })
+  mapk('n', '<leader>tc', '<cmd>set cursorline!<cr>', { desc = '[T]oggle [c]ursor line' })
   mapk('n', '<leader>tas', '<cmd>ToggleAutoSave<cr>', { desc = '[T]oggle [a]uto[s]ave' })
 end
 
@@ -261,7 +270,8 @@ require('lazy').setup({
       local api = require 'Comment.api'
       comment.setup()
 
-      for _, binding in pairs({ '<C-_>', '<C-/>' }) do
+      local comment_keys = { '<C-_>', '<C-/>' }
+      for _, binding in pairs(comment_keys) do
         vim.keymap.set('n', binding, api.locked 'toggle.linewise.current', { desc = 'Toggle comment on current line' })
 
         local esc = vim.api.nvim_replace_termcodes('<ESC>', true, false, true)
@@ -333,7 +343,7 @@ require('lazy').setup({
       -- Document existing key chains
       whichKey.register {
         ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
-        ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
+        ['<leader>d'] = { name = '[D]ebug', _ = 'which_key_ignore' },
         ['<leader>f'] = { name = '[F]ind', _ = 'which_key_ignore' },
         ['<leader>h'] = { name = '[H]arpoon', _ = 'which_key_ignore' },
         ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
@@ -360,13 +370,24 @@ require('lazy').setup({
         end,
       },
       { 'nvim-telescope/telescope-ui-select.nvim' },
-      { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
+      { 'nvim-tree/nvim-web-devicons',            enabled = vim.g.have_nerd_font },
     },
     config = function()
       require('telescope').setup {
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
+          },
+        },
+        pickers = {
+          find_files = {
+            find_command = {
+              'rg',
+              '--files',
+              '--hidden',
+              '--glob',
+              '!**/.git/*',
+            }
           },
         },
         defaults = {
@@ -379,8 +400,19 @@ require('lazy').setup({
             '--line-number',
             '--column',
             '--smart-case',
+            '--trim',
             '--iglob',
-            '!.git',
+            '!**/.git/*',
+          },
+          layout_config = {
+            width = function(_, cols, _)
+              if cols > 200 then
+                return 170
+              else
+                return math.floor(cols * 0.98)
+              end
+            end,
+            preview_cutoff = 120,
           },
         },
       }
@@ -393,7 +425,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = '[F]ind [h]elp' })
       vim.keymap.set('n', '<leader>fk', builtin.keymaps, { desc = '[F]ind [k]eymaps' })
       vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = '[F]ind [f]iles' })
-      vim.keymap.set('n', '<leader>fp', builtin.find_files, { desc = '[F]ind Git files' })
+      vim.keymap.set('n', '<leader>fp', builtin.git_files, { desc = '[F]ind Git files' })
       vim.keymap.set('n', '<leader>fs', builtin.builtin, { desc = '[F]ind [s]elect Telescope' })
       vim.keymap.set('n', '<leader>fw', builtin.grep_string, { desc = '[F]ind current [w]ord' })
       vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = '[F]ind by [g]rep' })
@@ -440,22 +472,22 @@ require('lazy').setup({
         end
 
         require('telescope.pickers')
-          .new({}, {
-            prompt_title = 'Harpoon',
-            finder = require('telescope.finders').new_table {
-              results = file_paths,
-            },
-            previewer = conf.file_previewer {},
-            sorter = conf.generic_sorter {},
-          })
-          :find()
+            .new({}, {
+              prompt_title = 'Harpoon',
+              finder = require('telescope.finders').new_table {
+                results = file_paths,
+              },
+              previewer = conf.file_previewer {},
+              sorter = conf.generic_sorter {},
+            })
+            :find()
       end
 
       local mapk = vim.keymap.set
       mapk('n', '<leader>hh', function()
         toggle_telescope(harpoon:list())
       end, { desc = '[H]arpoon list in Telescope' })
-      mapk('n', '<leader>hs', function()
+      mapk('n', '<leader>hq', function()
         harpoon.ui:toggle_quick_menu(harpoon:list())
       end, { desc = '[H]arpoon [q]uick menu' })
       mapk('n', '<leader>ha', function()
@@ -486,6 +518,29 @@ require('lazy').setup({
   },
 
   {
+    -- Text case
+    'johmsalas/text-case.nvim',
+    dependencies = { 'nvim-telescope/telescope.nvim' },
+    config = function()
+      require('textcase').setup({})
+      require('telescope').load_extension('textcase')
+    end,
+    keys = {
+      { '<leader>ga', desc = 'Text case' },
+      { '<leader>gt', '<cmd>TextCaseOpenTelescope<CR>', mode = { 'n', 'x' }, desc = 'Text case: Telescope' },
+    },
+    cmd = {
+      -- NOTE: The Subs command name can be customized via the option 'substitude_command_name'
+      'Subs',
+      'TextCaseOpenTelescope',
+      'TextCaseOpenTelescopeQuickChange',
+      'TextCaseOpenTelescopeLSPChange',
+      'TextCaseStartReplacingCommand',
+    },
+    lazy = false,
+  },
+
+  {
     -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
     dependencies = {
@@ -495,54 +550,42 @@ require('lazy').setup({
       'WhoIsSethDaniel/mason-tool-installer.nvim',
 
       -- Useful status updates for LSP.
-      { 'j-hui/fidget.nvim', opts = {} },
+      { 'j-hui/fidget.nvim',       opts = {} },
 
       -- `neodev` configures Lua LSP for your Neovim config, runtime and plugins
       -- used for completion, annotations and signatures of Neovim apis
-      { 'folke/neodev.nvim', opts = {} },
+      { 'folke/neodev.nvim',       opts = {} },
     },
     config = function()
       vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
         callback = function(event)
+          local telescope = require('telescope.builtin')
           local map = function(keys, func, desc)
             vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
           end
 
-          -- Jump to the definition of the word under your cursor.
-          --  To jump back, press <C-t>.
-          map('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
-
-          -- Find references for the word under your cursor.
-          map('gr', require('telescope.builtin').lsp_references, '[G]oto [r]eferences')
-
-          -- Jump to the implementation of the word under your cursor.
-          map('gI', require('telescope.builtin').lsp_implementations, '[G]oto [i]mplementation')
-
-          -- Jump to the type of the word under your cursor.
-          map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [d]efinition')
-
-          -- Fuzzy find all the symbols in your current document.
-          map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [s]ymbols')
-
-          -- Fuzzy find all the symbols in your current workspace.
-          map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [s]ymbols')
-
-          -- Rename the variable under your cursor.
-          map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
-
-          -- Execute a code action, usually your cursor needs to be on top of an error
-          -- or a suggestion from your LSP for this to activate.
-          map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [a]ction')
-
-          -- Opens a popup that displays documentation about the word under your cursor
           map('K', vim.lsp.buf.hover, 'Hover Documentation')
-
-          -- Goto Declaration (not definition)
+          map('gd', telescope.lsp_definitions, '[G]oto [d]efinition') -- To jump back, press <C-t>.
+          map('gr', telescope.lsp_references, '[G]oto [r]eferences')
+          map('gI', telescope.lsp_implementations, '[G]oto [i]mplementation')
           map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+          map('<leader>D', telescope.lsp_type_definitions, 'Type [D]efinition')
+          map('<leader>ds', telescope.lsp_document_symbols, '[D]ocument [s]ymbols')
+          map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [a]ction')
+          map('<leader>cf', vim.lsp.buf.format, '[C]ode [f]ormat')
+          map('<leader>cl', vim.lsp.codelens.run, '[C]ode [l]ens')
+          map('<leader>cs', vim.lsp.buf.signature_help, '[C]ode [s]ignature')
+          map('<leader>cr', vim.lsp.buf.rename, '[C]ode [R]ename')
+          map('<leader>ws', telescope.lsp_dynamic_workspace_symbols, '[W]orkspace [s]ymbols')
+          map('<leader>we', function()
+            vim.diagnostic.setqflist { severity = 'E' }
+          end, '[W]orkspace [e]rrors')
+          map('<leader>ww', function()
+            vim.diagnostic.setqflist { severity = 'W' }
+          end, '[W]orkspace [w]arnings')
 
-          -- The following two autocommands are used to highlight references of the
-          -- word under your cursor when your cursor rests there for a little while.
+          -- Highlight references under cursor
           local client = vim.lsp.get_client_by_id(event.data.client_id)
           if client and client.server_capabilities.documentHighlightProvider then
             vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
@@ -556,8 +599,7 @@ require('lazy').setup({
             })
           end
 
-          -- The following autocommand is used to enable inlay hints in your
-          -- code, if the language server you are using supports them
+          -- Inlay hints
           if client and client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
             map('<leader>th', function()
               vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled())
@@ -566,22 +608,10 @@ require('lazy').setup({
         end,
       })
 
-      -- LSP servers and clients are able to communicate to each other what features they support.
-      --  By default, Neovim doesn't support everything that is in the LSP specification.
-      --  When you add nvim-cmp, luasnip, etc. Neovim now has *more* capabilities.
-      --  So, we create new capabilities with nvim cmp, and then broadcast that to the servers.
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
 
       -- Enable the following language servers
-      --
-      --  Add any additional override configuration in the following tables. Available keys are:
-      --  - cmd (table): Override the default command used to start the server
-      --  - filetypes (table): Override the default list of associated filetypes for the server
-      --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
-      --  - settings (table): Override the default settings passed when initializing the server.
-      --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
-      --
       -- See `:help lspconfig-all` for a list of all the pre-configured LSPs
       local servers = {
         gopls = {},
@@ -589,6 +619,9 @@ require('lazy').setup({
         lua_ls = {
           settings = {
             Lua = {
+              diagnostics = {
+                globals = { 'vim' }
+              },
               completion = {
                 callSnippet = 'Replace',
               },
@@ -604,7 +637,7 @@ require('lazy').setup({
       -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
-        'stylua', -- Used to format Lua code
+        'stylua', -- Lua
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -621,17 +654,86 @@ require('lazy').setup({
   },
 
   {
+    -- Debug Adapter Protocol (DAP)
+    'mfussenegger/nvim-dap',
+    dependencies = {
+      'rcarriga/nvim-dap-ui',
+      'nvim-neotest/nvim-nio',
+      'williamboman/mason.nvim',
+      'jay-babu/mason-nvim-dap.nvim',
+
+      -- Debuggers
+      'leoluz/nvim-dap-go', -- Go
+    },
+    config = function()
+      local dap = require 'dap'
+      local dapui = require 'dapui'
+
+      require('mason-nvim-dap').setup {
+        automatic_setup = true,
+        handlers = {},
+        automatic_installation = true,
+        ensure_installed = {
+          -- Debuggers to install
+          'delve', -- Go
+        },
+      }
+      ---@diagnostic disable-next-line: missing-fields
+      dapui.setup {
+        icons = { expanded = '▾', collapsed = '▸', current_frame = '*' },
+        ---@diagnostic disable-next-line: missing-fields
+        controls = {
+          enabled = true,
+          icons = {
+            pause = '⏸',
+            play = '▶',
+            step_into = '⏎',
+            step_over = '⏭',
+            step_out = '⏮',
+            step_back = 'b',
+            run_last = '▶▶',
+            terminate = '⏹',
+            disconnect = '⏏',
+          },
+        },
+      }
+
+      local map = function(keys, func, desc)
+        vim.keymap.set('n', keys, func, { desc = 'Debug: ' .. desc })
+      end
+
+      map('<leader>dc', dap.continue, 'Start/[c]ontinue')
+      map('<leader>dsi', dap.step_into, '[S]tep [i]nto')
+      map('<leader>dso', dap.step_over, '[S]tep [o]ver')
+      map('<leader>dsO', dap.step_out, '[S]tep [O]ut')
+      map('<leader>db', dap.toggle_breakpoint, 'Toggle [b]reakpoint')
+      map('<leader>drl', dap.run_last, '[R]un [l]ast')
+      map('<leader>dB', function()
+        dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ')
+      end, 'Set [B]reakpoint')
+      map('<leader>dr', dapui.toggle, 'See last session [r]esult.')
+
+      dap.listeners.after.event_initialized['dapui_config'] = dapui.open
+      dap.listeners.before.event_terminated['dapui_config'] = dapui.close
+      dap.listeners.before.event_exited['dapui_config'] = dapui.close
+
+      -- Language specific debugger setup
+      require('dap-go').setup()
+    end,
+  },
+
+  {
     -- Autoformat
     'stevearc/conform.nvim',
     lazy = false,
     keys = {
       {
-        '<leader>zf',
+        '<leader>cf',
         function()
           require('conform').format { async = true, lsp_fallback = true }
         end,
         mode = '',
-        desc = '[F]ormat buffer',
+        desc = '[C]ode [f]ormat',
       },
     },
     opts = {
@@ -641,6 +743,9 @@ require('lazy').setup({
         python = { 'black' },
         javascript = { { 'prettierd', 'prettier' } },
         typescript = { { 'prettierd', 'prettier' } },
+        javascriptreact = { { 'prettierd', 'prettier' } },
+        typescriptreact = { { 'prettierd', 'prettier' } },
+        ["_"] = { "trim_whitespace" },
       },
     },
   },
@@ -682,10 +787,7 @@ require('lazy').setup({
         },
         completion = { completeopt = 'menu,menuone,noinsert' },
 
-        -- For an understanding of why these mappings were
-        -- chosen, you will need to read `:help ins-completion`
-        --
-        -- No, but seriously. Please read `:help ins-completion`, it is really good!
+        -- Please read `:help ins-completion`
         mapping = cmp.mapping.preset.insert {
           ['<C-n>'] = cmp.mapping.select_next_item(),
           ['<C-p>'] = cmp.mapping.select_prev_item(),
@@ -728,11 +830,11 @@ require('lazy').setup({
   },
 
   {
-    -- Coloscheme
-    'folke/tokyonight.nvim',
+    -- Color scheme
+    'EdenEast/nightfox.nvim',
     priority = 1000,
     init = function()
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'duskfox'
       vim.cmd.hi 'Comment gui=none'
     end,
   },
@@ -747,7 +849,6 @@ require('lazy').setup({
 
   {
     -- Collection of various small independent plugins/modules
-    -- TODO: explore this
     'echasnovski/mini.nvim',
     config = function()
       -- Better Around/Inside textobjects
@@ -756,16 +857,16 @@ require('lazy').setup({
       -- Add/delete/replace surroundings (brackets, quotes, etc.)
       require('mini.surround').setup {
         mappings = {
-          add = '<leader>sa', -- Add surrounding in Normal and Visual modes
-          delete = '<leader>sd', -- Delete surrounding
-          find = '<leader>sf', -- Find surrounding (to the right)
-          find_left = '<leader>sF', -- Find surrounding (to the left)
-          highlight = '<leader>sh', -- Highlight surrounding
-          replace = '<leader>sr', -- Replace surrounding
+          add = '<leader>sa',            -- Add surrounding in Normal and Visual modes
+          delete = '<leader>sd',         -- Delete surrounding
+          find = '<leader>sf',           -- Find surrounding (to the right)
+          find_left = '<leader>sF',      -- Find surrounding (to the left)
+          highlight = '<leader>sh',      -- Highlight surrounding
+          replace = '<leader>sr',        -- Replace surrounding
           update_n_lines = '<leader>sn', -- Update `n_lines`
 
-          suffix_last = 'l', -- Suffix to search with "prev" method
-          suffix_next = 'n', -- Suffix to search with "next" method
+          suffix_last = 'l',             -- Suffix to search with "prev" method
+          suffix_next = 'n',             -- Suffix to search with "next" method
         },
       }
 
@@ -886,6 +987,17 @@ require('lazy').setup({
     },
     opts = {
       filesystem = {
+        filtered_items = {
+          visible = true,
+          hide_dotfiles = false,
+          hide_gitignored = true,
+          hide_by_name = {
+            '.git',
+            '.DS_Store',
+            'thumbs.db',
+          },
+          never_show = {},
+        },
         window = {
           mappings = {
             ['\\'] = 'close_window',
@@ -896,9 +1008,52 @@ require('lazy').setup({
   },
 
   {
+    -- Rust
+    'mrcjkb/rustaceanvim',
+    version = '^4',
+    lazy = false,
+    dependencies = {
+      'hrsh7th/nvim-cmp',
+      'hrsh7th/cmp-nvim-lsp',
+    },
+  },
+
+  {
+    -- Zig
+    'ziglang/zig.vim',
+  },
+
+  {
+    -- Scala
+    'scalameta/nvim-metals',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+    },
+    ft = { 'scala', 'sbt', 'java' },
+    opts = function()
+      local metals_config = require('metals').bare_config()
+      metals_config.on_attach = function()
+        require('metals').setup_dap()
+      end
+
+      return metals_config
+    end,
+    config = function(self, metals_config)
+      local nvim_metals_group = vim.api.nvim_create_augroup('nvim-metals', { clear = true })
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = self.ft,
+        callback = function()
+          require('metals').initialize_or_attach(metals_config)
+        end,
+        group = nvim_metals_group,
+      })
+    end,
+  },
+
+  {
     -- Local plugins
-    import = 'local.plugins'
-  }
+    import = 'local.plugins',
+  },
 }, {
   ui = {
     icons = vim.g.have_nerd_font and {} or {

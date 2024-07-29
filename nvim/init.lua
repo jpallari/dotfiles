@@ -329,7 +329,7 @@ require('lazy').setup({
   {
     -- Git UI
     'tpope/vim-fugitive',
-    cmd = 'Git',
+    cmd = {'Git', 'Gedit', 'Ge'},
   },
 
   {
@@ -342,6 +342,7 @@ require('lazy').setup({
 
       -- Document existing key chains
       whichKey.register {
+        ['<leader>b'] = { name = '[B]uffer', _ = 'which_key_ignore' },
         ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
         ['<leader>d'] = { name = '[D]ebug', _ = 'which_key_ignore' },
         ['<leader>f'] = { name = '[F]ind', _ = 'which_key_ignore' },
@@ -579,10 +580,10 @@ require('lazy').setup({
           map('<leader>cr', vim.lsp.buf.rename, '[C]ode [R]ename')
           map('<leader>ws', telescope.lsp_dynamic_workspace_symbols, '[W]orkspace [s]ymbols')
           map('<leader>we', function()
-            vim.diagnostic.setqflist { severity = 'E' }
+            vim.diagnostic.setqflist { severity = vim.diagnostic.severity.ERROR }
           end, '[W]orkspace [e]rrors')
           map('<leader>ww', function()
-            vim.diagnostic.setqflist { severity = 'W' }
+            vim.diagnostic.setqflist { severity = vim.diagnostic.severity.WARN }
           end, '[W]orkspace [w]arnings')
 
           -- Highlight references under cursor
@@ -602,7 +603,7 @@ require('lazy').setup({
           -- Inlay hints
           if client and client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
             map('<leader>th', function()
-              vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled())
+              vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
             end, '[T]oggle Inlay [h]ints')
           end
         end,
@@ -616,6 +617,9 @@ require('lazy').setup({
       local servers = {
         gopls = {},
         tsserver = {},
+        clangd = {},
+        bashls = {},
+        zls = {},
         lua_ls = {
           settings = {
             Lua = {
@@ -637,16 +641,19 @@ require('lazy').setup({
       -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
-        'stylua', -- Lua
+        'stylua', -- Lua format
+        'clang-format', -- C++ format
+        'shfmt', -- Shell format
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
+      local lspconfig = require('lspconfig')
       require('mason-lspconfig').setup {
         handlers = {
           function(server_name)
             local server = servers[server_name] or {}
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup(server)
+            lspconfig[server_name].setup(server)
           end,
         },
       }
@@ -676,6 +683,7 @@ require('lazy').setup({
         ensure_installed = {
           -- Debuggers to install
           'delve', -- Go
+          'codelldb', -- C++
         },
       }
       ---@diagnostic disable-next-line: missing-fields
@@ -851,6 +859,12 @@ require('lazy').setup({
     -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
     config = function()
+      -- Buffer removal that preserves windows
+      require('mini.bufremove').setup()
+      vim.keymap.set('n', '<leader>bd', function()
+        MiniBufremove.delete()
+      end, { desc = '[B]uffer: [D]elete' })
+
       -- Better Around/Inside textobjects
       require('mini.ai').setup { n_lines = 500 }
 

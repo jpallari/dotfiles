@@ -5,6 +5,7 @@ local config = wezterm.config_builder()
 config.automatically_reload_config = false
 
 -- Appearance
+config.window_decorations = 'RESIZE|INTEGRATED_BUTTONS'
 config.color_scheme = 'duskfox'
 config.font = wezterm.font 'JetBrainsMono NF'
 config.harfbuzz_features = { 'calt=0', 'clig=0', 'liga=0' } -- disable ligatures

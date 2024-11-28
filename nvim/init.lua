@@ -740,16 +740,17 @@ require('lazy').setup({
         vim.keymap.set('n', keys, func, { desc = 'Debug: ' .. desc })
       end
 
-      map('<leader>dc', dap.continue, 'Start/[c]ontinue')
-      map('<leader>dsi', dap.step_into, '[S]tep [i]nto')
-      map('<leader>dso', dap.step_over, '[S]tep [o]ver')
-      map('<leader>dsO', dap.step_out, '[S]tep [O]ut')
+      map('<leader>ds', dap.continue, '[S]tart/continue')
+      map('<leader>di', dap.step_into, 'Step [i]nto')
+      map('<leader>do', dap.step_over, 'Step [o]ver')
+      map('<leader>dO', dap.step_out, 'Step [O]ut')
       map('<leader>db', dap.toggle_breakpoint, 'Toggle [b]reakpoint')
       map('<leader>drl', dap.run_last, '[R]un [l]ast')
       map('<leader>dB', function()
         dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ')
       end, 'Set [B]reakpoint')
-      map('<leader>dr', dapui.toggle, 'See last session [r]esult.')
+      map('<leader>drr', dapui.toggle, 'See last session [r]esult')
+      map('<leader>dc', dap.run_to_cursor, 'Run to [c]ursor')
 
       dap.listeners.after.event_initialized['dapui_config'] = dapui.open
       dap.listeners.before.event_terminated['dapui_config'] = dapui.close

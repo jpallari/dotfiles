@@ -993,6 +993,17 @@ require('lazy').setup({
   },
 
   {
+    'glepnir/template.nvim',
+    cmd = { 'Template', 'TemProject' },
+    config = function()
+      require('template').setup({
+        temp_dir = '~/.config/nvim/templates',
+        author = 'Jaakko Pallari',
+      })
+    end
+  },
+
+  {
     -- File manager
     'nvim-neo-tree/neo-tree.nvim',
     version = '*',

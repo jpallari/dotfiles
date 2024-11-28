@@ -615,6 +615,29 @@ require('lazy').setup({
         end,
       })
 
+      -- Look and feel
+      local border = {
+        { "🭽", "FloatBorder" },
+        { "▔", "FloatBorder" },
+        { "🭾", "FloatBorder" },
+        { "▕", "FloatBorder" },
+        { "🭿", "FloatBorder" },
+        { "▁", "FloatBorder" },
+        { "🭼", "FloatBorder" },
+        { "▏", "FloatBorder" },
+      }
+      local handlers = {
+        ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = border }),
+        ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = border }),
+      }
+      vim.diagnostic.config({
+        virtual_text = {
+          prefix = '■ ',
+        },
+        update_in_insert = false,
+        float = { border = border },
+      })
+
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
 
@@ -659,6 +682,7 @@ require('lazy').setup({
           function(server_name)
             local server = servers[server_name] or {}
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+            server.handlers = vim.tbl_deep_extend('force', {}, handlers, server.handlers or {})
             lspconfig[server_name].setup(server)
           end,
         },
@@ -765,7 +789,7 @@ require('lazy').setup({
   },
 
   {
-    -- Autocompletion
+    -- Auto-completion
     'hrsh7th/nvim-cmp',
     event = 'InsertEnter',
     dependencies = {
@@ -799,7 +823,14 @@ require('lazy').setup({
             luasnip.lsp_expand(args.body)
           end,
         },
-        completion = { completeopt = 'menu,menuone,noinsert' },
+        completion = {
+          completeopt = 'menu,menuone,noinsert',
+          autocomplete = false,
+        },
+        window = {
+          completion = cmp.config.window.bordered(),
+          documentation = cmp.config.window.bordered(),
+        },
 
         -- Please read `:help ins-completion`
         mapping = cmp.mapping.preset.insert {

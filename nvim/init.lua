@@ -647,6 +647,12 @@ require('lazy').setup({
         clangd = {},
         bashls = {},
         zls = {},
+        ltex = {
+          autostart = false,
+          settings = {
+            language = 'en-GB',
+          },
+        },
         lua_ls = {
           settings = {
             Lua = {

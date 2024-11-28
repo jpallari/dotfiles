@@ -36,6 +36,7 @@ vim.g.netrw_liststyle = 3
 vim.g.netrw_browse_split = 4
 vim.g.netrw_altv = 1
 vim.g.netrw_winsize = 25
+vim.cmd.hi 'Normal guibg=NONE guifg=NONE ctermbg=NONE ctermfg=NONE'
 
 --
 -- Controls
@@ -839,16 +840,6 @@ require('lazy').setup({
   {
     -- Text snippets
     'rafamadriz/friendly-snippets',
-  },
-
-  {
-    -- Color scheme
-    'EdenEast/nightfox.nvim',
-    priority = 1000,
-    init = function()
-      vim.cmd.colorscheme 'duskfox'
-      vim.cmd.hi 'Comment gui=none'
-    end,
   },
 
   {

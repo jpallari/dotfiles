@@ -311,53 +311,63 @@ find_sdkman_paths() {
         -printf ':%p'
 }
 
-# build hook shell scripts for all the relevant tools
-build_tool_hooks() {
+# setup hook shell scripts for all the relevant tools
+shell_setup_tool_hooks() {
     local script_path
 
     for dotfile_shell in zsh bash; do
         script_path="$HOME/.local_tools.$dotfile_shell"
+        echo "tools for shell: $dotfile_shell" >&2
 
-        # init
-        echo "# script for loading $dotfile_shell tool hooks" > "$script_path"
-        echo "# generated on $(date)" >> "$script_path"
-        echo "" >> "$script_path"
+        {
+            # init
+            echo "# script for loading $dotfile_shell tool hooks"
+            echo "# generated on $(date)"
+            echo ""
 
-        # pipenv
-        if hash pipenv 2>/dev/null; then
-            echo "pipenv found" >&2
-            pipenv --completion >> "$script_path"
-        fi
+            # pipenv
+            if hash pipenv 2>/dev/null; then
+                echo "pipenv found" >&2
+                pipenv --completion
+            fi
 
-        # kubernetes
-        if hash kubectl 2>/dev/null; then
-            echo "kubectl found" >&2
-            kubectl completion "$dotfile_shell" >> "$script_path"
-        fi
+            # kubernetes
+            if hash kubectl 2>/dev/null; then
+                echo "kubectl found" >&2
+                kubectl completion "$dotfile_shell"
+            fi
 
-        # k3d
-        if hash k3d 2>/dev/null; then
-            echo "k3d found" >&2
-            k3d completion "$dotfile_shell" >> "$script_path"
-        fi
+            # k3d
+            if hash k3d 2>/dev/null; then
+                echo "k3d found" >&2
+                k3d completion "$dotfile_shell"
+            fi
 
-        # direnv
-        if hash direnv 2>/dev/null; then
-            echo "direnv found" >&2
-            direnv hook "$dotfile_shell" >> "$script_path"
-        fi
+            # direnv
+            if hash direnv 2>/dev/null; then
+                echo "direnv found" >&2
+                direnv hook "$dotfile_shell"
+            fi
 
-        # hcloud
-        if hash hcloud 2>/dev/null; then
-            echo "hcloud found" >&2
-            hcloud completion "$dotfile_shell" >> "$script_path"
-        fi
+            # hcloud
+            if hash hcloud 2>/dev/null; then
+                echo "hcloud found" >&2
+                hcloud completion "$dotfile_shell"
+            fi
 
-        # wezterm
-        if hash wezterm 2>/dev/null; then
-            echo "wezterm found" >&2
-            wezterm shell-completion --shell "$dotfile_shell" >> "$script_path"
-        fi
+            # wezterm
+            if hash wezterm 2>/dev/null; then
+                echo "wezterm found" >&2
+                wezterm shell-completion --shell "$dotfile_shell"
+            fi
+
+            # limactl
+            if hash limactl 2>/dev/null; then
+                echo "limactl found" >&2
+                limactl completion "$dotfile_shell"
+            fi
+        } > "$script_path"
+        echo "" >&2
     done
 }
 

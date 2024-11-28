@@ -226,6 +226,7 @@ do
   mapk('n', '<leader>K', '<cmd>lprev<cr>zz', { desc = 'Location list previous' })
   mapk('n', '<leader>j', '<cmd>cnext<cr>zz', { desc = 'Quickfix next' })
   mapk('n', '<leader>k', '<cmd>cprev<cr>zz', { desc = 'Quickfix previous' })
+  mapk('n', '\\', '<cmd>Lexplore<cr>', { desc = 'File explorer' })
 
   -- Command mode navigation
   mapk('c', '<C-f>', '<right>', { desc = 'Move cursor right' })
@@ -576,8 +577,8 @@ require('lazy').setup({
           map('gr', telescope.lsp_references, '[G]oto [r]eferences')
           map('gI', telescope.lsp_implementations, '[G]oto [i]mplementation')
           map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
-          map('<leader>D', telescope.lsp_type_definitions, 'Type [D]efinition')
-          map('<leader>ds', telescope.lsp_document_symbols, '[D]ocument [s]ymbols')
+          map('<leader>Dd', telescope.lsp_type_definitions, 'Type [D]efinition')
+          map('<leader>Ds', telescope.lsp_document_symbols, '[D]ocument [s]ymbols')
           map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [a]ction')
           map('<leader>cf', vim.lsp.buf.format, '[C]ode [f]ormat')
           map('<leader>cl', vim.lsp.codelens.run, '[C]ode [l]ens')

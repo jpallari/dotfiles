@@ -335,7 +335,7 @@ require('lazy').setup({
   {
     -- Git UI
     'tpope/vim-fugitive',
-    cmd = {'Git', 'Gedit', 'Ge'},
+    cmd = { 'Git', 'Gedit', 'Ge' },
   },
 
   {
@@ -670,9 +670,9 @@ require('lazy').setup({
       -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
-        'stylua', -- Lua format
+        'stylua',       -- Lua format
         'clang-format', -- C++ format
-        'shfmt', -- Shell format
+        'shfmt',        -- Shell format
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -712,7 +712,7 @@ require('lazy').setup({
         automatic_installation = true,
         ensure_installed = {
           -- Debuggers to install
-          'delve', -- Go
+          'delve',    -- Go
           'codelldb', -- C++
         },
       }

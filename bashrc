@@ -507,19 +507,27 @@ export PIPENV_VENV_IN_PROJECT=1
 # node
 export NPM_PACKAGES="$HOME/.local/share/npm-global"
 export NVM_DIR="$HOME/.nvm"
-if [ -d "$NVM_DIR/versions/node" ]; then
-    if [ -s "$NVM_DIR/alias/default" ]; then
-        DEFAULT_NVM_BIN_PATH=$(\
-            printf \
-            '%s/versions/node/%s/bin' \
-            "$NVM_DIR" \
-            "$(cat "$NVM_DIR/alias/default")"
-        )
-    else
-        NVM_BIN_PATHS=("$NVM_DIR"/versions/node/*/bin) 2>/dev/null
-        DEFAULT_NVM_BIN_PATH=${NVM_BIN_PATHS[-1]}
+resolve_nvm_dir() {
+    local nvm_bin_paths nvm_bin_path nvm_version
+
+    if ! [ -d "$NVM_DIR/versions/node" ]; then
+        return
     fi
-fi
+
+    if [ -s "$NVM_DIR/alias/default" ]; then
+        nvm_version=$(cat "$NVM_DIR/alias/default")
+        nvm_bin_path="$NVM_DIR/versions/node/$nvm_version/bin"
+        if [ -d "$nvm_bin_path" ]; then
+            echo "$nvm_bin_path"
+        else
+            echo "nvm default version ($nvm_version) not installed" >&2
+        fi
+    else
+        nvm_bin_paths=("$NVM_DIR"/versions/node/*/bin) 2>/dev/null
+        echo "${NVM_BIN_PATHS[-1]}"
+    fi
+}
+DEFAULT_NVM_BIN_PATH=$(resolve_nvm_dir)
 
 # go
 if [ -x "$HOME/Apps/go/bin/go" ]; then

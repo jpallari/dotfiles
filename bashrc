@@ -151,7 +151,8 @@ jqless() {
 
 # live preview jq results
 jqpreview() {
-    local query="$(echo '' | fzf --layout reverse --info=inline --print-query --preview-window "down,99%,wrap" --preview "jq {q} ${1}")"
+    local query
+    query="$(echo '' | fzf --layout reverse --info=inline --print-query --preview-window "down,99%,wrap" --preview "jq {q} ${1}")"
     if [ -n "${query}" ]; then
         jq "${query}" "${1}"
     fi
@@ -162,13 +163,13 @@ gcd() {
     local project_dir=$HOME/Projects
     local dir
     dir=$(\
-        find "$project_dir" -type d -maxdepth 4 -name '.git' \
+        find "$project_dir" -type d -maxdepth 4 -name '.git' -prune \
         | sed -e "s#^$project_dir/##" -e 's#/\.git$##' \
         | sort \
         | fzf --query="$1" --select-1 \
     )
     if [ -n "${dir:-}" ]; then
-        cd "$project_dir/$dir"
+        cd "$project_dir/$dir" || return 1
     else
         return 1
     fi
@@ -205,7 +206,7 @@ gcdr() (
 # open the git origin in a browser
 gbrowse() (
     if [ -n "${1}" ]; then
-        cd "${1}"
+        cd "${1}" || return 1
     fi
     open "$(git config --get remote.origin.url)"
 )
@@ -214,7 +215,7 @@ gbrowse() (
 httpserver() (
     local port=${1:-10101}
     local dir=${2:-.}
-    cd "$dir" || return
+    cd "$dir" || return 1
     python3 -m http.server "$port"
 )
 

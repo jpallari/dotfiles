@@ -211,6 +211,11 @@ gbrowse() (
     open "$(git config --get remote.origin.url)"
 )
 
+# print current epoch
+unixepoch() {
+    date '+%s000'
+}
+
 # share files over HTTP quickly
 httpserver() (
     local port=${1:-10101}
@@ -285,14 +290,6 @@ get_current_time_zone() {
     timedatectl status | \
         grep "Time zone" | \
         sed 's/.*Time zone: \([^ ]\+\) .*/\1/'
-}
-
-# opam configuration initialiser
-init_opam() {
-    if [ -f "$HOME/.opam/opam-init/init.sh" ] && hash opam 2>/dev/null; then
-       . "$HOME/.opam/opam-init/init.sh" > /dev/null 2> /dev/null || true
-       eval $(opam config env)
-    fi
 }
 
 # sdk man initialiser

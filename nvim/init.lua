@@ -347,18 +347,16 @@ require('lazy').setup({
       whichKey.setup()
 
       -- Document existing key chains
-      whichKey.register {
-        ['<leader>b'] = { name = '[B]uffer', _ = 'which_key_ignore' },
-        ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
-        ['<leader>d'] = { name = '[D]ebug', _ = 'which_key_ignore' },
-        ['<leader>f'] = { name = '[F]ind', _ = 'which_key_ignore' },
-        ['<leader>h'] = { name = '[H]arpoon', _ = 'which_key_ignore' },
-        ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
-        ['<leader>s'] = { name = '[S]urround', _ = 'which_key_ignore' },
-        ['<leader>t'] = { name = '[T]oggle', _ = 'which_key_ignore' },
+      whichKey.add {
+        { '<leader>b', group = '[B]uffer', },
+        { '<leader>c', group = '[C]ode', },
+        { '<leader>d', group = '[D]ebug', },
+        { '<leader>f', group = '[F]ind', },
+        { '<leader>h', group = '[H]arpoon', },
+        { '<leader>r', group = '[R]ename', },
+        { '<leader>s', group = '[S]urround', },
+        { '<leader>t', group = '[T]oggle', },
       }
-      -- visual mode
-      whichKey.register({}, { mode = 'v' })
     end,
   },
 
@@ -645,7 +643,7 @@ require('lazy').setup({
       -- See `:help lspconfig-all` for a list of all the pre-configured LSPs
       local servers = {
         gopls = {},
-        tsserver = {},
+        ts_ls = {},
         clangd = {},
         bashls = {},
         zls = {},

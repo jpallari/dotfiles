@@ -6,22 +6,32 @@ config.automatically_reload_config = false
 
 -- Appearance
 config.window_decorations = 'RESIZE|INTEGRATED_BUTTONS'
-config.color_scheme = 'duskfox'
-config.font = wezterm.font 'JetBrainsMono NF'
+config.color_scheme = 'iTerm2 Default'
+config.font = wezterm.font_with_fallback {
+  'AcPlus IBM VGA 9x16',
+  'JetBrainsMono NF',
+  'JetBrains Mono',
+  'Noto Color Emoji',
+}
+config.font_size = 18
+config.line_height = 0.9
+config.freetype_load_flags = 'NO_HINTING'
+config.bold_brightens_ansi_colors = 'BrightOnly'
 config.harfbuzz_features = { 'calt=0', 'clig=0', 'liga=0' } -- disable ligatures
 local colorscheme_switches = {
   dayfox = 'carbonfox',
-  carbonfox = 'nightfox'
+  carbonfox = 'nightfox',
+  nightfox = 'duskfox',
 }
 
 -- Events
 wezterm.on('toggle-colorscheme', function(window)
   local overrides = window:get_config_overrides() or {}
-  if not overrides.color_scheme then
-    overrides.color_scheme = 'dayfox'
-  else
+  if overrides.color_scheme then
     local next_color_scheme = colorscheme_switches[overrides.color_scheme]
     overrides.color_scheme = next_color_scheme
+  else
+    overrides.color_scheme = 'dayfox'
   end
 
   window:set_config_overrides(overrides)

@@ -247,12 +247,13 @@ do
   mapk('c', '<M-left>', '<c-left>', { desc = 'Move cursor one word left' })
 
   -- Toggles
-  mapk('n', '<leader>th', '<cmd>set hlsearch!<cr>', { desc = '[T]oggle search [h]ilight' })
+  mapk('n', '<leader>th', '<cmd>setlocal hlsearch!<cr>', { desc = '[T]oggle search [h]ilight' })
   mapk('n', '<leader>tp', '<cmd>set paste!<cr>', { desc = '[T]oggle [p]aste mode' })
   mapk('n', '<leader>tn', '<cmd>set number!<cr>', { desc = '[T]oggle [n]umbers' })
   mapk('n', '<leader>tr', '<cmd>set relativenumber!<cr>', { desc = '[T]oggle [r]elative numbers' })
-  mapk('n', '<leader>tw', '<cmd>set wrap!<cr>', { desc = '[T]oggle line [w]rapping' })
-  mapk('n', '<leader>tc', '<cmd>set cursorline!<cr>', { desc = '[T]oggle [c]ursor line' })
+  mapk('n', '<leader>tw', '<cmd>setlocal wrap!<cr>', { desc = '[T]oggle line [w]rapping' })
+  mapk('n', '<leader>tcl', '<cmd>setlocal cursorline!<cr>', { desc = '[T]oggle [c]ursor line' })
+  mapk('n', '<leader>tcc', '<cmd>setlocal cursorcolumn!<cr>', { desc = '[T]oggle [c]ursor line' })
   mapk('n', '<leader>tas', '<cmd>ToggleAutoSave<cr>', { desc = '[T]oggle [a]uto[s]ave' })
 end
 

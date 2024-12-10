@@ -620,7 +620,7 @@ fi
 if [ -n "$_dotfile_shell" ]; then
     # build local tool hooks, if not present
     if [ ! -s "$HOME/.local_tools.$_dotfile_shell" ]; then
-        build_tool_hooks
+        shell_setup_tool_hooks
     fi
 
     # load local tool hooks

@@ -55,6 +55,15 @@ elif [ -n "$ZSH_VERSION" ]; then
     zstyle ':completion:*' group-name ''
     zstyle ':completion:::::' completer _expand _complete _ignored _approximate
 
+    # zsh foreground program
+    zle_fg() {
+        echo -en "\e[s"
+        fg
+        echo -en "\e[u\e[0J\e[1A"
+        zle redisplay
+    }
+    zle -N zle_fg
+
     # binds
     bindkey -e
     bindkey '^[[3~' delete-char
@@ -64,6 +73,7 @@ elif [ -n "$ZSH_VERSION" ]; then
     bindkey '\eOH'  beginning-of-line
     bindkey '\e[F'  end-of-line
     bindkey '\eOF'  end-of-line
+    bindkey '^Z'    zle_fg
 fi
 
 ### aliases ###

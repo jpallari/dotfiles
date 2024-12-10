@@ -653,7 +653,6 @@ require('lazy').setup({
       -- Enable the following language servers
       -- See `:help lspconfig-all` for a list of all the pre-configured LSPs
       local servers = {
-        gopls = {},
         ts_ls = {},
         clangd = {},
         bashls = {},

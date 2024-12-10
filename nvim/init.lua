@@ -1010,7 +1010,7 @@ require('lazy').setup({
   },
 
   {
-    -- Resizing windows
+    -- Rearrange windows
     'sindrets/winshift.nvim',
     cmd = 'WinShift',
     keys = {
@@ -1139,11 +1139,6 @@ require('lazy').setup({
         group = nvim_metals_group,
       })
     end,
-  },
-
-  {
-    -- Local plugins
-    import = 'local.plugins',
   },
 }, {
   ui = {

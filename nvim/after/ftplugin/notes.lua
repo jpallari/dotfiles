@@ -1,4 +1,6 @@
-vim.bo.tabstop = 2
-vim.bo.softtabstop = 2
-vim.bo.shiftwidth = 2
-vim.wo.virtualedit = 'all'
+vim.opt_local.tabstop = 2
+vim.opt_local.softtabstop = 2
+vim.opt_local.shiftwidth = 2
+vim.opt_local.virtualedit = 'all'
+vim.opt_local.cursorline = true
+vim.opt_local.cursorcolumn = false

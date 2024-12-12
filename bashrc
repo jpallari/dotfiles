@@ -8,7 +8,8 @@ HISTFILE="$HOME/.shell_history"
 HISTCONTROL=ignoreboth
 HISTIGNORE='bg:fg:history'
 HISTSIZE=100000
-HISTFILESIZE=100000
+SAVEHIST=$HISTSIZE
+HISTFILESIZE=$HISTSIZE
 
 # detected shell in one variable
 if [ -n "$BASH_VERSION" ]; then
@@ -35,12 +36,10 @@ elif [ -n "$ZSH_VERSION" ]; then
     setopt hist_reduce_blanks
     setopt hist_verify
     setopt hist_ignore_space
-    setopt inc_append_history
     setopt share_history
     setopt auto_list
     setopt auto_menu
     setopt always_to_end
-    setopt share_history
     setopt interactive_comments
     setopt complete_in_word
     setopt extended_history
@@ -173,7 +172,7 @@ gcd() {
     local project_dir=$HOME/Projects
     local dir
     dir=$(\
-        find "$project_dir" -type d -maxdepth 4 -name '.git' -prune \
+        find "$project_dir" -maxdepth 4 -type d -name '.git' -prune \
         | sed -e "s#^$project_dir/##" -e 's#/\.git$##' \
         | sort \
         | fzf --query="$1" --select-1 \

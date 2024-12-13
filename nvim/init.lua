@@ -31,6 +31,7 @@ vim.opt.foldcolumn = '0'
 vim.opt.foldtext = ''
 vim.opt.foldnestmax = 3
 vim.opt.foldlevelstart = 99
+vim.opt.foldmethod = 'indent'
 vim.g.netrw_banner = 0
 vim.g.netrw_liststyle = 3
 vim.g.netrw_browse_split = 4
@@ -987,8 +988,6 @@ require('lazy').setup({
       require('nvim-treesitter.install').prefer_git = true
       ---@diagnostic disable-next-line: missing-fields
       require('nvim-treesitter.configs').setup(opts)
-      vim.opt.foldmethod = 'expr'
-      vim.opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
     end,
   },
 

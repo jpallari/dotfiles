@@ -445,6 +445,20 @@ precmd() {
         echo -n -e "\033]0;${USER}@${HOSTNAME:-$HOST}:${fulldirnocolor}\007"
     fi
 
+    # OSC7: New window in the same path
+    local pwd_strlen=${#PWD}
+    local encoded=""
+    local pos c o
+    for (( pos=0; pos<pwd_strlen; pos++ )); do
+        c=${PWD:$pos:1}
+        case "$c" in
+            [-/:_.!\'\(\)~[:alnum:]] ) o="${c}" ;;
+            * ) printf -v o '%%%02X' "'${c}" ;;
+        esac
+        encoded+="${o}"
+    done
+    printf '\e]7;file://%s%s\e\\' "${HOSTNAME}" "${encoded}"
+
     # include WSL specific additions
     if [ -n "${WSLENV:-}" ]; then
         printf "\e]9;9;%s\e\\" "$(wslpath -w "$PWD")"

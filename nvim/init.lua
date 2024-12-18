@@ -536,29 +536,6 @@ require('lazy').setup({
   },
 
   {
-    -- Text case
-    'johmsalas/text-case.nvim',
-    dependencies = { 'nvim-telescope/telescope.nvim' },
-    config = function()
-      require('textcase').setup({})
-      require('telescope').load_extension('textcase')
-    end,
-    keys = {
-      { '<leader>ga', desc = 'Text case' },
-      { '<leader>gt', '<cmd>TextCaseOpenTelescope<CR>', mode = { 'n', 'x' }, desc = 'Text case: Telescope' },
-    },
-    cmd = {
-      -- NOTE: The Subs command name can be customized via the option 'substitude_command_name'
-      'Subs',
-      'TextCaseOpenTelescope',
-      'TextCaseOpenTelescopeQuickChange',
-      'TextCaseOpenTelescopeLSPChange',
-      'TextCaseStartReplacingCommand',
-    },
-    lazy = false,
-  },
-
-  {
     -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
     dependencies = {

@@ -4,7 +4,8 @@
 vim.g.have_nerd_font = true
 vim.opt.number = false
 vim.opt.relativenumber = false
-vim.opt.showmode = false -- already in statusline
+vim.opt.showmode = true
+vim.opt.laststatus = 0
 vim.opt.breakindent = true
 vim.opt.signcolumn = 'yes'
 vim.opt.list = true
@@ -926,39 +927,6 @@ require('lazy').setup({
           suffix_next = 'n',             -- Suffix to search with "next" method
         },
       }
-
-      local statusline = require 'mini.statusline'
-      local function statusline_sections()
-        local mode, mode_hl = statusline.section_mode({ trunc_width = 120 })
-        local diff          = statusline.section_diff({ trunc_width = 75 })
-        local diagnostics   = statusline.section_diagnostics({ trunc_width = 75 })
-        local lsp           = statusline.section_lsp({ trunc_width = 75 })
-        local filename      = statusline.section_filename({ trunc_width = 140 })
-        local fileinfo      = statusline.section_fileinfo({ trunc_width = 120 })
-        local location      = statusline.section_location({ trunc_width = 75 })
-        local search        = statusline.section_searchcount({ trunc_width = 75 })
-
-        return statusline.combine_groups({
-          { hl = mode_hl,                  strings = { mode } },
-          { hl = 'MiniStatuslineDevinfo',  strings = { diff, diagnostics, lsp } },
-          '%<', -- Mark general truncate point
-          { hl = 'MiniStatuslineFilename', strings = { filename } },
-          '%=', -- End left alignment
-          { hl = 'MiniStatuslineFileinfo', strings = { fileinfo } },
-          { hl = mode_hl,                  strings = { search, location } },
-        })
-      end
-      statusline.setup {
-        content = {
-          active = statusline_sections,
-          inactive = statusline_sections,
-        },
-        use_icons = vim.g.have_nerd_font,
-      }
-      ---@diagnostic disable-next-line: duplicate-set-field
-      statusline.section_location = function()
-        return '%2l:%-2v'
-      end
     end,
   },
 

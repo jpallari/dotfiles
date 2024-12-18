@@ -409,6 +409,10 @@ require('lazy').setup({
           },
         },
         defaults = {
+          path_display = {
+            'shorten',
+            'truncate',
+          },
           vimgrep_arguments = {
             'rg',
             '--hidden',

@@ -279,11 +279,15 @@ require('lazy').setup({
   {
     -- Detect tabstop and shiftwidth automatically
     'tpope/vim-sleuth',
+    event = { "BufReadPost", "BufNewFile" },
   },
 
   {
-    -- "gc" to comment visual regions/lines
     'numToStr/Comment.nvim',
+    keys = {
+      { mode = 'x', '<C-_>', desc = 'Toggle comment on current line' },
+      { mode = 'x', '<C-/>', desc = 'Toggle comment on current line' },
+    },
     config = function()
       local comment = require 'Comment'
       local api = require 'Comment.api'
@@ -305,6 +309,7 @@ require('lazy').setup({
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
+    event = 'BufReadPre',
     opts = {
       signs = {
         add = { text = '+' },
@@ -354,7 +359,16 @@ require('lazy').setup({
   {
     -- Show you pending keybinds.
     'folke/which-key.nvim',
-    event = 'VimEnter',
+    event = 'VeryLazy',
+    keys = {
+      {
+        '<leader>?',
+        function()
+          require('which-key').show({ global = false })
+        end,
+        desc = 'Buffer Local Keymaps (which-key)',
+      },
+    },
     config = function()
       local whichKey = require 'which-key'
       whichKey.setup()
@@ -376,7 +390,21 @@ require('lazy').setup({
   {
     -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
-    event = 'VimEnter',
+    cmd = 'Telescope',
+    keys = {
+      { '<leader>fh',       desc = '[F]ind [h]elp' },
+      { '<leader>fk',       desc = '[F]ind [k]eymaps' },
+      { '<leader>ff',       desc = '[F]ind [f]iles' },
+      { '<leader>fp',       desc = '[F]ind Git files' },
+      { '<leader>fs',       desc = '[F]ind [s]elect Telescope' },
+      { '<leader>fw',       desc = '[F]ind current [w]ord' },
+      { '<leader>fg',       desc = '[F]ind by [g]rep' },
+      { '<leader>fd',       desc = '[F]ind [d]iagnostics' },
+      { '<leader>fr',       desc = '[F]ind [r]esume' },
+      { '<leader>f.',       desc = '[F]ind Recent Files ("." for repeat,' },
+      { '<leader>fq',       desc = '[F]ind [q]uickfix' },
+      { '<leader><leader>', desc = '[ ] Find existing buffers' },
+    },
     branch = '0.1.x',
     dependencies = {
       'nvim-lua/plenary.nvim',
@@ -388,7 +416,10 @@ require('lazy').setup({
         end,
       },
       { 'nvim-telescope/telescope-ui-select.nvim' },
-      { 'nvim-tree/nvim-web-devicons',            enabled = vim.g.have_nerd_font },
+      {
+        'nvim-tree/nvim-web-devicons',
+        enabled = vim.g.have_nerd_font
+      },
     },
     config = function()
       require('telescope').setup {
@@ -481,6 +512,18 @@ require('lazy').setup({
     -- Quick jump between files
     'ThePrimeagen/harpoon',
     branch = 'harpoon2',
+    keys = {
+      { '<leader>hh', desc = '[H]arpoon list in Telescope' },
+      { '<leader>hq', desc = '[H]arpoon [q]uick menu' },
+      { '<leader>ha', desc = '[H]arpoon [a]dd buffer' },
+      { '<leader>hx', desc = '[H]arpoon remove buffer' },
+      { '<leader>h1', desc = '[H]arpoon buffer [1]' },
+      { '<leader>h2', desc = '[H]arpoon buffer [2]' },
+      { '<leader>h3', desc = '[H]arpoon buffer [3]' },
+      { '<leader>h4', desc = '[H]arpoon buffer [4]' },
+      { '<leader>hp', desc = '[H]arpoon [p]revious buffer' },
+      { '<leader>hn', desc = '[H]arpoon [n]ext buffer' },
+    },
     requires = { { 'nvim-lua/plenary.nvim' } },
     config = function()
       local harpoon = require 'harpoon'
@@ -542,6 +585,8 @@ require('lazy').setup({
   {
     -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
+    event = { 'BufReadPost', 'BufNewFile' },
+    cmd = { "LspInfo", "LspInstall", "LspUninstall" },
     dependencies = {
       -- Automatically install LSPs and related tools to stdpath for Neovim
       { 'williamboman/mason.nvim', config = true },
@@ -690,6 +735,17 @@ require('lazy').setup({
   {
     -- Debug Adapter Protocol (DAP)
     'mfussenegger/nvim-dap',
+    keys = {
+      { '<leader>ds',  desc = '[S]tart/continue' },
+      { '<leader>di',  desc = 'Step [i]nto' },
+      { '<leader>do',  desc = 'Step [o]ver' },
+      { '<leader>dO',  desc = 'Step [O]ut' },
+      { '<leader>db',  desc = 'Toggle [b]reakpoint' },
+      { '<leader>drl', desc = '[R]un [l]ast' },
+      { '<leader>dB',  desc = 'Set [B]reakpoint' },
+      { '<leader>drr', desc = 'See last session [r]esult' },
+      { '<leader>dc',  desc = 'Run to [c]ursor' },
+    },
     dependencies = {
       'rcarriga/nvim-dap-ui',
       'nvim-neotest/nvim-nio',
@@ -761,7 +817,6 @@ require('lazy').setup({
   {
     -- Autoformat
     'stevearc/conform.nvim',
-    lazy = false,
     keys = {
       {
         '<leader>cf',
@@ -803,7 +858,9 @@ require('lazy').setup({
           end
           return 'make install_jsregexp'
         end)(),
-        dependencies = {},
+        dependencies = {
+          'rafamadriz/friendly-snippets',
+        },
       },
       'saadparwaiz1/cmp_luasnip',
       'hrsh7th/cmp-nvim-lsp',
@@ -868,14 +925,9 @@ require('lazy').setup({
   },
 
   {
-    -- Text snippets
-    'rafamadriz/friendly-snippets',
-  },
-
-  {
     -- Highlight todo, notes, etc in comments
     'folke/todo-comments.nvim',
-    event = 'VimEnter',
+    cmd = { 'TodoTelescope', 'TodoQuickFix', 'TodoLocList', },
     dependencies = { 'nvim-lua/plenary.nvim' },
     opts = { signs = false },
   },
@@ -883,6 +935,16 @@ require('lazy').setup({
   {
     -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
+    keys = {
+      { '<leader>bd', desc = '[B]uffer: [D]elete' },
+      { '<leader>sa', desc = '[S]urround: [a]dd' },
+      { '<leader>sd', desc = '[S]urround: [d]elete' },
+      { '<leader>sf', desc = '[S]urround: [f]ind right' },
+      { '<leader>sF', desc = '[S]urround: [F]ind left' },
+      { '<leader>sh', desc = '[S]urround: [h]ighlight' },
+      { '<leader>sr', desc = '[S]urround: [r]eplace' },
+      { '<leader>sn', desc = '[S]urround: update [n] lines' },
+    },
     config = function()
       -- Buffer removal that preserves windows
       require('mini.bufremove').setup()
@@ -914,6 +976,7 @@ require('lazy').setup({
   {
     -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
+    event = { 'BufReadPost', 'BufNewFile' },
     build = ':TSUpdate',
     opts = {
       ensure_installed = { 'bash', 'c', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc' },
@@ -943,6 +1006,11 @@ require('lazy').setup({
   {
     -- Selection expansion
     'RRethy/nvim-treesitter-textsubjects',
+    keys = {
+      { '.',  mode = 'v', },
+      { ';',  mode = 'v', },
+      { 'i;', mode = 'v', },
+    },
     requires = {
       'nvim-treesitter/nvim-treesitter',
     },
@@ -1050,7 +1118,7 @@ require('lazy').setup({
     -- Rust
     'mrcjkb/rustaceanvim',
     version = '^4',
-    lazy = false,
+    ft = { 'rust' },
     dependencies = {
       'hrsh7th/nvim-cmp',
       'hrsh7th/cmp-nvim-lsp',
@@ -1060,6 +1128,7 @@ require('lazy').setup({
   {
     -- Zig
     'ziglang/zig.vim',
+    ft = { 'zig' },
   },
 
   {

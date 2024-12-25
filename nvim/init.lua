@@ -277,9 +277,15 @@ vim.opt.rtp:prepend(lazypath)
 --
 require('lazy').setup({
   {
+    -- Async make
+    'tpope/vim-dispatch',
+    cmd = { 'Make', 'Dispatch', 'Start' },
+  },
+
+  {
     -- Detect tabstop and shiftwidth automatically
     'tpope/vim-sleuth',
-    event = { "BufReadPost", "BufNewFile" },
+    event = { 'BufReadPost', 'BufNewFile' },
   },
 
   {
@@ -1129,6 +1135,12 @@ require('lazy').setup({
     -- Zig
     'ziglang/zig.vim',
     ft = { 'zig' },
+  },
+
+  {
+    -- Go
+    'fatih/vim-go',
+    ft = { 'go' },
   },
 
   {

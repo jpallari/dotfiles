@@ -1105,7 +1105,7 @@ require('lazy').setup({
     },
     cmd = 'Neotree',
     keys = {
-      { '\\', ':Neotree reveal<CR>', { desc = 'NeoTree reveal' } },
+      { '\\', ':Neotree reveal current<CR>', { desc = 'NeoTree reveal' } },
     },
     opts = {
       filesystem = {

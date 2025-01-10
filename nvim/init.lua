@@ -297,8 +297,10 @@ require('lazy').setup({
   {
     'numToStr/Comment.nvim',
     keys = {
-      { mode = 'x', '<C-_>', desc = 'Toggle comment on current line' },
-      { mode = 'x', '<C-/>', desc = 'Toggle comment on current line' },
+      { mode = 'n', '<C-_>', desc = 'Toggle comment on current line' },
+      { mode = 'n', '<C-/>', desc = 'Toggle comment on current line' },
+      { mode = 'x', '<C-_>', desc = 'Toggle comment on current selection' },
+      { mode = 'x', '<C-/>', desc = 'Toggle comment on current selection' },
     },
     config = function()
       local comment = require 'Comment'
@@ -321,15 +323,15 @@ require('lazy').setup({
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
-    event = 'BufReadPre',
+    cmd = { 'Gitsigns' },
+    keys = {
+      { '[gc', desc = 'Jump to previous [g]it [c]hange' },
+      { ']gc', desc = 'Jump to next [g]it [c]hange' },
+      { '<leader>tgs', desc = '[T]oggle [g]it [s]igns' },
+      { '<leader>tgb', desc = '[T]oggle [g]it [b]lame line' },
+      { '<leader>tgd', desc = '[T]oggle [g]it [d]eleted lines' },
+    },
     opts = {
-      signs = {
-        add = { text = '+' },
-        change = { text = '~' },
-        delete = { text = '_' },
-        topdelete = { text = '‾' },
-        changedelete = { text = '~' },
-      },
       on_attach = function(bufnr)
         local gitsigns = require 'gitsigns'
 
@@ -340,13 +342,6 @@ require('lazy').setup({
         end
 
         -- Navigation
-        map('n', ']gc', function()
-          if vim.wo.diff then
-            vim.cmd.normal { ']gc', bang = true }
-          else
-            gitsigns.nav_hunk 'next'
-          end
-        end, { desc = 'Jump to next [g]it [c]hange' })
         map('n', '[gc', function()
           if vim.wo.diff then
             vim.cmd.normal { '[gc', bang = true }
@@ -354,10 +349,18 @@ require('lazy').setup({
             gitsigns.nav_hunk 'prev'
           end
         end, { desc = 'Jump to previous [g]it [c]hange' })
+        map('n', ']gc', function()
+          if vim.wo.diff then
+            vim.cmd.normal { ']gc', bang = true }
+          else
+            gitsigns.nav_hunk 'next'
+          end
+        end, { desc = 'Jump to next [g]it [c]hange' })
 
         -- Toggles
-        map('n', '<leader>tb', gitsigns.toggle_current_line_blame, { desc = '[T]oggle git show [b]lame line' })
-        map('n', '<leader>tD', gitsigns.toggle_deleted, { desc = '[T]oggle git show [D]eleted' })
+        map('n', '<leader>tgs', gitsigns.toggle_signs, { desc = '[T]oggle [g]it [s]igns' })
+        map('n', '<leader>tgb', gitsigns.toggle_current_line_blame, { desc = '[T]oggle [g]it [b]lame line' })
+        map('n', '<leader>tgd', gitsigns.toggle_deleted, { desc = '[T]oggle [g]it [d]eleted lines' })
       end,
     },
   },
@@ -598,7 +601,7 @@ require('lazy').setup({
     -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
     event = { 'BufReadPost', 'BufNewFile' },
-    cmd = { "LspInfo", "LspInstall", "LspUninstall" },
+    cmd = { 'LspInfo', 'LspInstall', 'LspUninstall' },
     dependencies = {
       -- Automatically install LSPs and related tools to stdpath for Neovim
       { 'williamboman/mason.nvim', config = true },
@@ -666,18 +669,18 @@ require('lazy').setup({
 
       -- Look and feel
       local border = {
-        { "🭽", "FloatBorder" },
-        { "▔", "FloatBorder" },
-        { "🭾", "FloatBorder" },
-        { "▕", "FloatBorder" },
-        { "🭿", "FloatBorder" },
-        { "▁", "FloatBorder" },
-        { "🭼", "FloatBorder" },
-        { "▏", "FloatBorder" },
+        { '🭽', 'FloatBorder' },
+        { '▔', 'FloatBorder' },
+        { '🭾', 'FloatBorder' },
+        { '▕', 'FloatBorder' },
+        { '🭿', 'FloatBorder' },
+        { '▁', 'FloatBorder' },
+        { '🭼', 'FloatBorder' },
+        { '▏', 'FloatBorder' },
       }
       local handlers = {
-        ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = border }),
-        ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = border }),
+        ['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, { border = border }),
+        ['textDocument/signatureHelp'] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = border }),
       }
       vim.diagnostic.config({
         virtual_text = {
@@ -848,7 +851,7 @@ require('lazy').setup({
         typescript = { { 'prettierd', 'prettier' } },
         javascriptreact = { { 'prettierd', 'prettier' } },
         typescriptreact = { { 'prettierd', 'prettier' } },
-        ["_"] = { "trim_whitespace" },
+        ['_'] = { 'trim_whitespace' },
       },
     },
   },

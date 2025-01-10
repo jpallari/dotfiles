@@ -78,6 +78,12 @@ vim.opt.smartindent = true
 vim.opt.joinspaces = false
 
 --
+-- System
+--
+vim.opt.exrc = true
+vim.g.editorconfig = true
+
+--
 -- Custom functions
 --
 function SetIndent(level)

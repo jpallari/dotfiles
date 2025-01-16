@@ -35,9 +35,7 @@ vim.opt.foldlevelstart = 99
 vim.opt.foldmethod = 'indent'
 vim.g.netrw_banner = 0
 vim.g.netrw_liststyle = 3
-vim.g.netrw_browse_split = 4
-vim.g.netrw_altv = 1
-vim.g.netrw_winsize = 25
+vim.g.netrw_altfile = 1
 vim.cmd.hi 'Normal guibg=NONE guifg=NONE ctermbg=NONE ctermfg=NONE'
 
 --
@@ -239,12 +237,12 @@ do
   mapk('v', 'K', ":m '<-2<CR>gv=gv", { desc = 'Move lines up' })
 
   -- Files and buffers
-  mapk('n', '<leader>e', ":e <C-R>=expand('%:p:h') . '/' <cr>", { desc = 'Open file from current buffer directory' })
+  mapk('n', '<leader>oe', ":e <C-R>=expand('%:p:h') . '/' <cr>", { desc = '[O]pen file from current buffer directory' })
   mapk('n', '<leader>J', '<cmd>lnext<cr>zz', { desc = 'Location list next' })
   mapk('n', '<leader>K', '<cmd>lprev<cr>zz', { desc = 'Location list previous' })
   mapk('n', '<leader>j', '<cmd>cnext<cr>zz', { desc = 'Quickfix next' })
   mapk('n', '<leader>k', '<cmd>cprev<cr>zz', { desc = 'Quickfix previous' })
-  mapk('n', '\\', '<cmd>Lexplore<cr>', { desc = 'File explorer' })
+  mapk('n', '\\', '<cmd>Ex<cr>', { desc = 'File explorer' })
 
   -- Command mode navigation
   mapk('c', '<C-f>', '<right>', { desc = 'Move cursor right' })
@@ -395,7 +393,6 @@ require('lazy').setup({
         { '<leader>d', group = '[D]ebug', },
         { '<leader>f', group = '[F]ind', },
         { '<leader>h', group = '[H]arpoon', },
-        { '<leader>r', group = '[R]ename', },
         { '<leader>s', group = '[S]urround', },
         { '<leader>t', group = '[T]oggle', },
       }
@@ -602,13 +599,11 @@ require('lazy').setup({
   {
     -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
-    event = { 'BufReadPost', 'BufNewFile' },
-    cmd = { 'LspInfo', 'LspInstall', 'LspUninstall' },
+    cmd = { 'LspInfo', 'LspInstall', 'LspUninstall', 'LspStart', },
     dependencies = {
       -- Automatically install LSPs and related tools to stdpath for Neovim
       { 'williamboman/mason.nvim', config = true },
       'williamboman/mason-lspconfig.nvim',
-      'WhoIsSethDaniel/mason-tool-installer.nvim',
 
       -- Useful status updates for LSP.
       { 'j-hui/fidget.nvim',       opts = {} },
@@ -621,6 +616,7 @@ require('lazy').setup({
       vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
         callback = function(event)
+          vim.g.lsp_doc_hl_enabled = false
           local telescope = require('telescope.builtin')
           local map = function(keys, func, desc)
             vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
@@ -645,13 +641,20 @@ require('lazy').setup({
           map('<leader>ww', function()
             vim.diagnostic.setqflist { severity = vim.diagnostic.severity.WARN }
           end, '[W]orkspace [w]arnings')
+          map('<leader>tdh', function()
+            vim.g.lsp_doc_hl_enabled = not vim.g.lsp_doc_hl_enabled
+          end, '[T]oggle [d]ocument [h]ighlight')
 
           -- Highlight references under cursor
           local client = vim.lsp.get_client_by_id(event.data.client_id)
           if client and client.server_capabilities.documentHighlightProvider then
             vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
               buffer = event.buf,
-              callback = vim.lsp.buf.document_highlight,
+              callback = function()
+                if vim.g.lsp_doc_hl_enabled then
+                  vim.lsp.buf.document_highlight()
+                end
+              end,
             })
 
             vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
@@ -662,9 +665,9 @@ require('lazy').setup({
 
           -- Inlay hints
           if client and client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
-            map('<leader>th', function()
+            map('<leader>tih', function()
               vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
-            end, '[T]oggle Inlay [h]ints')
+            end, '[T]oggle [i]nlay [h]ints')
           end
         end,
       })
@@ -725,16 +728,6 @@ require('lazy').setup({
       -- Ensure the servers and tools above are installed
       require('mason').setup()
 
-      -- You can add other tools here that you want Mason to install
-      -- for you, so that they are available from within Neovim.
-      local ensure_installed = vim.tbl_keys(servers or {})
-      vim.list_extend(ensure_installed, {
-        'stylua',       -- Lua format
-        'clang-format', -- C++ format
-        'shfmt',        -- Shell format
-      })
-      require('mason-tool-installer').setup { ensure_installed = ensure_installed }
-
       local lspconfig = require('lspconfig')
       require('mason-lspconfig').setup {
         ensure_installed = {},
@@ -782,11 +775,7 @@ require('lazy').setup({
         automatic_setup = true,
         handlers = {},
         automatic_installation = true,
-        ensure_installed = {
-          -- Debuggers to install
-          'delve',    -- Go
-          'codelldb', -- C++
-        },
+        ensure_installed = {},
       }
       ---@diagnostic disable-next-line: missing-fields
       dapui.setup {
@@ -971,9 +960,6 @@ require('lazy').setup({
         MiniBufremove.delete()
       end, { desc = '[B]uffer: [D]elete' })
 
-      -- Better Around/Inside textobjects
-      -- require('mini.ai').setup { n_lines = 500 }
-
       -- Add/delete/replace surroundings (brackets, quotes, etc.)
       require('mini.surround').setup {
         mappings = {
@@ -997,14 +983,18 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     event = { 'BufReadPost', 'BufNewFile' },
     build = ':TSUpdate',
+    dependencies = {
+      -- Selection expansion
+      'RRethy/nvim-treesitter-textsubjects',
+    },
     opts = {
-      ensure_installed = { 'bash', 'c', 'git_rebase', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc' },
+      ensure_installed = { 'git_rebase' },
       auto_install = true,
       highlight = {
         enable = true,
-        additional_vim_regex_highlighting = { 'ruby' },
+        additional_vim_regex_highlighting = false,
       },
-      indent = { enable = true, disable = { 'ruby' } },
+      indent = { enable = true, disable = { 'c', 'cpp', 'yaml' } },
       textsubjects = {
         enable = true,
         prev_selection = ',',
@@ -1020,19 +1010,6 @@ require('lazy').setup({
       ---@diagnostic disable-next-line: missing-fields
       require('nvim-treesitter.configs').setup(opts)
     end,
-  },
-
-  {
-    -- Selection expansion
-    'RRethy/nvim-treesitter-textsubjects',
-    keys = {
-      { '.',  mode = 'v', },
-      { ';',  mode = 'v', },
-      { 'i;', mode = 'v', },
-    },
-    requires = {
-      'nvim-treesitter/nvim-treesitter',
-    },
   },
 
   {
@@ -1068,26 +1045,7 @@ require('lazy').setup({
   },
 
   {
-    -- Linting
-    'mfussenegger/nvim-lint',
-    event = { 'BufReadPre', 'BufNewFile' },
-    config = function()
-      local lint = require 'lint'
-      lint.linters_by_ft = {
-        -- markdown = { 'markdownlint' },
-      }
-
-      local lint_augroup = vim.api.nvim_create_augroup('lint', { clear = true })
-      vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost', 'InsertLeave' }, {
-        group = lint_augroup,
-        callback = function()
-          require('lint').try_lint()
-        end,
-      })
-    end,
-  },
-
-  {
+    -- Templates
     'glepnir/template.nvim',
     cmd = { 'Template', 'TemProject' },
     config = function()
@@ -1124,6 +1082,7 @@ require('lazy').setup({
           },
           never_show = {},
         },
+        group_empty_dirs = true,
         window = {
           mappings = {
             ['\\'] = 'close_window',
@@ -1168,6 +1127,7 @@ require('lazy').setup({
       metals_config.on_attach = function()
         require('metals').setup_dap()
       end
+      metals_config.autoImportBuild = 'off'
 
       return metals_config
     end,

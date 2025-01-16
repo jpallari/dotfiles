@@ -325,8 +325,8 @@ require('lazy').setup({
     'lewis6991/gitsigns.nvim',
     cmd = { 'Gitsigns' },
     keys = {
-      { '[gc', desc = 'Jump to previous [g]it [c]hange' },
-      { ']gc', desc = 'Jump to next [g]it [c]hange' },
+      { '[gc',         desc = 'Jump to previous [g]it [c]hange' },
+      { ']gc',         desc = 'Jump to next [g]it [c]hange' },
       { '<leader>tgs', desc = '[T]oggle [g]it [s]igns' },
       { '<leader>tgb', desc = '[T]oggle [g]it [b]lame line' },
       { '<leader>tgd', desc = '[T]oggle [g]it [d]eleted lines' },
@@ -419,6 +419,9 @@ require('lazy').setup({
       { '<leader>f.',       desc = '[F]ind Recent Files ("." for repeat,' },
       { '<leader>fq',       desc = '[F]ind [q]uickfix' },
       { '<leader><leader>', desc = '[ ] Find existing buffers' },
+      { '<leader>/',        desc = '[/] Fuzzily search in current buffer' },
+      { '<leader>f/',       desc = '[F]ind [/] in Open Files' },
+      { '<leader>fn',       desc = '[F]ind [n]eovim files' },
     },
     branch = '0.1.x',
     dependencies = {
@@ -456,7 +459,6 @@ require('lazy').setup({
         },
         defaults = {
           path_display = {
-            'shorten',
             'truncate',
           },
           vimgrep_arguments = {

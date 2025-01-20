@@ -1142,6 +1142,12 @@ require('lazy').setup({
       })
     end,
   },
+
+  {
+    -- GitHub Copilot
+    'github/copilot.vim',
+    cmd = { 'Copilot' },
+  }
 }, {
   ui = {
     icons = vim.g.have_nerd_font and {} or {

@@ -472,13 +472,8 @@ require('lazy').setup({
             '!**/.git/*',
           },
           layout_config = {
-            width = function(_, cols, _)
-              if cols > 200 then
-                return 170
-              else
-                return math.floor(cols * 0.98)
-              end
-            end,
+            width = { padding = 0, },
+            height = { padding = 0 },
             preview_cutoff = 120,
           },
         },

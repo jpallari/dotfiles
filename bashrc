@@ -183,18 +183,6 @@ gcd() {
         return 1
     fi
 }
-_gcd() {
-    local project_dir=$HOME/Projects
-    local projects
-    declare -a values
-    projects=$(\
-        find "$project_dir" -type d -maxdepth 4 -name '.git' \
-        | sed -e "s#^$project_dir/##" -e 's#/\.git$##' \
-        | sort
-    )
-    values=(${(f)projects})
-    _values 'projects' $values
-}
 
 # run a command in a directory
 gcdr() (
@@ -635,9 +623,6 @@ elif [ -n "$ZSH_VERSION" ]; then
     # compinit
     autoload -Uz compinit && compinit -C
     autoload -Uz bashcompinit && bashcompinit
-
-    # custom completions
-    compdef _gcd gcd
 fi
 
 if [ -n "$_dotfile_shell" ]; then

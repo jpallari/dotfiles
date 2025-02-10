@@ -1142,6 +1142,31 @@ require('lazy').setup({
     -- GitHub Copilot
     'github/copilot.vim',
     cmd = { 'Copilot' },
+  },
+
+  {
+    -- Wiki
+    'vimwiki/vimwiki',
+    cmd = { 'VimwikiIndex', 'VimwikiMakeDiaryNote' },
+    event = 'BufEnter *.md',
+    keys = {
+      { '<leader>ww', desc = '[W]iki: Open default [w]iki index file' }, 
+      { '<leader>ws', desc = '[W]iki: [S]elect and open wiki index file' }, 
+      { '<leader>w<leader>w', desc = '[W]iki: Create diary note' }, 
+    },
+    init = function()
+      vim.g.vimwiki_list = {
+        {
+          path = '~/wiki/',
+          syntax = 'markdown',
+          ext = 'md',
+          diary_rel_path = 'Notes',
+        },
+      }
+      vim.g.vimwiki_global_ext = 0
+      vim.g.vimwiki_ext2syntax = vim.empty_dict()
+      vim.g.vimwiki_auto_header = 1
+    end
   }
 }, {
   ui = {

@@ -1079,8 +1079,12 @@ require('lazy').setup({
         },
         group_empty_dirs = true,
         window = {
+          position = 'float',
           mappings = {
             ['\\'] = 'close_window',
+          },
+          popup = {
+            size = { height = '100%', width = '100%', },
           },
         },
       },

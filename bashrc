@@ -167,14 +167,40 @@ jqpreview() {
     fi
 }
 
+GCD_PROJECT_DIRECTORY=$HOME/Projects
+
+__gcd_list_projects() {
+    find "$GCD_PROJECT_DIRECTORY" -maxdepth 4 -type d -name '.git' -prune \
+    | sed -e "s#^$project_dir/##" -e 's#/\.git$##' \
+    | sort
+}
+
+__gcd_update_projects_file() {
+    local projects_file="$GCD_PROJECT_DIRECTORY/.projects"
+    if
+        [ -n "$1" ] || \
+        ! [ -s "$projects_file" ] || \
+        [ "$(find "$projects_file" -mtime -1)" = "" ]
+    then
+        __gcd_list_projects > "$projects_file"
+    fi
+}
+
 # jump to a git project directory
 gcd() {
     local project_dir=$HOME/Projects
+    local update
+
+    if [ "$1" = "--update" ]; then
+        update=1
+        shift
+    fi
+
+    __gcd_update_projects_file "$update"
+
     local dir
     dir=$(\
-        find "$project_dir" -maxdepth 4 -type d -name '.git' -prune \
-        | sed -e "s#^$project_dir/##" -e 's#/\.git$##' \
-        | sort \
+        cat "$GCD_PROJECT_DIRECTORY/.projects" \
         | fzf --query="$1" --select-1 \
     )
     if [ -n "${dir:-}" ]; then

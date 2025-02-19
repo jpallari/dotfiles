@@ -166,16 +166,6 @@ do
 end
 
 --
--- File types
---
-vim.filetype.add({
-  pattern = {
-    ['.*.notes.txt'] = 'notes',
-  },
-})
-
-
---
 -- Keymaps
 --  See `:help vim.keymap.set()`
 --

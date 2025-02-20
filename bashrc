@@ -168,37 +168,26 @@ jqpreview() {
 }
 
 GCD_PROJECT_DIRECTORY=$HOME/Projects
+GCD_PROJECT_DIRLIST="$GCD_PROJECT_DIRECTORY/.projects"
 
-__gcd_list_projects() {
-    find "$GCD_PROJECT_DIRECTORY" -maxdepth 4 -type d -name '.git' -prune \
-    | sed -e "s#^$project_dir/##" -e 's#/\.git$##' \
-    | sort
-}
-
-__gcd_update_projects_file() {
-    local projects_file="$GCD_PROJECT_DIRECTORY/.projects"
+gcdu() {
     if
-        [ -n "$1" ] || \
-        ! [ -s "$projects_file" ] || \
-        [ "$(find "$projects_file" -mtime -1)" = "" ]
+        [ "$1" != "lazy" ] || \
+        ! [ -s "$GCD_PROJECT_DIRLIST" ]
     then
-        __gcd_list_projects > "$projects_file"
+        find "$GCD_PROJECT_DIRECTORY" -maxdepth 4 -type d -name '.git' -prune \
+        | sed -e "s#^$project_dir/##" -e 's#/\.git$##' \
+        | sort \
+        > "$GCD_PROJECT_DIRLIST"
     fi
 }
 
 # jump to a git project directory
 gcd() {
     local project_dir=$HOME/Projects
-    local update
-
-    if [ "$1" = "--update" ]; then
-        update=1
-        shift
-    fi
-
-    __gcd_update_projects_file "$update"
-
     local dir
+
+    gcdu lazy
     dir=$(\
         cat "$GCD_PROJECT_DIRECTORY/.projects" \
         | fzf --query="$1" --select-1 \

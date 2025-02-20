@@ -176,7 +176,7 @@ gcdu() {
         ! [ -s "$GCD_PROJECT_DIRLIST" ]
     then
         find "$GCD_PROJECT_DIRECTORY" -maxdepth 4 -type d -name '.git' -prune \
-        | sed -e "s#^$project_dir/##" -e 's#/\.git$##' \
+        | sed -e "s#^$GCD_PROJECT_DIRECTORY/##" -e 's#/\.git$##' \
         | sort \
         > "$GCD_PROJECT_DIRLIST"
     fi
@@ -184,7 +184,6 @@ gcdu() {
 
 # jump to a git project directory
 gcd() {
-    local project_dir=$HOME/Projects
     local dir
 
     gcdu lazy
@@ -193,7 +192,7 @@ gcd() {
         | fzf --query="$1" --select-1 \
     )
     if [ -n "${dir:-}" ]; then
-        cd "$project_dir/$dir" || return 1
+        cd "$GCD_PROJECT_DIRECTORY/$dir" || return 1
     else
         return 1
     fi

@@ -28,6 +28,7 @@ vim.opt.scrolloff = 10       -- min screen lines
 vim.opt.errorbells = false
 vim.opt.ignorecase = true
 vim.opt.wildignorecase = true
+vim.opt.wildmode = 'full:lastused'
 vim.opt.foldcolumn = '0'
 vim.opt.foldtext = ''
 vim.opt.foldnestmax = 3

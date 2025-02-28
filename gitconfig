@@ -1,19 +1,21 @@
 [alias]
+	amend = commit --amend
 	ci = commit
-	st = status
-	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
-	diffw = diff --word-diff
+	currentbranch = rev-parse --abbrev-ref HEAD
 	dc = diff --cached
 	dcw = diff --cached --word-diff
-	amend = commit --amend
-	fa = fetch --all
+	diffw = diff --word-diff
 	edit = rebase -i
 	editm = rebase -i origin/main
+	fa = fetch --all
 	fixlast = commit --amend --no-edit
+	fixpush = "!git fixlast && git pushf"
 	fixup = commit --fixup
-	currentbranch = rev-parse --abbrev-ref HEAD
-	resetupstream = "!git branch -u origin/\"$(git currentbranch)\""
+	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	out = "log @{u}.."
 	pushf = push --force-with-lease
+	resetupstream = "!git branch -u origin/\"$(git currentbranch)\""
+	st = status
 [branch]
 	autoSetupMerge = simple
 	autoSetupRebase = always

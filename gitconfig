@@ -19,14 +19,19 @@
 	autoSetupRebase = always
 [color]
 	ui = true
+[column]
+	ui = auto
 [commit]
 	verbose = true
 [core]
 	excludesfile = ~/.gitignore_global
 [diff]
 	algorithm = histogram
+	renames = true
+	mnemonicPrefix = true
 [fetch]
 	prune = true
+	pruneTags = true
 [gpg]
 	format = ssh
 [init]
@@ -40,7 +45,10 @@
 [push]
 	autoSetupRemote = true
 [rebase]
-	autosquash = true
+	autoSquash = true
+	autoStash = true
 	updateRefs = true
 [rerere]
 	enabled = true
+[tag]
+	sort = version:refname

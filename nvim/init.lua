@@ -516,12 +516,12 @@ require('lazy').setup({
       { '<leader>hq', desc = '[H]arpoon [q]uick menu' },
       { '<leader>ha', desc = '[H]arpoon [a]dd buffer' },
       { '<leader>hx', desc = '[H]arpoon remove buffer' },
-      { '<leader>h1', desc = '[H]arpoon buffer [1]' },
-      { '<leader>h2', desc = '[H]arpoon buffer [2]' },
-      { '<leader>h3', desc = '[H]arpoon buffer [3]' },
-      { '<leader>h4', desc = '[H]arpoon buffer [4]' },
-      { '<leader>hp', desc = '[H]arpoon [p]revious buffer' },
-      { '<leader>hn', desc = '[H]arpoon [n]ext buffer' },
+      { '<leader>1', desc = '[H]arpoon buffer [1]' },
+      { '<leader>2', desc = '[H]arpoon buffer [2]' },
+      { '<leader>3', desc = '[H]arpoon buffer [3]' },
+      { '<leader>4', desc = '[H]arpoon buffer [4]' },
+      { '[h', desc = '[H]arpoon previous buffer' },
+      { ']h', desc = '[H]arpoon next buffer' },
     },
     requires = { { 'nvim-lua/plenary.nvim' } },
     config = function()
@@ -536,15 +536,15 @@ require('lazy').setup({
         end
 
         require('telescope.pickers')
-            .new({}, {
-              prompt_title = 'Harpoon',
-              finder = require('telescope.finders').new_table {
-                results = file_paths,
-              },
-              previewer = conf.file_previewer {},
-              sorter = conf.generic_sorter {},
-            })
-            :find()
+          .new({}, {
+            prompt_title = 'Harpoon',
+            finder = require('telescope.finders').new_table {
+              results = file_paths,
+            },
+            previewer = conf.file_previewer {},
+            sorter = conf.generic_sorter {},
+          })
+          :find()
       end
 
       local mapk = vim.keymap.set
@@ -560,22 +560,22 @@ require('lazy').setup({
       mapk('n', '<leader>hx', function()
         harpoon:list():remove()
       end, { desc = '[H]arpoon remove buffer' })
-      mapk('n', '<leader>h1', function()
+      mapk('n', '<leader>1', function()
         harpoon:list():select(1)
       end, { desc = '[H]arpoon buffer [1]' })
-      mapk('n', '<leader>h2', function()
+      mapk('n', '<leader>2', function()
         harpoon:list():select(2)
       end, { desc = '[H]arpoon buffer [2]' })
-      mapk('n', '<leader>h3', function()
+      mapk('n', '<leader>3', function()
         harpoon:list():select(3)
       end, { desc = '[H]arpoon buffer [3]' })
-      mapk('n', '<leader>h4', function()
+      mapk('n', '<leader>4', function()
         harpoon:list():select(4)
       end, { desc = '[H]arpoon buffer [4]' })
-      mapk('n', '<leader>hp', function()
+      mapk('n', '[h', function()
         harpoon:list():prev { ui_nav_wrap = true }
       end, { desc = '[H]arpoon [p]revious buffer' })
-      mapk('n', '<leader>hn', function()
+      mapk('n', ']h', function()
         harpoon:list():next { ui_nav_wrap = true }
       end, { desc = '[H]arpoon [n]ext buffer' })
     end,

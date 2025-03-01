@@ -75,31 +75,53 @@ elif [ -n "$ZSH_VERSION" ]; then
     bindkey '^Z'    zle_fg
 fi
 
-### aliases ###
+### aliases, functions, commands ###
 
+# OS specific
 case "${OSTYPE}" in
     linux*)
         alias ls='ls --color=auto -F'
-        if [ -n "${WSLENV:-}" ]; then
-            alias pbcopy='clip.exe'
-            alias pbpaste='powershell.exe get-clipboard | sed "s/\r//" | head -c -1'
-            open() {
-                explorer.exe "$(wslpath -w "$1")"
-            }
-        else
-            alias pbcopy='xsel --clipboard --input'
-            alias pbpaste='xsel --clipboard --output'
-            alias open='xdg-open >/dev/null 2>&1'
-        fi
         ;;
     darwin*)
-        if command -v python3 >/dev/null; then
+        # newer python
+        if
+            command -v python3 >/dev/null \
+            && ! command -v python >/dev/null
+        then
             alias python=python3
         fi
+
+        alias hexfiend='open -a "Hex Fiend"'
         ;;
     *)
         alias ls='ls -F'
 esac
+
+# GUI specific
+if [ -n "${WSLENV:-}" ]; then
+    alias pbcopy='clip.exe'
+    alias pbpaste='powershell.exe get-clipboard | sed "s/\r//" | head -c -1'
+    open() {
+        explorer.exe "$(wslpath -w "$1")"
+    }
+
+    # keychain setup to remember SSH keys (mostly for WSL)
+    init_keychain() {
+        eval "$(keychain --eval --agents ssh id_ed25519)"
+    }
+elif [ -n "${XDG_SESSION_TYPE:-}" ]; then
+    alias open='xdg-open >/dev/null 2>&1'
+    case "${XDG_SESSION_TYPE}" in
+        'x11')
+            alias pbcopy='xsel --clipboard --input'
+            alias pbpaste='xsel --clipboard --output'
+            ;;
+        'wayland')
+            alias pbcopy='wl-copy'
+            alias pbpaste='wl-paste'
+            ;;
+    esac
+fi
 
 # vim in terminal w/ clipboard support etc.
 if hash nvim 2>/dev/null; then
@@ -125,10 +147,6 @@ fi
 
 alias ll='ls -lh'
 alias grep='grep --color=auto'
-alias assume='. assume' # granted.dev
-alias hexfiend='open -a "Hex Fiend"'
-
-### functions ###
 
 # poll a given command every n seconds
 poll_cmd() {
@@ -387,10 +405,7 @@ ssh_no_save() {
     ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$@"
 }
 
-# keychain setup to remember SSH keys (mostly for WSL)
-init_keychain() {
-    eval "$(keychain --eval --agents ssh id_ed25519)"
-}
+### prompt ###
 
 # add extra content to the prompt
 set_prompt_extra() {
@@ -620,7 +635,8 @@ if [ -s "$NVM_DIR/nvm.sh" ]; then
 fi
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
-# completion
+### completion ###
+
 if [ -n "$BASH_VERSION" ]; then
     # Load general bash completion package
     BASH_COMPLETION_SOURCES=(

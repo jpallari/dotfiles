@@ -124,24 +124,24 @@ elif [ -n "${XDG_SESSION_TYPE:-}" ]; then
 fi
 
 # vim in terminal w/ clipboard support etc.
-if hash nvim 2>/dev/null; then
+if command -v nvim >/dev/null; then
     alias vim='nvim'
     EDITOR="nvim"
-elif hash mvim 2>/dev/null; then
+elif command -v mvim >/dev/null; then
     alias vim='mvim -v'
     EDITOR="mvim -v"
-elif hash vimx 2>/dev/null; then
+elif command -v vimx >/dev/null; then
     alias vim='vimx'
     EDITOR="vimx"
-elif hash gvim 2>/dev/null; then
+elif command -v gvim >/dev/null; then
     alias vim='gvim -v'
     EDITOR="gvim -v"
 else
     EDITOR="vim"
 fi
 
-# better gpg
-if hash gpg2 2>/dev/null; then
+# newer gpg
+if command -v gpg2 >/dev/null; then
     alias gpg=gpg2
 fi
 
@@ -188,6 +188,7 @@ jqpreview() {
 GCD_PROJECT_DIRECTORY=$HOME/Projects
 GCD_PROJECT_DIRLIST="$GCD_PROJECT_DIRECTORY/.projects"
 
+# update jump list for gcd
 gcdu() {
     if
         [ "$1" != "lazy" ] || \
@@ -304,11 +305,6 @@ whereami() {
 }
 alias wai=whereami
 
-# vim update plugins
-vim_plug_update() {
-    vim -c ':PlugUpdate'
-}
-
 # set the current window title
 set_window_title() {
     echo -ne "\033]0;$@\007"
@@ -355,43 +351,43 @@ shell_setup_tool_hooks() {
             echo ""
 
             # pipenv
-            if hash pipenv 2>/dev/null; then
+            if command -v pipenv >/dev/null; then
                 echo "pipenv found" >&2
                 pipenv --completion
             fi
 
             # kubernetes
-            if hash kubectl 2>/dev/null; then
+            if command -v kubectl >/dev/null; then
                 echo "kubectl found" >&2
                 kubectl completion "$dotfile_shell"
             fi
 
             # k3d
-            if hash k3d 2>/dev/null; then
+            if command -v k3d >/dev/null; then
                 echo "k3d found" >&2
                 k3d completion "$dotfile_shell"
             fi
 
             # direnv
-            if hash direnv 2>/dev/null; then
+            if command -v direnv >/dev/null; then
                 echo "direnv found" >&2
                 direnv hook "$dotfile_shell"
             fi
 
             # hcloud
-            if hash hcloud 2>/dev/null; then
+            if command -v hcloud >/dev/null; then
                 echo "hcloud found" >&2
                 hcloud completion "$dotfile_shell"
             fi
 
             # wezterm
-            if hash wezterm 2>/dev/null; then
+            if command -v wezterm >/dev/null; then
                 echo "wezterm found" >&2
                 wezterm shell-completion --shell "$dotfile_shell"
             fi
 
             # limactl
-            if hash limactl 2>/dev/null; then
+            if command -v limactl >/dev/null; then
                 echo "limactl found" >&2
                 limactl completion "$dotfile_shell"
             fi
@@ -625,7 +621,7 @@ fi
 ### load bunch of stuff ###
 
 # lesspipe
-if hash lesspipe.sh 2>/dev/null; then
+if command -v lesspipe.sh >/dev/null; then
     export LESSOPEN="|lesspipe.sh %s"
 fi
 
@@ -675,7 +671,7 @@ if [ -n "$_dotfile_shell" ]; then
 fi
 
 # aws cli
-if hash aws_completer 2>/dev/null; then
+if command -v aws_completer >/dev/null; then
     complete -C aws_completer aws
 fi
 
@@ -684,4 +680,3 @@ if [ -n "$TERRAFORM_PATH" ]; then
     complete -C "$TERRAFORM_PATH" terraform
     complete -o nospace -C "$TERRAFORM_PATH" terraform
 fi
-

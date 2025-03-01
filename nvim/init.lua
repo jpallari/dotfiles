@@ -1100,12 +1100,6 @@ require('lazy').setup({
   },
 
   {
-    -- Go
-    'fatih/vim-go',
-    ft = { 'go' },
-  },
-
-  {
     -- Scala
     'scalameta/nvim-metals',
     dependencies = {

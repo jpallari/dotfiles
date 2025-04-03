@@ -929,7 +929,22 @@ require('lazy').setup({
     'folke/todo-comments.nvim',
     cmd = { 'TodoTelescope', 'TodoQuickFix', 'TodoLocList', },
     dependencies = { 'nvim-lua/plenary.nvim' },
-    opts = { signs = false },
+    opts = {
+      signs = false,
+      search = {
+        command = 'rg',
+        args = {
+          '--color=never',
+          '--no-heading',
+          '--with-filename',
+          '--line-number',
+          '--column',
+          '--hidden',
+          '--iglob',
+          '!**/.git/*',
+        },
+      }
+    },
   },
 
   {

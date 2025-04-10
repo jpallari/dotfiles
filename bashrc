@@ -206,10 +206,7 @@ gcd() {
     local dir
 
     gcdu lazy
-    dir=$(\
-        cat "$GCD_PROJECT_DIRECTORY/.projects" \
-        | fzf --query="$1" --select-1 \
-    )
+    dir=$(fzf --query="$1" --select-1 < "$GCD_PROJECT_DIRECTORY/.projects")
     if [ -n "${dir:-}" ]; then
         cd "$GCD_PROJECT_DIRECTORY/$dir" || return 1
     else

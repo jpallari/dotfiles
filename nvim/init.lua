@@ -5,7 +5,7 @@ vim.g.have_nerd_font = true
 vim.opt.number = false
 vim.opt.relativenumber = false
 vim.opt.showmode = true
-vim.opt.laststatus = 0
+vim.opt.laststatus = 2
 vim.opt.breakindent = true
 vim.opt.signcolumn = 'yes'
 vim.opt.list = true
@@ -15,6 +15,7 @@ vim.opt.wrap = true
 vim.opt.termguicolors = true
 vim.opt.shortmess:append 'I'
 vim.opt.title = false
+vim.cmd.hi 'Normal guibg=NONE guifg=NONE ctermbg=NONE ctermfg=NONE'
 
 --
 -- UI
@@ -24,7 +25,7 @@ vim.opt.timeoutlen = 300 -- Faster popup
 vim.opt.splitright = true
 vim.opt.splitbelow = true
 vim.opt.inccommand = 'split' -- preview subtitutions
-vim.opt.scrolloff = 10       -- min screen lines
+vim.opt.scrolloff = 5        -- min screen lines
 vim.opt.errorbells = false
 vim.opt.ignorecase = true
 vim.opt.wildignorecase = true
@@ -34,10 +35,13 @@ vim.opt.foldtext = ''
 vim.opt.foldnestmax = 3
 vim.opt.foldlevelstart = 99
 vim.opt.foldmethod = 'indent'
+
+--
+-- NetRW
+--
 vim.g.netrw_banner = 0
 vim.g.netrw_liststyle = 3
 vim.g.netrw_altfile = 1
-vim.cmd.hi 'Normal guibg=NONE guifg=NONE ctermbg=NONE ctermfg=NONE'
 
 --
 -- Controls
@@ -144,7 +148,7 @@ do
   -- Highlight when yanking (copying) text
   autocmd('TextYankPost', {
     desc = 'Highlight when yanking (copying) text',
-    group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
+    group = vim.api.nvim_create_augroup('dotfile-highlight-yank', { clear = true }),
     callback = function()
       vim.highlight.on_yank()
     end,
@@ -386,6 +390,8 @@ require('lazy').setup({
         { '<leader>h', group = '[H]arpoon', },
         { '<leader>s', group = '[S]urround', },
         { '<leader>t', group = '[T]oggle', },
+        { '<leader>w', group = '[W]orkspace' },
+        { '<leader>W', group = '[W]iki' },
       }
     end,
   },
@@ -600,7 +606,7 @@ require('lazy').setup({
     },
     config = function()
       vim.api.nvim_create_autocmd('LspAttach', {
-        group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
+        group = vim.api.nvim_create_augroup('dotfile-lsp-attach', { clear = true }),
         callback = function(event)
           vim.g.lsp_doc_hl_enabled = false
           local telescope = require('telescope.builtin')
@@ -1160,9 +1166,9 @@ require('lazy').setup({
     cmd = { 'VimwikiIndex', 'VimwikiMakeDiaryNote' },
     event = 'BufEnter *.md',
     keys = {
-      { '<leader>ww', desc = '[W]iki: Open default [w]iki index file' }, 
-      { '<leader>ws', desc = '[W]iki: [S]elect and open wiki index file' }, 
-      { '<leader>w<leader>w', desc = '[W]iki: Create diary note' }, 
+      { '<leader>Ww', desc = '[W]iki: Open default [w]iki index file' },
+      { '<leader>Ws', desc = '[W]iki: [S]elect and open wiki index file' },
+      { '<leader>Wd', desc = '[W]iki: Create diary note' },
     },
     init = function()
       vim.g.vimwiki_list = {

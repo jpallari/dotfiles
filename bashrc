@@ -68,33 +68,34 @@ elif [ -n "$ZSH_VERSION" ]; then
     bindkey '^[[3~' delete-char
     bindkey '^[3;5~' delete-char
     bindkey '^[[Z' reverse-menu-complete
-    bindkey '\e[H'  beginning-of-line
-    bindkey '\eOH'  beginning-of-line
-    bindkey '\e[F'  end-of-line
-    bindkey '\eOF'  end-of-line
-    bindkey '^Z'    zle_fg
+    bindkey '\e[H' beginning-of-line
+    bindkey '\eOH' beginning-of-line
+    bindkey '\e[F' end-of-line
+    bindkey '\eOF' end-of-line
+    bindkey '^Z' zle_fg
 fi
 
 ### aliases, functions, commands ###
 
 # OS specific
 case "${OSTYPE}" in
-    linux*)
-        alias ls='ls --color=auto -F'
-        ;;
-    darwin*)
-        # newer python
-        if
-            command -v python3 >/dev/null \
-            && ! command -v python >/dev/null
-        then
-            alias python=python3
-        fi
+linux*)
+    alias ls='ls --color=auto -F'
+    ;;
+darwin*)
+    # newer python
+    if
+        command -v python3 >/dev/null &&
+            ! command -v python >/dev/null
+    then
+        alias python=python3
+    fi
 
-        alias hexfiend='open -a "Hex Fiend"'
-        ;;
-    *)
-        alias ls='ls -F'
+    alias hexfiend='open -a "Hex Fiend"'
+    ;;
+*)
+    alias ls='ls -F'
+    ;;
 esac
 
 # GUI specific
@@ -112,14 +113,14 @@ if [ -n "${WSLENV:-}" ]; then
 elif [ -n "${XDG_SESSION_TYPE:-}" ]; then
     alias open='xdg-open >/dev/null 2>&1'
     case "${XDG_SESSION_TYPE}" in
-        'x11')
-            alias pbcopy='xsel --clipboard --input'
-            alias pbpaste='xsel --clipboard --output'
-            ;;
-        'wayland')
-            alias pbcopy='wl-copy'
-            alias pbpaste='wl-paste'
-            ;;
+    'x11')
+        alias pbcopy='xsel --clipboard --input'
+        alias pbpaste='xsel --clipboard --output'
+        ;;
+    'wayland')
+        alias pbcopy='wl-copy'
+        alias pbpaste='wl-paste'
+        ;;
     esac
 fi
 
@@ -152,13 +153,13 @@ alias grep='grep --color=auto'
 poll_cmd() {
     local interval
     case "$1" in
-        [0-9]*)
-            interval=$1
-            shift
-            ;;
-        *)
-            interval=4
-            ;;
+    [0-9]*)
+        interval=$1
+        shift
+        ;;
+    *)
+        interval=4
+        ;;
     esac
     while true; do
         "$@"
@@ -191,13 +192,13 @@ GCD_PROJECT_DIRLIST="$GCD_PROJECT_DIRECTORY/.projects"
 # update jump list for gcd
 gcdu() {
     if
-        [ "$1" != "lazy" ] || \
-        ! [ -s "$GCD_PROJECT_DIRLIST" ]
+        [ "$1" != "lazy" ] ||
+            ! [ -s "$GCD_PROJECT_DIRLIST" ]
     then
-        find "$GCD_PROJECT_DIRECTORY" -maxdepth 4 -type d -name '.git' -prune \
-        | sed -e "s#^$GCD_PROJECT_DIRECTORY/##" -e 's#/\.git$##' \
-        | sort \
-        > "$GCD_PROJECT_DIRLIST"
+        find "$GCD_PROJECT_DIRECTORY" -maxdepth 4 -type d -name '.git' -prune |
+            sed -e "s#^$GCD_PROJECT_DIRECTORY/##" -e 's#/\.git$##' |
+            sort \
+                >"$GCD_PROJECT_DIRLIST"
     fi
 }
 
@@ -206,7 +207,7 @@ gcd() {
     local dir
 
     gcdu lazy
-    dir=$(fzf --query="$1" --select-1 < "$GCD_PROJECT_DIRECTORY/.projects")
+    dir=$(fzf --query="$1" --select-1 <"$GCD_PROJECT_DIRECTORY/.projects")
     if [ -n "${dir:-}" ]; then
         cd "$GCD_PROJECT_DIRECTORY/$dir" || return 1
     else
@@ -282,7 +283,7 @@ add_path() {
 # print out a key-value pair
 # used in whereami
 __print_kvpair() {
-    printf  "${__COLOR_PURPLE}%-12s: ${__COLOR_CYAN}%s${__COLOR_RESTORE}\n" "$@"
+    printf "${__COLOR_PURPLE}%-12s: ${__COLOR_CYAN}%s${__COLOR_RESTORE}\n" "$@"
 }
 
 # print user and location
@@ -309,8 +310,8 @@ set_window_title() {
 
 # current time zone
 get_current_time_zone() {
-    timedatectl status | \
-        grep "Time zone" | \
+    timedatectl status |
+        grep "Time zone" |
         sed 's/.*Time zone: \([^ ]\+\) .*/\1/'
 }
 
@@ -388,7 +389,7 @@ shell_setup_tool_hooks() {
                 echo "limactl found" >&2
                 limactl completion "$dotfile_shell"
             fi
-        } > "$script_path"
+        } >"$script_path"
         echo "" >&2
     done
 }
@@ -446,9 +447,9 @@ precmd() {
     fi
 
     # include VTE specific additions
-    if [ -n "$BASH_VERSION" ] \
-        && [ -n "$VTE_VERSION" ] \
-        && type __vte_prompt_command >/dev/null 2>&1; then
+    if [ -n "$BASH_VERSION" ] &&
+        [ -n "$VTE_VERSION" ] &&
+        type __vte_prompt_command >/dev/null 2>&1; then
         __vte_prompt_command
     else
         # print terminal title (vte has its own implementation)
@@ -459,11 +460,11 @@ precmd() {
     local pwd_strlen=${#PWD}
     local encoded=""
     local pos c o
-    for (( pos=0; pos<pwd_strlen; pos++ )); do
+    for ((pos = 0; pos < pwd_strlen; pos++)); do
         c=${PWD:$pos:1}
         case "$c" in
-            [-/:_.!\'\(\)~[:alnum:]] ) o="${c}" ;;
-            * ) printf -v o '%%%02X' "'${c}" ;;
+        [-/:_.!\'\(\)~[:alnum:]]) o="${c}" ;;
+        *) printf -v o '%%%02X' "'${c}" ;;
         esac
         encoded+="${o}"
     done
@@ -476,9 +477,9 @@ precmd() {
 }
 
 # vte -- this must be loaded before the prompt command is set
-if [ -n "$VTE_VERSION" ] \
-    && ! type __vte_prompt_command >/dev/null 2>&1 \
-    && [ -f /etc/profile.d/vte.sh ]; then
+if [ -n "$VTE_VERSION" ] &&
+    ! type __vte_prompt_command >/dev/null 2>&1 &&
+    [ -f /etc/profile.d/vte.sh ]; then
     . /etc/profile.d/vte.sh
 fi
 
@@ -623,9 +624,7 @@ if command -v lesspipe.sh >/dev/null; then
 fi
 
 # nvm
-if [ -s "$NVM_DIR/nvm.sh" ]; then
-    . "$NVM_DIR/nvm.sh" --no-use
-fi
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" --no-use
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 ### completion ###

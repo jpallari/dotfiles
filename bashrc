@@ -188,6 +188,7 @@ jqpreview() {
 
 GCD_PROJECT_DIRECTORY=$HOME/Projects
 GCD_PROJECT_DIRLIST="$GCD_PROJECT_DIRECTORY/.projects"
+GCD_LAST_JUMP_FILE="$GCD_PROJECT_DIRECTORY/.lastjump"
 
 # update jump list for gcd
 gcdu() {
@@ -204,11 +205,17 @@ gcdu() {
 
 # jump to a git project directory
 gcd() {
+    if [ "$1" = '-' ] && [ -s "$GCD_LAST_JUMP_FILE" ]; then
+        cd "$(cat "$GCD_LAST_JUMP_FILE")" || return 1
+        return 0
+    fi
+
     local dir
 
     gcdu lazy
     dir=$(fzf --query="$1" --select-1 <"$GCD_PROJECT_DIRECTORY/.projects")
     if [ -n "${dir:-}" ]; then
+        echo "$GCD_PROJECT_DIRECTORY/$dir" > "$GCD_LAST_JUMP_FILE"
         cd "$GCD_PROJECT_DIRECTORY/$dir" || return 1
     else
         return 1

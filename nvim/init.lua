@@ -363,7 +363,7 @@ require('lazy').setup({
       { '<leader>GG', '<cmd>Ge :<cr>',      desc = 'Git status' },
       { '<leader>Gg', '<cmd>Ge :<cr>',      desc = 'Git status' },
       { '<leader>Gs', '<cmd>Git<cr>',       desc = 'Git status' },
-      { '<leader>Gb', '<cmd>Git blame<cr>', desc = 'Git blame' },
+      { '<leader>GB', '<cmd>Git blame<cr>', desc = 'Git blame' },
       { '<leader>Gl', '<cmd>Gclog<cr>',     desc = 'Git log in quickfix list' },
     },
   },

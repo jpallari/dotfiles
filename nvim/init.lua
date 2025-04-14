@@ -15,7 +15,7 @@ vim.opt.wrap = true
 vim.opt.termguicolors = true
 vim.opt.shortmess:append 'I'
 vim.opt.title = false
-vim.opt.winborder = 'rounded'
+vim.opt.winborder = 'single'
 vim.cmd.hi 'Normal guibg=NONE guifg=NONE ctermbg=NONE ctermfg=NONE'
 
 --

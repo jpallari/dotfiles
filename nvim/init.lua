@@ -762,8 +762,8 @@ require('lazy').setup({
       { '<leader>fk',       desc = 'Find in key maps' },
       { '<leader>fq',       desc = 'Find in quickfix list' },
       { '<leader>fl',       desc = 'Find in location list' },
-      { '<leader>fm',       desc = 'Find in marks' },
-      { '<leader>fr',       desc = 'Find in registers' },
+      { "<leader>f'",       desc = 'Find in marks' },
+      { '<leader>f"',       desc = 'Find in registers' },
       { '<leader>fe',       desc = 'Explore files' },
       { '<leader>fd',       desc = 'Find diagnostics' },
       { '<leader>df',       desc = 'Find diagnostics' },
@@ -883,8 +883,8 @@ require('lazy').setup({
       mapn('<leader>fk', function() MiniExtra.pickers.keymaps() end, 'Find in key maps')
       mapn('<leader>fq', function() MiniExtra.pickers.list({ scope = 'quickfix' }) end, 'Find in quickfix list')
       mapn('<leader>fl', function() MiniExtra.pickers.list({ scope = 'location-list' }) end, 'Find in location list')
-      mapn('<leader>fm', function() MiniExtra.pickers.marks() end, 'Find in marks')
-      mapn('<leader>fr', function() MiniExtra.pickers.registers() end, 'Find in registers')
+      mapn("<leader>f'", function() MiniExtra.pickers.marks() end, 'Find in marks')
+      mapn('<leader>f"', function() MiniExtra.pickers.registers() end, 'Find in registers')
       mapn('<leader>fe', function() MiniExtra.pickers.explorer() end, 'Explore files')
       mapn('<leader>fd', function() MiniExtra.pickers.diagnostic() end, 'Find diagnostics')
       mapn('<leader>df', function() MiniExtra.pickers.diagnostic() end, 'Find diagnostics')
@@ -943,6 +943,12 @@ require('lazy').setup({
           { mode = 'n', keys = '<Leader>s', desc = '+Surround' },
           { mode = 'n', keys = '<Leader>t', desc = '+Toggle' },
           { mode = 'n', keys = '<Leader>W', desc = '+Wiki' },
+          miniclue.gen_clues.builtin_completion(),
+          miniclue.gen_clues.g(),
+          miniclue.gen_clues.marks(),
+          miniclue.gen_clues.registers(),
+          miniclue.gen_clues.windows(),
+          miniclue.gen_clues.z(),
         },
         window = {
           config = {

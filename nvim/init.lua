@@ -830,18 +830,29 @@ require('lazy').setup({
         local qfix_contents = {}
         for i = 1, #matches do
           local v = matches[i]
-          local parts = vim.split(v, '\0', { plain = true })
-          local filename = parts[1]
-          local lnum = tonumber(parts[2])
-          local col = tonumber(parts[3])
-          local text = parts[4]
-          if filename ~= nil and lnum ~= nil and col ~= nil and text ~= nil then
+          local nul_start, _ = string.find(v, '\0', 1, true)
+
+          if nul_start == nil then
             table.insert(qfix_contents, {
-              filename = filename,
-              lnum = lnum,
-              col = col,
-              text = text,
+              filename = v,
+              lnum = 1,
+              col = 1,
+              text = '',
             })
+          else
+            local parts = vim.split(v, '\0', { plain = true })
+            local filename = parts[1]
+            local lnum = tonumber(parts[2])
+            local col = tonumber(parts[3])
+            local text = parts[4]
+            if filename ~= nil and lnum ~= nil and col ~= nil and text ~= nil then
+              table.insert(qfix_contents, {
+                filename = filename,
+                lnum = lnum,
+                col = col,
+                text = text,
+              })
+            end
           end
         end
 

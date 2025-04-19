@@ -678,7 +678,9 @@ require('lazy').setup({
         ['<C-n>'] = { 'select_next', 'show_and_insert', 'fallback_to_mappings' },
       },
       completion = {
-        documentation = { auto_show = false },
+        documentation = {
+          auto_show = true,
+        },
         menu = {
           auto_show = false,
         },

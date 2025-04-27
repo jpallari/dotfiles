@@ -373,7 +373,7 @@ require('lazy').setup({
     'ThePrimeagen/harpoon',
     branch = 'harpoon2',
     keys = {
-      { '<leader>hq', desc = 'Harpoon quick menu' },
+      { '<leader>hh', desc = 'Harpoon quick menu' },
       { '<leader>ha', desc = 'Harpoon add buffer' },
       { '<leader>hx', desc = 'Harpoon remove buffer' },
       { '<leader>1',  desc = 'Harpoon buffer 1' },
@@ -386,10 +386,15 @@ require('lazy').setup({
     requires = { { 'nvim-lua/plenary.nvim' } },
     config = function()
       local harpoon = require 'harpoon'
-      harpoon:setup()
+      harpoon:setup {
+        settings = {
+          save_on_toggle = true,
+          sync_on_ui_close = true,
+        },
+      }
 
       local mapk = vim.keymap.set
-      mapk('n', '<leader>hq', function()
+      mapk('n', '<leader>hh', function()
         harpoon.ui:toggle_quick_menu(harpoon:list())
       end, { desc = 'Harpoon quick menu' })
       mapk('n', '<leader>ha', function()

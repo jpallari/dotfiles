@@ -439,7 +439,7 @@ require('lazy').setup({
   {
     -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
-    cmd = { 'LspInfo', 'LspInstall', 'LspUninstall', 'LspStart', },
+    cmd = { 'LspInfo', 'LspInstall', 'LspUninstall', 'LspStart', 'Mason', },
     keys = {
       { '<leader>cS', '<cmd>LspStart<cr>',   desc = 'Start LSP' },
       { '<leader>cR', '<cmd>LspRestart<cr>', desc = 'Restart LSP' },
@@ -526,6 +526,14 @@ require('lazy').setup({
         clangd = {},
         bashls = {},
         zls = {},
+        gopls = {
+          settings = {
+            gopls = {
+              gofumpt = true,
+              buildFlags = { '-tags=integration' },
+            },
+          },
+        },
         ltex = {
           autostart = false,
           settings = {
@@ -982,6 +990,7 @@ require('lazy').setup({
     -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     event = { 'BufReadPost', 'BufNewFile' },
+    cmd = { 'TSInstall', 'TSUpdate' },
     build = ':TSUpdate',
     dependencies = {
       -- Selection expansion

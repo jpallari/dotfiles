@@ -380,6 +380,11 @@ require('lazy').setup({
       { '<leader>2',  desc = 'Harpoon buffer 2' },
       { '<leader>3',  desc = 'Harpoon buffer 3' },
       { '<leader>4',  desc = 'Harpoon buffer 4' },
+      { '<leader>5',  desc = 'Harpoon buffer 5' },
+      { '<leader>6',  desc = 'Harpoon buffer 6' },
+      { '<leader>7',  desc = 'Harpoon buffer 7' },
+      { '<leader>8',  desc = 'Harpoon buffer 8' },
+      { '<leader>9',  desc = 'Harpoon buffer 9' },
       { '[h',         desc = 'Harpoon previous buffer' },
       { ']h',         desc = 'Harpoon next buffer' },
     },
@@ -403,24 +408,18 @@ require('lazy').setup({
       mapk('n', '<leader>hx', function()
         harpoon:list():remove()
       end, { desc = 'Harpoon remove buffer' })
-      mapk('n', '<leader>1', function()
-        harpoon:list():select(1)
-      end, { desc = 'Harpoon buffer 1' })
-      mapk('n', '<leader>2', function()
-        harpoon:list():select(2)
-      end, { desc = 'Harpoon buffer 2' })
-      mapk('n', '<leader>3', function()
-        harpoon:list():select(3)
-      end, { desc = 'Harpoon buffer 3' })
-      mapk('n', '<leader>4', function()
-        harpoon:list():select(4)
-      end, { desc = 'Harpoon buffer 4' })
       mapk('n', '[h', function()
         harpoon:list():prev { ui_nav_wrap = true }
       end, { desc = 'Harpoon previous buffer' })
       mapk('n', ']h', function()
         harpoon:list():next { ui_nav_wrap = true }
       end, { desc = 'Harpoon next buffer' })
+
+      for i=1,9 do
+        mapk('n', '<leader>' .. i, function()
+          harpoon:list():select(i)
+        end, { desc = 'Harpoon buffer ' .. i })
+      end
     end,
   },
 

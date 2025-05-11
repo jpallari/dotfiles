@@ -127,18 +127,19 @@ fi
 # vim in terminal w/ clipboard support etc.
 if command -v nvim >/dev/null; then
     alias vim='nvim'
-    EDITOR="nvim"
+    EDITOR='nvim'
+    MANPAGER='nvim +Man!'
 elif command -v mvim >/dev/null; then
     alias vim='mvim -v'
-    EDITOR="mvim -v"
+    EDITOR='mvim -v'
 elif command -v vimx >/dev/null; then
     alias vim='vimx'
-    EDITOR="vimx"
+    EDITOR='vimx'
 elif command -v gvim >/dev/null; then
     alias vim='gvim -v'
-    EDITOR="gvim -v"
+    EDITOR='gvim -v'
 else
-    EDITOR="vim"
+    EDITOR='vim'
 fi
 
 # newer gpg

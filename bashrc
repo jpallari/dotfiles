@@ -138,8 +138,10 @@ elif command -v vimx >/dev/null; then
 elif command -v gvim >/dev/null; then
     alias vim='gvim -v'
     EDITOR='gvim -v'
-else
+elif command -v vim >/dev/null; then
     EDITOR='vim'
+else
+    EDITOR='vi'
 fi
 
 # newer gpg
@@ -539,6 +541,7 @@ fi
 # default editor
 export EDITOR
 export VISUAL="$EDITOR"
+[ -n "${MANPAGER}" ] && export MANPAGER
 
 # fzf
 export FZF_DEFAULT_OPTS='--min-height=5'

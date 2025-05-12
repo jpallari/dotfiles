@@ -9,7 +9,7 @@ aws_ecr_login() {
 
     while [[ ${#} -gt 0 ]]; do
         case "${1}" in
-            --help)
+            -h|--help)
                 print_aws_ecr_login_help
                 return 0
                 ;;

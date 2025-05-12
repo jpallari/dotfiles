@@ -67,9 +67,6 @@ vim.opt.hlsearch = false
 vim.opt.gdefault = true
 vim.opt.infercase = true
 vim.opt.incsearch = true
-if vim.fn.executable 'rg' == 1 then
-  vim.opt.grepprg = 'rg --vimgrep --no-heading --smart-case'
-end
 
 --
 -- Editing
@@ -415,7 +412,7 @@ require('lazy').setup({
         harpoon:list():next { ui_nav_wrap = true }
       end, { desc = 'Harpoon next buffer' })
 
-      for i=1,9 do
+      for i = 1, 9 do
         mapk('n', '<leader>' .. i, function()
           harpoon:list():select(i)
         end, { desc = 'Harpoon buffer ' .. i })
@@ -877,6 +874,21 @@ require('lazy').setup({
         MiniPick.stop()
         vim.cmd.copen()
       end
+
+      local find_files_command = {
+        'rg',
+        '--files',
+        '--no-follow',
+        '--color=never',
+        '--hidden',
+        '--iglob',
+        '!**/.git/*',
+      }
+
+      local show_with_icons = function(buf_id, items, query)
+        MiniPick.default_show(buf_id, items, query, { show_icons = true })
+      end
+
       require('mini.pick').setup {
         window = {
           config = function()
@@ -895,12 +907,13 @@ require('lazy').setup({
           },
         },
       }
+
       mapn('<leader><leader>', function() MiniPick.builtin.buffers() end, 'Find existing buffers')
-      mapn('<leader>ff', function() MiniPick.builtin.files() end, 'Find files')
+      mapn('<leader>ff', function() MiniPick.builtin.cli({ command = find_files_command }, { source = { name = 'Files', show = show_with_icons }}) end, 'Find files')
       mapn('<leader>fg', function() MiniPick.builtin.files({ tool = 'git' }) end, 'Find using git')
       mapn('<leader>fr', function() MiniPick.builtin.resume() end, 'Find resume')
       mapn('<leader>fH', function() MiniPick.builtin.help() end, 'Find in help')
-      mapn('<leader>gf', function() MiniPick.builtin.grep_live() end, 'Grep files')
+      mapn('<leader>gf', function() MiniPick.builtin.grep_live({ tool = 'rg' }) end, 'Grep files')
       mapn('<leader>gg', function() MiniPick.builtin.grep_live({ tool = 'git' }) end, 'Grep git')
       mapn('<leader>Gb', function() MiniExtra.pickers.git_branches() end, 'Git branches')
       mapn('<leader>Gc', function() MiniExtra.pickers.git_commits() end, 'Git commits')

@@ -280,17 +280,15 @@ end
 --
 
 -- Plugin setup
-local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
+local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
   local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
   vim.fn.system { 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath }
 end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
---
--- Configure and install plugins
---
-require('lazy').setup({
+-- List of plugins to install
+local lazy_plugins = {
   {
     -- Async make
     'tpope/vim-dispatch',
@@ -1077,40 +1075,6 @@ require('lazy').setup({
   },
 
   {
-    -- Scala
-    'scalameta/nvim-metals',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-    },
-    ft = { 'scala', 'sbt', 'java' },
-    opts = function()
-      local metals_config = require('metals').bare_config()
-      metals_config.on_attach = function()
-        require('metals').setup_dap()
-      end
-      metals_config.autoImportBuild = 'off'
-
-      return metals_config
-    end,
-    config = function(self, metals_config)
-      local nvim_metals_group = vim.api.nvim_create_augroup('nvim-metals', { clear = true })
-      vim.api.nvim_create_autocmd('FileType', {
-        pattern = self.ft,
-        callback = function()
-          require('metals').initialize_or_attach(metals_config)
-        end,
-        group = nvim_metals_group,
-      })
-    end,
-  },
-
-  {
-    -- GitHub Copilot
-    'github/copilot.vim',
-    cmd = { 'Copilot' },
-  },
-
-  {
     -- Wiki
     'vimwiki/vimwiki',
     cmd = { 'VimwikiIndex', 'VimwikiMakeDiaryNote' },
@@ -1133,8 +1097,60 @@ require('lazy').setup({
       vim.g.vimwiki_ext2syntax = vim.empty_dict()
       vim.g.vimwiki_auto_header = 1
     end
+  },
+
+  {
+    -- Scala
+    'scalameta/nvim-metals',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+    },
+    ft = { 'scala', 'sbt', 'java' },
+    opts = function()
+      local metals_config = require('metals').bare_config()
+      metals_config.on_attach = function()
+        require('metals').setup_dap()
+      end
+      metals_config.settings = {
+        autoImportBuild = 'off',
+      }
+
+      return metals_config
+    end,
+    config = function(self, metals_config)
+      local nvim_metals_group = vim.api.nvim_create_augroup('nvim-metals', { clear = true })
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = self.ft,
+        callback = function()
+          require('metals').initialize_or_attach(metals_config)
+        end,
+        group = nvim_metals_group,
+      })
+    end,
+  },
+
+  {
+    -- Pkl
+    'apple/pkl-neovim',
+    ft = 'pkl',
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter',
+      'L3MON4D3/LuaSnip',
+    },
+    build = function()
+      require('pkl-neovim').init()
+    end,
+    config = function()
+      require('luasnip.loaders.from_snipmate').lazy_load()
+      vim.g.pkl_neovim = {
+        start_command = { 'pkl-lsp' },
+      }
+    end,
   }
-}, {
+}
+
+-- Load plugins
+require('lazy').setup(lazy_plugins, {
   ui = {
     icons = vim.g.have_nerd_font and {} or {
       cmd = '⌘',

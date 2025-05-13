@@ -1,6 +1,5 @@
 .DS_Store
 .netrwhist
 nvim/plugged/
-nvim/lua/local/
 vim/undodir/
 

@@ -419,18 +419,6 @@ local lazy_plugins = {
   },
 
   {
-    -- Lua LSP
-    'folke/lazydev.nvim',
-    ft = 'lua',
-    opts = {
-      library = {
-        -- Load luvit types when the `vim.uv` word is found
-        { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
-      },
-    },
-  },
-
-  {
     -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
     cmd = { 'LspInfo', 'LspInstall', 'LspUninstall', 'LspStart', 'Mason', },
@@ -1062,19 +1050,6 @@ local lazy_plugins = {
   },
 
   {
-    -- Rust
-    'mrcjkb/rustaceanvim',
-    version = '^4',
-    ft = { 'rust' },
-  },
-
-  {
-    -- Zig
-    'ziglang/zig.vim',
-    ft = { 'zig' },
-  },
-
-  {
     -- Wiki
     'vimwiki/vimwiki',
     cmd = { 'VimwikiIndex', 'VimwikiMakeDiaryNote' },
@@ -1100,12 +1075,45 @@ local lazy_plugins = {
   },
 
   {
-    -- Scala
-    'scalameta/nvim-metals',
+    -- Claude
+    'greggh/claude-code.nvim',
+    cmd = { 'ClaudeCode' },
+    keys = {
+      { '<leader>CC', '<cmd>ClaudeCode<cr>', desc = 'Toggle Claude Code' },
+    },
     dependencies = {
       'nvim-lua/plenary.nvim',
     },
+    config = function()
+      require('claude-code').setup()
+    end
+  },
+
+  {
+    -- Lua LSP
+    'folke/lazydev.nvim',
+    ft = 'lua',
+    opts = {
+      library = {
+        -- Load luvit types when the `vim.uv` word is found
+        { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
+      },
+    },
+  },
+
+  {
+    -- Zig
+    'ziglang/zig.vim',
+    ft = { 'zig' },
+  },
+
+  {
+    -- Scala
+    'scalameta/nvim-metals',
     ft = { 'scala', 'sbt', 'java' },
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+    },
     opts = function()
       local metals_config = require('metals').bare_config()
       metals_config.on_attach = function()
@@ -1146,7 +1154,7 @@ local lazy_plugins = {
         start_command = { 'pkl-lsp' },
       }
     end,
-  }
+  },
 }
 
 -- Load plugins

@@ -306,51 +306,6 @@ local lazy_plugins = {
   },
 
   {
-    -- Adds git related signs to the gutter, as well as utilities for managing changes
-    'lewis6991/gitsigns.nvim',
-    cmd = { 'Gitsigns' },
-    keys = {
-      { '[gc',         desc = 'Jump to previous git change' },
-      { ']gc',         desc = 'Jump to next git change' },
-      { '<leader>tgs', desc = 'Toggle git signs' },
-      { '<leader>tgb', desc = 'Toggle git blame line' },
-      { '<leader>tgd', desc = 'Toggle git deleted lines' },
-    },
-    opts = {
-      on_attach = function(bufnr)
-        local gitsigns = require 'gitsigns'
-
-        local function map(mode, l, r, opts)
-          opts = opts or {}
-          opts.buffer = bufnr
-          vim.keymap.set(mode, l, r, opts)
-        end
-
-        -- Navigation
-        map('n', '[gc', function()
-          if vim.wo.diff then
-            vim.cmd.normal { '[gc', bang = true }
-          else
-            gitsigns.nav_hunk 'prev'
-          end
-        end, { desc = 'Jump to previous git change' })
-        map('n', ']gc', function()
-          if vim.wo.diff then
-            vim.cmd.normal { ']gc', bang = true }
-          else
-            gitsigns.nav_hunk 'next'
-          end
-        end, { desc = 'Jump to next git change' })
-
-        -- Toggles
-        map('n', '<leader>tgs', gitsigns.toggle_signs, { desc = 'Toggle git signs' })
-        map('n', '<leader>tgb', gitsigns.toggle_current_line_blame, { desc = 'Toggle git blame line' })
-        map('n', '<leader>tgd', gitsigns.preview_hunk_inline, { desc = 'Toggle git deleted lines' })
-      end,
-    },
-  },
-
-  {
     -- Git UI
     'tpope/vim-fugitive',
     cmd = { 'Git', 'Gedit', 'Ge' },
@@ -709,29 +664,6 @@ local lazy_plugins = {
   },
 
   {
-    -- Highlight todo, notes, etc in comments
-    'folke/todo-comments.nvim',
-    cmd = { 'TodoQuickFix', 'TodoLocList', },
-    dependencies = { 'nvim-lua/plenary.nvim' },
-    opts = {
-      signs = false,
-      search = {
-        command = 'rg',
-        args = {
-          '--color=never',
-          '--no-heading',
-          '--with-filename',
-          '--line-number',
-          '--column',
-          '--hidden',
-          '--iglob',
-          '!**/.git/*',
-        },
-      }
-    },
-  },
-
-  {
     -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
     version = '*',
@@ -1071,21 +1003,6 @@ local lazy_plugins = {
       vim.g.vimwiki_global_ext = 0
       vim.g.vimwiki_ext2syntax = vim.empty_dict()
       vim.g.vimwiki_auto_header = 1
-    end
-  },
-
-  {
-    -- Claude
-    'greggh/claude-code.nvim',
-    cmd = { 'ClaudeCode' },
-    keys = {
-      { '<leader>CC', '<cmd>ClaudeCode<cr>', desc = 'Toggle Claude Code' },
-    },
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-    },
-    config = function()
-      require('claude-code').setup()
     end
   },
 

@@ -164,6 +164,7 @@ do
   })
   -- Autosave
   autocmd({ 'CursorHold', 'TextChanged', 'InsertLeave' }, {
+    desc = 'Autosave',
     callback = function()
       if vim.g.disableautosave or vim.fn.expand '%h' == '' then
         return
@@ -175,6 +176,56 @@ do
       end
 
       vim.cmd 'silent! update'
+    end,
+  })
+
+  -- LSP
+  autocmd('LspAttach', {
+    desc = 'LSP',
+    group = vim.api.nvim_create_augroup('dotfile-lsp-attach', { clear = true }),
+    callback = function(event)
+      vim.g.lsp_doc_hl_enabled = false
+
+      local map = function(keys, func, desc)
+        vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
+      end
+
+      -- LSP mappings
+      map('K', vim.lsp.buf.hover, 'Hover Documentation')
+      map('grD', vim.lsp.buf.declaration, 'Goto declaration')
+      map('<leader>ca', vim.lsp.buf.code_action, 'Code action')
+      map('<leader>cf', vim.lsp.buf.format, 'Code format')
+      map('<leader>cl', vim.lsp.codelens.run, 'Code lens')
+      map('<leader>cs', vim.lsp.buf.signature_help, 'Code signature')
+      map('<leader>cr', vim.lsp.buf.rename, 'Code Rename')
+      map('<leader>tdh', function()
+        vim.g.lsp_doc_hl_enabled = not vim.g.lsp_doc_hl_enabled
+      end, 'Toggle document highlight')
+
+      -- Highlight references under cursor
+      local client = vim.lsp.get_client_by_id(event.data.client_id)
+      if client and client.server_capabilities.documentHighlightProvider then
+        vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
+          buffer = event.buf,
+          callback = function()
+            if vim.g.lsp_doc_hl_enabled then
+              vim.lsp.buf.document_highlight()
+            end
+          end,
+        })
+
+        vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
+          buffer = event.buf,
+          callback = vim.lsp.buf.clear_references,
+        })
+      end
+
+      -- Inlay hints
+      if client and client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
+        map('<leader>tih', function()
+          vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+        end, 'Toggle inlay hints')
+      end
     end,
   })
 end
@@ -398,54 +449,6 @@ local lazy_plugins = {
       'saghen/blink.cmp',
     },
     config = function()
-      vim.api.nvim_create_autocmd('LspAttach', {
-        group = vim.api.nvim_create_augroup('dotfile-lsp-attach', { clear = true }),
-        callback = function(event)
-          vim.g.lsp_doc_hl_enabled = false
-
-          local map = function(keys, func, desc)
-            vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
-          end
-
-          -- LSP mappings
-          map('K', vim.lsp.buf.hover, 'Hover Documentation')
-          map('grD', vim.lsp.buf.declaration, 'Goto declaration')
-          map('<leader>ca', vim.lsp.buf.code_action, 'Code action')
-          map('<leader>cf', vim.lsp.buf.format, 'Code format')
-          map('<leader>cl', vim.lsp.codelens.run, 'Code lens')
-          map('<leader>cs', vim.lsp.buf.signature_help, 'Code signature')
-          map('<leader>cr', vim.lsp.buf.rename, 'Code Rename')
-          map('<leader>tdh', function()
-            vim.g.lsp_doc_hl_enabled = not vim.g.lsp_doc_hl_enabled
-          end, 'Toggle document highlight')
-
-          -- Highlight references under cursor
-          local client = vim.lsp.get_client_by_id(event.data.client_id)
-          if client and client.server_capabilities.documentHighlightProvider then
-            vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
-              buffer = event.buf,
-              callback = function()
-                if vim.g.lsp_doc_hl_enabled then
-                  vim.lsp.buf.document_highlight()
-                end
-              end,
-            })
-
-            vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
-              buffer = event.buf,
-              callback = vim.lsp.buf.clear_references,
-            })
-          end
-
-          -- Inlay hints
-          if client and client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
-            map('<leader>tih', function()
-              vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
-            end, 'Toggle inlay hints')
-          end
-        end,
-      })
-
       local completion_capabilities = require('blink.cmp').get_lsp_capabilities()
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       capabilities = vim.tbl_deep_extend('force', capabilities, completion_capabilities)
@@ -661,6 +664,7 @@ local lazy_plugins = {
       fuzzy = { implementation = 'lua' },
       signature = { enabled = true },
     },
+    opts_extend = { 'sources.default' },
   },
 
   {

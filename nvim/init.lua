@@ -120,6 +120,84 @@ function SetIndentTab(level)
   vim.opt_local.shiftwidth = level
 end
 
+function FindFiles(pattern, cmd_name)
+  local fd_cmd = {
+    'fd',
+    '--hidden',
+    '--type', 'f',
+    '--type', 'l',
+    '--full-path',
+    '--color=never',
+    '--glob',
+    pattern,
+  }
+  local rg_cmd = {
+    'rg', '--files',
+    '--hidden',
+    '--color=never',
+    '--glob',
+    pattern
+  }
+  local find_cmd = {
+    'find', '.',
+    '-type', 'f',
+    '-ipath',
+    pattern,
+  }
+  local cmd
+
+  if cmd_name == 'fd' then
+    if vim.fn.executable('fd') == 1 then
+      cmd = fd_cmd
+    else
+      vim.notify('Command "fd" not found', vim.log.levels.ERROR)
+      return
+    end
+  elseif cmd_name == 'rg' then
+    if vim.fn.executable('rg') == 1 then
+      cmd = rg_cmd
+    else
+      vim.notify('Command "rg" not found', vim.log.levels.ERROR)
+      return
+    end
+  elseif cmd_name == 'find' then
+    cmd = find_cmd
+  elseif cmd_name == nil then
+    if vim.fn.executable('fd') == 1 then
+      cmd = fd_cmd
+    elseif vim.fn.executable('rg') == 1 then
+      cmd = rg_cmd
+    else
+      cmd = find_cmd
+    end
+  else
+    vim.notify('Unknown command: ' .. cmd_name, vim.log.levels.ERROR)
+    return
+  end
+
+  local res = vim.system(cmd):wait()
+  if res.code ~= 0 then
+    vim.notify('Find failed: ' .. res.stderr, vim.log.levels.ERROR)
+    return
+  end
+
+  local qfix_contents = {}
+  local lines = vim.split(res.stdout, '\n', { plain = true, trimempty = true })
+  for i = 1, #lines do
+    local line = lines[i]
+    table.insert(qfix_contents, {
+      filename = line,
+      lnum = 1,
+      col = 1,
+      text = '',
+    })
+  end
+
+  vim.fn.setqflist(qfix_contents, 'r')
+  vim.fn.setqflist({}, 'a', { title = 'Find: ' .. pattern })
+  vim.cmd.copen()
+end
+
 --
 -- Custom commands
 --
@@ -146,6 +224,9 @@ do
     local path = vim.fn.expand('%:.')
     vim.fn.setreg('+', path)
   end, { desc = 'Copy relative path to clipboard' })
+  cmd('FF', function(args)
+    FindFiles(args.args)
+  end, { nargs = 1, desc = 'Find files by file name' })
 end
 
 --
@@ -792,7 +873,8 @@ local lazy_plugins = {
         if next(qfix_contents) == nil then
           return
         end
-        vim.fn.setqflist(qfix_contents, ' ')
+        vim.fn.setqflist(qfix_contents, 'r')
+        vim.fn.setqflist({}, 'a', { title = 'MiniPick' })
         MiniPick.stop()
         vim.cmd.copen()
       end

@@ -407,6 +407,48 @@ do
 end
 
 --
+-- LSP
+--
+local lsp_server_configs = {
+  bashls = {},
+  clangd = {},
+  gopls = {
+    settings = {
+      gopls = {
+        gofumpt = true,
+        buildFlags = { '-tags=integration' },
+      },
+    },
+  },
+  ltex = {
+    autostart = false,
+    settings = {
+      language = 'en-GB',
+    },
+  },
+  lua_ls = {
+    settings = {
+      Lua = {
+        diagnostics = {
+          globals = { 'vim' }
+        },
+        completion = {
+          callSnippet = 'Replace',
+        },
+      },
+    },
+  },
+  ts_ls = {
+    init_options = {
+      preferences = {
+        disableSuggestions = true,
+      },
+    },
+  },
+  zls = {},
+}
+
+--
 -- Plugin manager
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 --
@@ -515,18 +557,7 @@ local lazy_plugins = {
       { '<leader>cQ', '<cmd>LspStop<cr>',    desc = 'Quit LSP' },
     },
     dependencies = {
-      { 'williamboman/mason.nvim', config = true },
-      'williamboman/mason-lspconfig.nvim',
-      {
-        'j-hui/fidget.nvim',
-        opts = {
-          notification = {
-            window = {
-              border = "rounded"
-            }
-          }
-        }
-      },
+      { 'mason-org/mason.nvim', config = true },
       'saghen/blink.cmp',
     },
     config = function()
@@ -534,62 +565,14 @@ local lazy_plugins = {
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       capabilities = vim.tbl_deep_extend('force', capabilities, completion_capabilities)
 
-      -- Enable the following language servers
-      -- See `:help lspconfig-all` for a list of all the pre-configured LSPs
-      local servers = {
-        ts_ls = {
-          init_options = {
-            preferences = {
-              disableSuggestions = true,
-            },
-          },
-        },
-        clangd = {},
-        bashls = {},
-        zls = {},
-        gopls = {
-          settings = {
-            gopls = {
-              gofumpt = true,
-              buildFlags = { '-tags=integration' },
-            },
-          },
-        },
-        ltex = {
-          autostart = false,
-          settings = {
-            language = 'en-GB',
-          },
-        },
-        lua_ls = {
-          settings = {
-            Lua = {
-              diagnostics = {
-                globals = { 'vim' }
-              },
-              completion = {
-                callSnippet = 'Replace',
-              },
-            },
-          },
-        },
-      }
-
       -- Ensure the servers and tools above are installed
       require('mason').setup()
 
-      local lspconfig = require('lspconfig')
-      require('mason-lspconfig').setup {
-        ensure_installed = {},
-        automatic_installation = false,
-        handlers = {
-          function(server_name)
-            local server = servers[server_name] or {}
-            server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            lspconfig[server_name].setup(server)
-          end,
-        },
-      }
+      for server_name, server in pairs(lsp_server_configs) do
+        server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+        vim.lsp.config(server_name, server)
+        vim.lsp.enable(server_name)
+      end
     end,
   },
 
@@ -610,7 +593,7 @@ local lazy_plugins = {
     dependencies = {
       'rcarriga/nvim-dap-ui',
       'nvim-neotest/nvim-nio',
-      'williamboman/mason.nvim',
+      'mason-org/mason.nvim',
       'jay-babu/mason-nvim-dap.nvim',
 
       -- Debuggers
@@ -809,6 +792,9 @@ local lazy_plugins = {
 
       -- Automatic pairs
       require('mini.pairs').setup()
+
+      -- Notifications
+      require('mini.notify').setup()
 
       -- Buffer removal that preserves windows
       require('mini.bufremove').setup()

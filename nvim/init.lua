@@ -557,16 +557,13 @@ local lazy_plugins = {
       { '<leader>cQ', '<cmd>LspStop<cr>',    desc = 'Quit LSP' },
     },
     dependencies = {
-      { 'mason-org/mason.nvim', config = true },
+      { 'mason-org/mason.nvim', opts = {} },
       'saghen/blink.cmp',
     },
     config = function()
       local completion_capabilities = require('blink.cmp').get_lsp_capabilities()
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       capabilities = vim.tbl_deep_extend('force', capabilities, completion_capabilities)
-
-      -- Ensure the servers and tools above are installed
-      require('mason').setup()
 
       for server_name, server in pairs(lsp_server_configs) do
         server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})

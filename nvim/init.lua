@@ -661,28 +661,7 @@ local lazy_plugins = {
     },
     version = '1.*',
     dependencies = {
-      {
-        'L3MON4D3/LuaSnip',
-        version = '2.*',
-        build = (function()
-          -- Build Step is needed for regex support in snippets.
-          -- This step is not supported in many windows environments.
-          -- Remove the below condition to re-enable on windows.
-          if vim.fn.has 'win32' == 1 or vim.fn.executable 'make' == 0 then
-            return
-          end
-          return 'make install_jsregexp'
-        end)(),
-        dependencies = {
-          {
-            'rafamadriz/friendly-snippets',
-            config = function()
-              require('luasnip.loaders.from_vscode').lazy_load()
-            end,
-          },
-        },
-        opts = {},
-      },
+      'rafamadriz/friendly-snippets',
       'folke/lazydev.nvim',
     },
     opts = {
@@ -727,7 +706,6 @@ local lazy_plugins = {
           },
         },
       },
-      snippets = { preset = 'luasnip' },
       fuzzy = { implementation = 'lua' },
       signature = { enabled = true },
     },
@@ -1135,13 +1113,11 @@ local lazy_plugins = {
     ft = 'pkl',
     dependencies = {
       'nvim-treesitter/nvim-treesitter',
-      'L3MON4D3/LuaSnip',
     },
     build = function()
       require('pkl-neovim').init()
     end,
     config = function()
-      require('luasnip.loaders.from_snipmate').lazy_load()
       vim.g.pkl_neovim = {
         start_command = { 'pkl-lsp' },
       }

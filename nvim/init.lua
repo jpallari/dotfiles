@@ -1023,18 +1023,6 @@ local lazy_plugins = {
   },
 
   {
-    -- Templates
-    'glepnir/template.nvim',
-    cmd = { 'Template', 'TemProject' },
-    config = function()
-      require('template').setup({
-        temp_dir = '~/.config/nvim/templates',
-        author = 'Jaakko Pallari',
-      })
-    end
-  },
-
-  {
     -- Wiki
     'vimwiki/vimwiki',
     cmd = { 'VimwikiIndex', 'VimwikiMakeDiaryNote' },

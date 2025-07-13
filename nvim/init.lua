@@ -265,8 +265,6 @@ do
     desc = 'LSP',
     group = vim.api.nvim_create_augroup('dotfile-lsp-attach', { clear = true }),
     callback = function(event)
-      vim.g.lsp_doc_hl_enabled = false
-
       local map = function(keys, func, desc)
         vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
       end
@@ -420,12 +418,6 @@ local lsp_server_configs = {
       },
     },
   },
-  ltex = {
-    autostart = false,
-    settings = {
-      language = 'en-GB',
-    },
-  },
   lua_ls = {
     settings = {
       Lua = {
@@ -434,6 +426,10 @@ local lsp_server_configs = {
         },
         completion = {
           callSnippet = 'Replace',
+        },
+        window = {
+          progressBar = false,
+          statusBar = false,
         },
       },
     },
@@ -550,7 +546,7 @@ local lazy_plugins = {
   {
     -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
-    cmd = { 'LspInfo', 'LspInstall', 'LspUninstall', 'LspStart', 'Mason', },
+    cmd = { 'LspInfo', 'LspStart', 'Mason', },
     keys = {
       { '<leader>cS', '<cmd>LspStart<cr>',   desc = 'Start LSP' },
       { '<leader>cR', '<cmd>LspRestart<cr>', desc = 'Restart LSP' },

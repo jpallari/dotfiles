@@ -3,14 +3,11 @@
 	ci = commit
 	currentbranch = rev-parse --abbrev-ref HEAD
 	dc = diff --cached
-	dcw = diff --cached --word-diff
 	diffw = diff --word-diff
 	edit = rebase -i
 	editm = rebase -i origin/main
-	fa = fetch --all
 	fixlast = commit --amend --no-edit
 	fixpush = "!git fixlast && git pushf"
-	fixup = commit --fixup
 	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
 	out = "log @{u}.."
 	pushf = push --force-with-lease
@@ -32,6 +29,7 @@
 	renames = true
 	mnemonicPrefix = true
 [fetch]
+	all = true
 	prune = true
 	pruneTags = true
 [gpg]

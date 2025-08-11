@@ -235,6 +235,7 @@ end
 --
 do
   local autocmd = vim.api.nvim_create_autocmd
+
   -- Highlight when yanking (copying) text
   autocmd('TextYankPost', {
     desc = 'Highlight when yanking (copying) text',
@@ -243,6 +244,7 @@ do
       vim.highlight.on_yank()
     end,
   })
+
   -- Autosave
   autocmd({ 'CursorHold', 'TextChanged', 'InsertLeave' }, {
     desc = 'Autosave',
@@ -306,6 +308,17 @@ do
         end, 'Toggle inlay hints')
       end
     end,
+  })
+end
+
+--
+-- File types
+--
+do
+  vim.filetype.add({
+    extension = {
+      tf = 'terraform',
+    },
   })
 end
 
@@ -434,6 +447,7 @@ local lsp_server_configs = {
       },
     },
   },
+  terraformls = {},
   ts_ls = {
     init_options = {
       preferences = {

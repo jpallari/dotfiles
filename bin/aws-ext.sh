@@ -2,6 +2,7 @@
 set -euo pipefail
 
 COMMAND_NAME_IN_HELP=$(basename "$0")
+DOCKER_COMMAND=${DOCKER_COMMAND:-"docker"}
 
 aws_ecr_login() {
     local account ecr_hostname
@@ -39,7 +40,61 @@ aws_ecr_login() {
     ecr_hostname="${account}.dkr.ecr.${region}.amazonaws.com"
     echo "Docker login to AWS account ${account} region ${region}" >&2
     aws ecr get-login-password --region "${region}" \
-        | docker login --username AWS --password-stdin "${ecr_hostname}"
+        | "${DOCKER_COMMAND}" login --username AWS --password-stdin "${ecr_hostname}"
+}
+
+aws_ecr_push() {
+    local from_tag to_tag account ecr_hostname
+    local region=${AWS_REGION:-}
+
+    while [[ ${#} -gt 0 ]]; do
+        case "${1}" in
+            -h|--help)
+                print_aws_ecr_push_help
+                return 0
+                ;;
+            -a|--account)
+                account=${2}
+                shift
+                shift
+                ;;
+            -r|--region)
+                region=${2}
+                shift
+                shift
+                ;;
+            -f|--from)
+                from_tag=${2}
+                shift
+                shift
+                ;;
+            -t|--to)
+                to_tag=${2}
+                shift
+                shift
+                ;;
+            *)
+                echo "unknown argument: ${1}" >&2
+                return 1
+        esac
+    done
+
+    if [ -z "${to_tag:-}" ]; then
+        echo "--to must be specified" >&2
+        return 1
+    fi
+    if [ -z "${account:-}" ]; then
+        account=$(aws sts get-caller-identity --query Account --output text)
+    fi
+    if [ -z "${region:-}" ]; then
+        region=us-east-1
+    fi
+    if [ -z "${from_tag:-}" ]; then
+        from_tag=${to_tag:-}
+    fi
+    ecr_hostname="${account}.dkr.ecr.${region}.amazonaws.com"
+    docker image tag "${from_tag}" "${ecr_hostname}/${to_tag}"
+    docker image push "${ecr_hostname}/${to_tag}"
 }
 
 aws_ecs_port_forward() {
@@ -171,12 +226,29 @@ usage: $COMMAND_NAME_IN_HELP ecr-login [OPTIONS]
 Log in to ECR with Docker to be able to push/pull Docker images from ECR.
 
 Options:
-  --account, -a         AWS account ID for ECR. By default, the current AWS profile
-                        account ID is used.
-  --region, -r          AWS region for ECR. By default, the profile default region
-                        or us-east-1 is used.
+  --account, -a         AWS account ID for ECR. By default, the current AWS
+                        profile account ID is used.
+  --region, -r          AWS region for ECR. By default, the profile default
+                        region or us-east-1 is used.
   --help, -h            Print this help message
+EOF
+}
 
+print_aws_ecr_push_help() {
+    cat << EOF
+usage: $COMMAND_NAME_IN_HELP ecr-push [OPTIONS]
+
+Push a given Docker image to ECR.
+
+Options:
+  --account, -a         AWS account ID for ECR. By default, the current AWS
+                        profile account ID is used.
+  --region, -r          AWS region for ECR. By default, the profile default
+                        region or us-east-1 is used.
+  --to, -t              Repository in ECR to push to without the ECR hostname.
+  --from, -f            Local image tag to push to ECR. By default, image tag
+                        name used in flag --to/-t will be used.
+  --help, -h            Print this help message
 EOF
 }
 
@@ -202,7 +274,6 @@ Options:
                         By default, the profile default region or
                         us-east-1 is used.
   --help, -h            Print this help message
-
 EOF
 }
 
@@ -223,7 +294,6 @@ Options:
                         By default, the profile default region or
                         us-east-1 is used.
   --help, -h            Print this help message
-
 EOF
 }
 
@@ -233,12 +303,11 @@ usage: $COMMAND_NAME_IN_HELP COMMAND [OPTIONS]
 
 Commands:
   ecr-login                    Login to ECR repo with Docker
+  ecr-push                     Push a given Docker image to ECR.
   ecs-port-forward, ecs-pf     Start a port-forward session to a
                                container on ECS
   ecs-exec                     Run a command on a container on ECS
   help, h                      Print this help message
- 
-
 EOF
 }
 
@@ -254,6 +323,9 @@ main() {
     case "${cmd:-}" in
     "ecr-login")
         aws_ecr_login "${@}"
+        ;;
+    "ecr-push")
+        aws_ecr_push "${@}"
         ;;
     "ecs-exec")
         aws_ecs_execute_command "${@}"

@@ -447,6 +447,7 @@ local lsp_server_configs = {
       },
     },
   },
+  rust_analyzer = {},
   terraformls = {},
   ts_ls = {
     init_options = {

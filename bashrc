@@ -189,12 +189,17 @@ jqpreview() {
     fi
 }
 
-GCD_PROJECT_DIRECTORY=$HOME/Projects
+GCD_PROJECT_DIRECTORY=$HOME/projects
 GCD_PROJECT_DIRLIST="$GCD_PROJECT_DIRECTORY/.projects"
 GCD_LAST_JUMP_FILE="$GCD_PROJECT_DIRECTORY/.lastjump"
 
 # update jump list for gcd
 gcdu() {
+    if command -v gorg >/dev/null; then
+        gorg update-index
+        return $?
+    fi
+
     if
         [ "$1" != "lazy" ] ||
             ! [ -s "$GCD_PROJECT_DIRLIST" ]
@@ -215,11 +220,17 @@ gcd() {
 
     local dir
 
+
     gcdu lazy
-    dir=$(fzf --query="$1" --select-1 <"$GCD_PROJECT_DIRECTORY/.projects")
+    if command -v gorg >/dev/null; then
+        dir=$(gorg find -f "$@")
+    else
+        dir=$(fzf --query="$1" --select-1 <"$GCD_PROJECT_DIRECTORY/.projects")
+        dir="${GCD_PROJECT_DIRECTORY}/${dir}"
+    fi
     if [ -n "${dir:-}" ]; then
-        echo "$GCD_PROJECT_DIRECTORY/$dir" > "$GCD_LAST_JUMP_FILE"
-        cd "$GCD_PROJECT_DIRECTORY/$dir" || return 1
+        echo "$dir" > "$GCD_LAST_JUMP_FILE"
+        cd "$dir" || return 1
     else
         return 1
     fi

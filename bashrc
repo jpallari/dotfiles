@@ -195,11 +195,6 @@ GCD_LAST_JUMP_FILE="$GCD_PROJECT_DIRECTORY/.lastjump"
 
 # update jump list for gcd
 gcdu() {
-    if command -v gorg >/dev/null; then
-        gorg update-index
-        return $?
-    fi
-
     if
         [ "$1" != "lazy" ] ||
             ! [ -s "$GCD_PROJECT_DIRLIST" ]
@@ -219,7 +214,6 @@ gcd() {
     fi
 
     local dir
-
 
     gcdu lazy
     if command -v gorg >/dev/null; then

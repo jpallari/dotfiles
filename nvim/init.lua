@@ -720,9 +720,6 @@ local lazy_plugins = {
       -- Extra features e.g. pickers
       require('mini.extra').setup()
 
-      -- Automatic pairs
-      require('mini.pairs').setup()
-
       -- Notifications
       require('mini.notify').setup()
 

@@ -36,6 +36,8 @@ vim.opt.foldtext = ''
 vim.opt.foldnestmax = 3
 vim.opt.foldlevelstart = 99
 vim.opt.foldmethod = 'indent'
+vim.opt.completeopt = { 'menuone', 'noselect', 'popup' }
+vim.opt.pumheight = 10
 
 --
 -- NetRW
@@ -299,6 +301,12 @@ do
           buffer = event.buf,
           callback = vim.lsp.buf.clear_references,
         })
+      end
+
+      -- Completion
+      if client and client:supports_method('textDocument/completion') then
+        vim.lsp.completion.enable(true, client.id, event.buf, { autotrigger = false })
+        vim.keymap.set('i', '<C-space>', vim.lsp.completion.get, { desc = 'Trigger completion' })
       end
 
       -- Inlay hints
@@ -569,15 +577,9 @@ local lazy_plugins = {
     },
     dependencies = {
       { 'mason-org/mason.nvim', opts = {} },
-      'saghen/blink.cmp',
     },
     config = function()
-      local completion_capabilities = require('blink.cmp').get_lsp_capabilities()
-      local capabilities = vim.lsp.protocol.make_client_capabilities()
-      capabilities = vim.tbl_deep_extend('force', capabilities, completion_capabilities)
-
       for server_name, server in pairs(lsp_server_configs) do
-        server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
         vim.lsp.config(server_name, server)
         vim.lsp.enable(server_name)
       end
@@ -660,67 +662,6 @@ local lazy_plugins = {
       -- Language specific debugger setup
       require('dap-go').setup()
     end,
-  },
-
-  {
-    -- Completion
-    'saghen/blink.cmp',
-    keys = {
-      { '<C-Space>', desc = 'Show completion menu' },
-      { '<C-n>',     desc = 'Select next item from completion menu' },
-      { '<C-p>',     desc = 'Select previous item from completion menu' },
-    },
-    version = '1.*',
-    dependencies = {
-      'rafamadriz/friendly-snippets',
-      'folke/lazydev.nvim',
-    },
-    opts = {
-      keymap = {
-        preset = 'default',
-        ['<C-p>'] = { 'select_prev', 'show_and_insert', 'fallback_to_mappings' },
-        ['<C-n>'] = { 'select_next', 'show_and_insert', 'fallback_to_mappings' },
-      },
-      completion = {
-        documentation = {
-          auto_show = true,
-        },
-        menu = {
-          auto_show = false,
-          draw = {
-            columns = {
-              { 'label', 'label_description', gap = 1 },
-              { 'kind_icon', 'kind', gap = 1 }
-            }
-          },
-        },
-      },
-      sources = {
-        default = { 'lsp', 'path', 'buffer', 'snippets', 'lazydev' },
-        providers = {
-          lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
-          snippets = {
-            min_keyword_length = 1,
-            score_offset = 4,
-          },
-          lsp = {
-            min_keyword_length = 0,
-            score_offset = 3,
-          },
-          path = {
-            min_keyword_length = 3,
-            score_offset = 2,
-          },
-          buffer = {
-            min_keyword_length = 1,
-            score_offset = 1,
-          },
-        },
-      },
-      fuzzy = { implementation = 'lua' },
-      signature = { enabled = true },
-    },
-    opts_extend = { 'sources.default' },
   },
 
   {

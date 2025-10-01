@@ -17,6 +17,8 @@ vim.opt.shortmess:append 'I'
 vim.opt.title = false
 vim.opt.winborder = 'single'
 vim.cmd.hi 'Normal guibg=NONE guifg=NONE ctermbg=NONE ctermfg=NONE'
+vim.cmd.hi 'Pmenu guibg=Blue'
+vim.cmd.hi 'NormalFloat guibg=NvimDarkGray2'
 
 --
 -- UI
@@ -90,6 +92,7 @@ vim.g.editorconfig = true
 -- Diagnostics
 --
 vim.diagnostic.config({
+  underline = false,
   virtual_text = {
     current_line = true,
     prefix = '■ ',

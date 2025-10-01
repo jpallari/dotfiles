@@ -134,14 +134,14 @@ function FindFiles(pattern, cmd_name)
     '--full-path',
     '--color=never',
     '--glob',
-    pattern,
+    '**/' .. pattern .. '*',
   }
   local rg_cmd = {
     'rg', '--files',
     '--hidden',
     '--color=never',
-    '--glob',
-    pattern
+    '--iglob',
+    '**/' .. pattern .. '*'
   }
   local find_cmd = {
     'find', '.',

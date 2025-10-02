@@ -75,6 +75,10 @@ vim.opt.hlsearch = false
 vim.opt.gdefault = true
 vim.opt.infercase = true
 vim.opt.incsearch = true
+if vim.fn.executable('rg') then
+  vim.opt.grepprg = 'rg --vimgrep --hidden --smart-case --iglob "!**/.git/*"'
+  vim.opt.grepformat = '%f:%l:%c:%m,%f:%l:%m'
+end
 
 --
 -- Editing
@@ -238,6 +242,12 @@ do
   cmd('FF', function(args)
     FindFiles(args.args)
   end, { nargs = 1, desc = 'Find files by file name' })
+  cmd('GitGrep', function(args)
+    local grepprg = vim.opt_local.grepprg
+    vim.opt_local.grepprg = 'git grep -n --column'
+    vim.cmd('lgrep ' .. args.args)
+    vim.opt_local.grepprg = grepprg
+  end, { nargs = 1, desc = 'Grep files from git' })
 end
 
 --

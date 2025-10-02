@@ -18,6 +18,17 @@ config.line_height = 0.9
 config.freetype_load_flags = 'NO_HINTING'
 config.bold_brightens_ansi_colors = 'BrightOnly'
 config.harfbuzz_features = { 'calt=0', 'clig=0', 'liga=0' } -- disable ligatures
+config.foreground_text_hsb = {
+  hue = 1.0,
+  saturation = 1.0,
+  brightness = 1.2,
+}
+config.font_rules = {
+  {
+    intensity = 'Bold',
+    font = config.font,
+  }
+}
 
 -- Key bindings
 config.use_dead_keys = false

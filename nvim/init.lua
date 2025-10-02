@@ -139,20 +139,13 @@ function SetIndentTab(level)
 end
 
 function FindFiles(pattern, cmd_name)
-  local fd_cmd = {
-    'fd',
-    '--hidden',
-    '--type', 'f',
-    '--type', 'l',
-    '--full-path',
-    '--color=never',
-    '--glob',
-    '**/' .. pattern .. '*',
-  }
   local rg_cmd = {
     'rg', '--files',
     '--hidden',
     '--color=never',
+    '--smart-case',
+    '--iglob',
+    '!**/.git/*',
     '--iglob',
     '**/' .. pattern .. '*'
   }
@@ -162,16 +155,14 @@ function FindFiles(pattern, cmd_name)
     '-ipath',
     pattern,
   }
+  local git_cmd = {
+    'git',
+    'ls-files',
+    pattern
+  }
   local cmd
 
-  if cmd_name == 'fd' then
-    if vim.fn.executable('fd') == 1 then
-      cmd = fd_cmd
-    else
-      vim.notify('Command "fd" not found', vim.log.levels.ERROR)
-      return
-    end
-  elseif cmd_name == 'rg' then
+  if cmd_name == 'rg' then
     if vim.fn.executable('rg') == 1 then
       cmd = rg_cmd
     else
@@ -180,10 +171,10 @@ function FindFiles(pattern, cmd_name)
     end
   elseif cmd_name == 'find' then
     cmd = find_cmd
+  elseif cmd_name == 'git' then
+    cmd = git_cmd
   elseif cmd_name == nil then
-    if vim.fn.executable('fd') == 1 then
-      cmd = fd_cmd
-    elseif vim.fn.executable('rg') == 1 then
+    if vim.fn.executable('rg') == 1 then
       cmd = rg_cmd
     else
       cmd = find_cmd

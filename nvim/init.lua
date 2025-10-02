@@ -269,6 +269,18 @@ do
     end,
   })
 
+  -- Create directories when saving files
+  autocmd({ 'BufWritePre' }, {
+    desc = 'MkDirP',
+    group = augroup,
+    callback = function()
+      local dir = vim.fn.expand('<afile>:p:h')
+      if vim.fn.isdirectory(dir) == 0 then
+        vim.fn.mkdir(dir, 'p')
+      end
+    end,
+  })
+
   -- Autosave
   autocmd({ 'CursorHold', 'TextChanged', 'InsertLeave' }, {
     desc = 'Autosave',

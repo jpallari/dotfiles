@@ -258,11 +258,12 @@ end
 --
 do
   local autocmd = vim.api.nvim_create_autocmd
+  local augroup = vim.api.nvim_create_augroup('dotfile', { clear = true })
 
   -- Highlight when yanking (copying) text
   autocmd('TextYankPost', {
     desc = 'Highlight when yanking (copying) text',
-    group = vim.api.nvim_create_augroup('dotfile-highlight-yank', { clear = true }),
+    group = augroup,
     callback = function()
       vim.highlight.on_yank()
     end,
@@ -271,6 +272,7 @@ do
   -- Autosave
   autocmd({ 'CursorHold', 'TextChanged', 'InsertLeave' }, {
     desc = 'Autosave',
+    group = augroup,
     callback = function()
       if vim.g.disableautosave or vim.fn.expand '%h' == '' then
         return
@@ -288,7 +290,7 @@ do
   -- LSP
   autocmd('LspAttach', {
     desc = 'LSP',
-    group = vim.api.nvim_create_augroup('dotfile-lsp-attach', { clear = true }),
+    group = augroup,
     callback = function(event)
       local map = function(keys, func, desc)
         vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })

@@ -34,7 +34,8 @@ vim.opt.scrolloff = 5        -- min screen lines
 vim.opt.errorbells = false
 vim.opt.ignorecase = true
 vim.opt.wildignorecase = true
-vim.opt.wildmode = 'full:lastused'
+vim.opt.wildignore:append({ '*.o', '*.obj', '*.pyc', '*.class', '*.jar' })
+vim.opt.wildmode = 'longest:full:lastused'
 vim.opt.foldcolumn = '0'
 vim.opt.foldtext = ''
 vim.opt.foldnestmax = 3

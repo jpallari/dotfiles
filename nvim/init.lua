@@ -91,6 +91,15 @@ vim.opt.joinspaces = false
 --
 vim.opt.exrc = true
 vim.g.editorconfig = true
+vim.opt.shadafile = (function()
+  local data = vim.fn.stdpath('data')
+  local cwd = vim.fn.getcwd()
+  cwd = vim.fs.root(cwd, '.git') or cwd
+  local cwd_b64 = vim.base64.encode(cwd)
+  local file = vim.fs.joinpath(data, 'project_shada', cwd_b64)
+  vim.fn.mkdir(vim.fs.dirname(file), 'p')
+  return file
+end)()
 
 --
 -- Diagnostics

@@ -190,11 +190,11 @@ function FindFiles(pattern, cmd_name)
     return
   end
 
-  local qfix_contents = {}
+  local list_contents = {}
   local lines = vim.split(res.stdout, '\n', { plain = true, trimempty = true })
   for i = 1, #lines do
     local line = lines[i]
-    table.insert(qfix_contents, {
+    table.insert(list_contents, {
       filename = line,
       lnum = 1,
       col = 1,
@@ -202,9 +202,11 @@ function FindFiles(pattern, cmd_name)
     })
   end
 
-  vim.fn.setqflist(qfix_contents, 'r')
-  vim.fn.setqflist({}, 'a', { title = 'Find: ' .. pattern })
-  vim.cmd.copen()
+  vim.fn.setloclist(0, list_contents, 'r')
+  vim.fn.setloclist(0, {}, 'a', { title = 'Find: ' .. pattern })
+  if lines[1] then
+    vim.cmd.find(lines[1])
+  end
 end
 
 --

@@ -383,6 +383,7 @@ do
   mapk('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
   -- Editing
+  mapk('i', '<C-space>', '<C-n>', { desc = 'Trigger completion' })
   mapk('i', '<M-Backspace>', '<C-w>', { desc = 'Delete word' })
   mapk('c', '<M-Backspace>', '<C-w>', { desc = 'Delete word' })
   mapk('v', '<leader>c', '"+y', { desc = 'Copy to system clipboard' })

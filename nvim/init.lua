@@ -16,9 +16,11 @@ vim.opt.termguicolors = true
 vim.opt.shortmess:append 'I'
 vim.opt.title = false
 vim.opt.winborder = 'single'
+vim.cmd.colorscheme 'lunaperche'
 vim.cmd.hi 'Normal guibg=NONE guifg=NONE ctermbg=NONE ctermfg=NONE'
 vim.cmd.hi 'Pmenu guibg=Blue'
 vim.cmd.hi 'NormalFloat guibg=NvimDarkGray2'
+vim.cmd.hi 'VertSplit guibg=NvimDarkGray2'
 
 --
 -- UI

@@ -1,7 +1,6 @@
 --
 -- Appearance
 --
-vim.g.have_nerd_font = true
 vim.opt.number = false
 vim.opt.relativenumber = false
 vim.opt.showmode = true
@@ -26,7 +25,6 @@ vim.cmd.hi 'VertSplit guibg=NvimDarkGray2'
 -- UI
 --
 vim.opt.updatetime = 250
-vim.opt.timeoutlen = 300 -- Faster popup
 vim.opt.splitright = true
 vim.opt.splitbelow = true
 vim.opt.inccommand = 'split' -- preview subtitutions
@@ -241,9 +239,12 @@ do
     vim.fn.setreg('+', path)
     print('Path: ' .. path)
   end, { desc = 'Copy relative path to clipboard' })
-  cmd('FF', function(args)
+  cmd('FindFiles', function(args)
     FindFiles(args.args)
   end, { nargs = 1, desc = 'Find files by file name' })
+  cmd('FindGitFiles', function(args)
+    FindFiles(args.args, 'git')
+  end, { nargs = 1, desc = 'Find files by file name from git' })
   cmd('GitGrep', function(args)
     local grepprg = vim.opt_local.grepprg
     vim.opt_local.grepprg = 'git grep -n --column'
@@ -357,17 +358,14 @@ end
 --
 -- File types
 --
-do
-  vim.filetype.add({
-    extension = {
-      tf = 'terraform',
-    },
-  })
-end
+vim.filetype.add({
+  extension = {
+    tf = 'terraform',
+  },
+})
 
 --
 -- Keymaps
---  See `:help vim.keymap.set()`
 --
 do
   local mapk = vim.keymap.set
@@ -405,6 +403,9 @@ do
   mapk('n', '<C-right>', ':vertical resize -5<CR>', { desc = 'Decrease window size horizontally' })
   mapk('n', '<C-up>', ':resize +5<CR>', { desc = 'Increase window size vertically' })
   mapk('n', '<C-down>', ':resize -5<CR>', { desc = 'Decrease window size vertically' })
+  for i = 1, 9 do
+    mapk('n', '<leader>' .. i, '<cmd>' .. i .. 'tabnext<cr>', { desc = 'Go to tab #' .. i })
+  end
 
   -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
   -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -440,7 +441,18 @@ do
 
   -- Files and buffers
   mapk('n', '<leader>e', ":e <C-R>=expand('%:p:h') . '/' <cr>", { desc = 'Open file from current buffer directory' })
-  mapk('n', '\\', '<cmd>Ex<cr>', { desc = 'File explorer' })
+  mapk('n', '\\', '<cmd>Lexplore!<cr>', { desc = 'File explorer' })
+  mapk('n', '<leader>\\', '<cmd>Lexplore! %:p:h<cr>', { desc = 'File explorer in current dir' })
+  mapk('n', '<leader><leader>', '<cmd>ls<cr>:b ', { desc = 'Select buffer' })
+  mapk('n', '<leader>m', '<cmd>marks \'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ<cr>', { desc = 'View marks' })
+  mapk('n', '<leader>ff', ':FindFiles ', { desc = 'Find files' })
+  mapk('n', '<leader>fg', ':FindGitFiles ', { desc = 'Find files in git' })
+  mapk('n', '<leader>gg', ':GitGrep ', { desc = 'Grep using git' })
+  mapk('n', '<leader>gf', ':lgrep ', { desc = 'Grep' })
+
+  -- Quickfix and location list
+  mapk('n', '<leader>q', '<cmd>copen<cr>', { desc = 'Open quickfix list' })
+  mapk('n', '<leader>l', '<cmd>lopen<cr>', { desc = 'Open location list' })
 
   -- Command mode navigation
   mapk('c', '<C-f>', '<right>', { desc = 'Move cursor right' })
@@ -457,666 +469,197 @@ do
   mapk('n', '<leader>tr', '<cmd>set relativenumber!<cr>', { desc = 'Toggle relative numbers' })
   mapk('n', '<leader>tw', '<cmd>setlocal wrap!<cr>', { desc = 'Toggle line wrapping' })
   mapk('n', '<leader>tcl', '<cmd>setlocal cursorline!<cr>', { desc = 'Toggle cursor line' })
-  mapk('n', '<leader>tcc', '<cmd>setlocal cursorcolumn!<cr>', { desc = 'Toggle cursor line' })
+  mapk('n', '<leader>tcc', '<cmd>setlocal cursorcolumn!<cr>', { desc = 'Toggle cursor column' })
   mapk('n', '<leader>tas', '<cmd>ToggleAutoSave<cr>', { desc = 'Toggle autosave' })
 end
 
 --
 -- LSP
 --
-local lsp_server_configs = {
-  bashls = {},
-  clangd = {},
-  gopls = {
-    settings = {
-      gopls = {
-        gofumpt = true,
-        buildFlags = { '-tags=integration' },
-      },
-    },
-  },
-  lua_ls = {
-    settings = {
-      Lua = {
-        diagnostics = {
-          globals = { 'vim' }
-        },
-        completion = {
-          callSnippet = 'Replace',
-        },
-        window = {
-          progressBar = false,
-          statusBar = false,
+do
+  local lsp_server_configs = {
+    bashls = {},
+    clangd = {},
+    gopls = {
+      settings = {
+        gopls = {
+          gofumpt = true,
+          buildFlags = { '-tags=integration' },
         },
       },
     },
-  },
-  rust_analyzer = {},
-  terraformls = {},
-  ts_ls = {
-    init_options = {
-      preferences = {
-        disableSuggestions = true,
+    lua_ls = {
+      settings = {
+        Lua = {
+          diagnostics = {
+            globals = { 'vim' }
+          },
+          completion = {
+            callSnippet = 'Replace',
+          },
+          window = {
+            progressBar = false,
+            statusBar = false,
+          },
+        },
       },
     },
-  },
-  zls = {},
-}
+    rust_analyzer = {},
+    terraformls = {},
+    ts_ls = {
+      init_options = {
+        preferences = {
+          disableSuggestions = true,
+        },
+      },
+    },
+    zls = {},
+  }
+
+  for server_name, server in pairs(lsp_server_configs) do
+    vim.lsp.config(server_name, server)
+    vim.lsp.enable(server_name)
+  end
+end
 
 --
--- Plugin manager
---    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
+-- Plugins
 --
-
--- Plugin setup
-local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
-if not vim.loop.fs_stat(lazypath) then
-  local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
-  vim.fn.system { 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath }
-end ---@diagnostic disable-next-line: undefined-field
-vim.opt.rtp:prepend(lazypath)
-
--- List of plugins to install
-local lazy_plugins = {
-  {
-    -- Async make
-    'tpope/vim-dispatch',
-    cmd = { 'Make', 'Dispatch', 'Start' },
-    keys = {
-      { '<leader>cm', '<cmd>Make<cr>', desc = 'Run make (async)' },
-      { '<leader>cM', ':Make ',        desc = 'Run make command (async)' },
-    },
-  },
-
-  {
-    -- Detect tabstop and shiftwidth automatically
-    'tpope/vim-sleuth',
-    event = { 'BufReadPost', 'BufNewFile' },
-  },
-
-  {
-    -- Git UI
-    'tpope/vim-fugitive',
-    cmd = { 'Git', 'Gedit', 'Ge' },
-    keys = {
-      { '<leader>GG', '<cmd>Ge :<cr>',      desc = 'Git status' },
-      { '<leader>Gg', '<cmd>Ge :<cr>',      desc = 'Git status' },
-      { '<leader>Gs', '<cmd>Git<cr>',       desc = 'Git status' },
-      { '<leader>GB', '<cmd>Git blame<cr>', desc = 'Git blame' },
-      { '<leader>Gl', '<cmd>Gclog<cr>',     desc = 'Git log in quickfix list' },
-    },
-  },
-
-  {
-    -- Quick jump between files
-    'ThePrimeagen/harpoon',
-    branch = 'harpoon2',
-    keys = {
-      { '<leader>hh', desc = 'Harpoon quick menu' },
-      { '<leader>ha', desc = 'Harpoon add buffer' },
-      { '<leader>hx', desc = 'Harpoon remove buffer' },
-      { '<leader>1',  desc = 'Harpoon buffer 1' },
-      { '<leader>2',  desc = 'Harpoon buffer 2' },
-      { '<leader>3',  desc = 'Harpoon buffer 3' },
-      { '<leader>4',  desc = 'Harpoon buffer 4' },
-      { '<leader>5',  desc = 'Harpoon buffer 5' },
-      { '<leader>6',  desc = 'Harpoon buffer 6' },
-      { '<leader>7',  desc = 'Harpoon buffer 7' },
-      { '<leader>8',  desc = 'Harpoon buffer 8' },
-      { '<leader>9',  desc = 'Harpoon buffer 9' },
-      { '[h',         desc = 'Harpoon previous buffer' },
-      { ']h',         desc = 'Harpoon next buffer' },
-    },
-    requires = { { 'nvim-lua/plenary.nvim' } },
-    config = function()
-      local harpoon = require 'harpoon'
-      harpoon:setup {
-        settings = {
-          save_on_toggle = true,
-          sync_on_ui_close = true,
-        },
-      }
-
-      local mapk = vim.keymap.set
-      mapk('n', '<leader>hh', function()
-        harpoon.ui:toggle_quick_menu(harpoon:list())
-      end, { desc = 'Harpoon quick menu' })
-      mapk('n', '<leader>ha', function()
-        harpoon:list():add()
-      end, { desc = 'Harpoon add buffer' })
-      mapk('n', '<leader>hx', function()
-        harpoon:list():remove()
-      end, { desc = 'Harpoon remove buffer' })
-      mapk('n', '[h', function()
-        harpoon:list():prev { ui_nav_wrap = true }
-      end, { desc = 'Harpoon previous buffer' })
-      mapk('n', ']h', function()
-        harpoon:list():next { ui_nav_wrap = true }
-      end, { desc = 'Harpoon next buffer' })
-
-      for i = 1, 9 do
-        mapk('n', '<leader>' .. i, function()
-          harpoon:list():select(i)
-        end, { desc = 'Harpoon buffer ' .. i })
-      end
-    end,
-  },
-
-  {
-    -- LSP Configuration & Plugins
-    'neovim/nvim-lspconfig',
-    cmd = { 'LspInfo', 'LspStart', 'Mason', },
-    keys = {
-      { '<leader>cS', '<cmd>LspStart<cr>',   desc = 'Start LSP' },
-      { '<leader>cR', '<cmd>LspRestart<cr>', desc = 'Restart LSP' },
-      { '<leader>cQ', '<cmd>LspStop<cr>',    desc = 'Quit LSP' },
-    },
-    dependencies = {
-      { 'mason-org/mason.nvim', opts = {} },
-    },
-    config = function()
-      for server_name, server in pairs(lsp_server_configs) do
-        vim.lsp.config(server_name, server)
-        vim.lsp.enable(server_name)
-      end
-    end,
-  },
-
-  {
-    -- Debug Adapter Protocol (DAP)
-    'mfussenegger/nvim-dap',
-    keys = {
-      { '<leader>Ds',  desc = 'Debug: Start/continue' },
-      { '<leader>Di',  desc = 'Debug: Step into' },
-      { '<leader>Do',  desc = 'Debug: Step over' },
-      { '<leader>DO',  desc = 'Debug: Step Out' },
-      { '<leader>Db',  desc = 'Debug: Toggle breakpoint' },
-      { '<leader>Drl', desc = 'Debug: Run last' },
-      { '<leader>DB',  desc = 'Debug: Set Breakpoint' },
-      { '<leader>Drr', desc = 'Debug: See last session result' },
-      { '<leader>Dc',  desc = 'Debug: Run to cursor' },
-    },
-    dependencies = {
-      'rcarriga/nvim-dap-ui',
-      'nvim-neotest/nvim-nio',
-      'mason-org/mason.nvim',
-      'jay-babu/mason-nvim-dap.nvim',
-
-      -- Debuggers
-      'leoluz/nvim-dap-go', -- Go
-    },
-    config = function()
-      local dap = require 'dap'
-      local dapui = require 'dapui'
-
-      require('mason-nvim-dap').setup {
-        automatic_setup = true,
-        handlers = {},
-        automatic_installation = true,
-        ensure_installed = {},
-      }
-      ---@diagnostic disable-next-line: missing-fields
-      dapui.setup {
-        icons = { expanded = '▾', collapsed = '▸', current_frame = '*' },
-        ---@diagnostic disable-next-line: missing-fields
-        controls = {
-          enabled = true,
-          icons = {
-            pause = '⏸',
-            play = '▶',
-            step_into = '⏎',
-            step_over = '⏭',
-            step_out = '⏮',
-            step_back = 'b',
-            run_last = '▶▶',
-            terminate = '⏹',
-            disconnect = '⏏',
-          },
-        },
-      }
-
-      local map = function(keys, func, desc)
-        vim.keymap.set('n', keys, func, { desc = 'Debug: ' .. desc })
-      end
-
-      map('<leader>Ds', dap.continue, 'Start/continue')
-      map('<leader>Di', dap.step_into, 'Step into')
-      map('<leader>Do', dap.step_over, 'Step over')
-      map('<leader>DO', dap.step_out, 'Step Out')
-      map('<leader>Db', dap.toggle_breakpoint, 'Toggle breakpoint')
-      map('<leader>Drl', dap.run_last, 'Run last')
-      map('<leader>DB', function()
-        dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ')
-      end, 'Set Breakpoint')
-      map('<leader>Drr', dapui.toggle, 'See last session result')
-      map('<leader>Dc', dap.run_to_cursor, 'Run to cursor')
-
-      dap.listeners.after.event_initialized['dapui_config'] = dapui.open
-      dap.listeners.before.event_terminated['dapui_config'] = dapui.close
-      dap.listeners.before.event_exited['dapui_config'] = dapui.close
-
-      -- Language specific debugger setup
-      require('dap-go').setup()
-    end,
-  },
-
-  {
-    -- Collection of various small independent plugins/modules
-    'echasnovski/mini.nvim',
-    version = '*',
-    event = { 'InsertEnter', 'VeryLazy' },
-    keys = {
-      { '<leader>bd',       desc = 'Buffer: delete' },
-      { '<leader>sa',       desc = 'Surround: add' },
-      { '<leader>sd',       desc = 'Surround: delete' },
-      { '<leader>sf',       desc = 'Surround: find right' },
-      { '<leader>sF',       desc = 'Surround: Find left' },
-      { '<leader>sh',       desc = 'Surround: highlight' },
-      { '<leader>sr',       desc = 'Surround: replace' },
-      { '<leader>sn',       desc = 'Surround: update n lines' },
-      { '\\',               desc = 'Browse files' },
-      { '<leader><leader>', desc = 'Find existing buffers' },
-      { '<leader>ff',       desc = 'Find files' },
-      { '<leader>fg',       desc = 'Find using git' },
-      { '<leader>fr',       desc = 'Find resume' },
-      { '<leader>fH',       desc = 'Find in help' },
-      { '<leader>gf',       desc = 'Grep files' },
-      { '<leader>gg',       desc = 'Grep git' },
-      { '<leader>Gb',       desc = 'Git branches' },
-      { '<leader>Gc',       desc = 'Git commits' },
-      { '<leader>fh',       desc = 'Find in command history' },
-      { '<leader>fk',       desc = 'Find in key maps' },
-      { '<leader>fq',       desc = 'Find in quickfix list' },
-      { '<leader>fl',       desc = 'Find in location list' },
-      { "<leader>f'",       desc = 'Find in marks' },
-      { '<leader>f"',       desc = 'Find in registers' },
-      { '<leader>fe',       desc = 'Explore files' },
-      { '<leader>fd',       desc = 'Find diagnostics' },
-      { '<leader>df',       desc = 'Find diagnostics' },
-      { '<leader>bf',       desc = 'Find in buffers' },
-      { '<leader>cpd',      desc = 'Code declaration' },
-      { '<leader>cpD',      desc = 'Code definition' },
-      { '<leader>cps',      desc = 'Code document symbol' },
-      { '<leader>cpi',      desc = 'Code implementation' },
-      { '<leader>cpr',      desc = 'Code references' },
-      { '<leader>cpt',      desc = 'Code type definition' },
-      { '<leader>cpw',      desc = 'Code workspace symbols' },
-    },
-    config = function()
-      local function mapn(l, f, desc)
-        vim.keymap.set('n', l, f, { desc = desc })
-      end
-
-      -- Icons
-      require('mini.icons').setup()
-
-      -- Extra features e.g. pickers
-      require('mini.extra').setup()
-
-      -- Notifications
-      require('mini.notify').setup()
-
-      -- Buffer removal that preserves windows
-      require('mini.bufremove').setup()
-      mapn('<leader>bd', function() MiniBufremove.delete() end, 'Buffer: delete')
-
-      -- Add/delete/replace surroundings (brackets, quotes, etc.)
-      require('mini.surround').setup {
-        mappings = {
-          add = '<leader>sa',            -- Add surrounding in Normal and Visual modes
-          delete = '<leader>sd',         -- Delete surrounding
-          find = '<leader>sf',           -- Find surrounding (to the right)
-          find_left = '<leader>sF',      -- Find surrounding (to the left)
-          highlight = '<leader>sh',      -- Highlight surrounding
-          replace = '<leader>sr',        -- Replace surrounding
-          update_n_lines = '<leader>sn', -- Update `n_lines`
-          suffix_last = 'l',             -- Suffix to search with "prev" method
-          suffix_next = 'n',             -- Suffix to search with "next" method
-        },
-      }
-
-      -- File browser
-      require('mini.files').setup {
-        mappings = {
-          close = '\\'
-        },
-        windows = {
-          preview = true,
-        },
-      }
-      mapn('\\', function() MiniFiles.open() end, 'Browse files')
-
-      -- Picker
-      local function minipick_to_quickfix()
-        local matches = MiniPick.get_picker_matches()
-        if matches == nil then return end
-        matches = matches.all
-        if matches == nil then return end
-
-        local qfix_contents = {}
-        for i = 1, #matches do
-          local v = matches[i]
-          local nul_start, _ = string.find(v, '\0', 1, true)
-
-          if nul_start == nil then
-            table.insert(qfix_contents, {
-              filename = v,
-              lnum = 1,
-              col = 1,
-              text = '',
-            })
-          else
-            local parts = vim.split(v, '\0', { plain = true })
-            local filename = parts[1]
-            local lnum = tonumber(parts[2])
-            local col = tonumber(parts[3])
-            local text = parts[4]
-            if filename ~= nil and lnum ~= nil and col ~= nil and text ~= nil then
-              table.insert(qfix_contents, {
-                filename = filename,
-                lnum = lnum,
-                col = col,
-                text = text,
-              })
-            end
-          end
-        end
-
-        if next(qfix_contents) == nil then
-          return
-        end
-        vim.fn.setqflist(qfix_contents, 'r')
-        vim.fn.setqflist({}, 'a', { title = 'MiniPick' })
-        MiniPick.stop()
-        vim.cmd.copen()
-      end
-
-      local find_files_command = {
-        'rg',
-        '--files',
-        '--no-follow',
-        '--color=never',
-        '--hidden',
-        '--iglob',
-        '!**/.git/*',
-      }
-
-      local show_with_icons = function(buf_id, items, query)
-        MiniPick.default_show(buf_id, items, query, { show_icons = true })
-      end
-
-      require('mini.pick').setup {
-        window = {
-          config = function()
-            local height = math.floor(0.8 * vim.o.lines)
-            if height < 20 then height = vim.o.lines end
-            return {
-              height = math.floor(0.8 * vim.o.lines),
-              width = vim.o.columns,
-            }
-          end
-        },
-        mappings = {
-          qfixlist = {
-            char = '<C-q>',
-            func = minipick_to_quickfix,
-          },
-        },
-      }
-
-      mapn('<leader><leader>', function() MiniPick.builtin.buffers() end, 'Find existing buffers')
-      mapn('<leader>ff', function() MiniPick.builtin.cli({ command = find_files_command }, { source = { name = 'Files', show = show_with_icons }}) end, 'Find files')
-      mapn('<leader>fg', function() MiniPick.builtin.files({ tool = 'git' }) end, 'Find using git')
-      mapn('<leader>fr', function() MiniPick.builtin.resume() end, 'Find resume')
-      mapn('<leader>fH', function() MiniPick.builtin.help() end, 'Find in help')
-      mapn('<leader>gf', function() MiniPick.builtin.grep_live({ tool = 'rg' }) end, 'Grep files')
-      mapn('<leader>gg', function() MiniPick.builtin.grep_live({ tool = 'git' }) end, 'Grep git')
-      mapn('<leader>Gb', function() MiniExtra.pickers.git_branches() end, 'Git branches')
-      mapn('<leader>Gc', function() MiniExtra.pickers.git_commits() end, 'Git commits')
-      mapn('<leader>fh', function() MiniExtra.pickers.history() end, 'Find in command history')
-      mapn('<leader>fk', function() MiniExtra.pickers.keymaps() end, 'Find in key maps')
-      mapn('<leader>fq', function() MiniExtra.pickers.list({ scope = 'quickfix' }) end, 'Find in quickfix list')
-      mapn('<leader>fl', function() MiniExtra.pickers.list({ scope = 'location-list' }) end, 'Find in location list')
-      mapn("<leader>f'", function() MiniExtra.pickers.marks() end, 'Find in marks')
-      mapn('<leader>f"', function() MiniExtra.pickers.registers() end, 'Find in registers')
-      mapn('<leader>fe', function() MiniExtra.pickers.explorer() end, 'Explore files')
-      mapn('<leader>fd', function() MiniExtra.pickers.diagnostic() end, 'Find diagnostics')
-      mapn('<leader>df', function() MiniExtra.pickers.diagnostic() end, 'Find diagnostics')
-      mapn('<leader>bf', function() MiniExtra.pickers.buf_lines() end, 'Find in buffers')
-      mapn('<leader>cpd', function() MiniExtra.pickers.lsp({ scope = 'declaration' }) end, 'Code declaration')
-      mapn('<leader>cpD', function() MiniExtra.pickers.lsp({ scope = 'definition' }) end, 'Code definition')
-      mapn('<leader>cps', function() MiniExtra.pickers.lsp({ scope = 'document_symbol' }) end, 'Code document symbol')
-      mapn('<leader>cpi', function() MiniExtra.pickers.lsp({ scope = 'implementation' }) end, 'Code implementation')
-      mapn('<leader>cpr', function() MiniExtra.pickers.lsp({ scope = 'references' }) end, 'Code references')
-      mapn('<leader>cpt', function() MiniExtra.pickers.lsp({ scope = 'type_definition' }) end, 'Code type definition')
-      mapn('<leader>cpw', function() MiniExtra.pickers.lsp({ scope = 'workspace_symbol' }) end, 'Code workspace symbols')
-
-      -- Clues
-      local miniclue = require('mini.clue')
-      miniclue.setup {
-        triggers = {
-          -- Leader triggers
-          { mode = 'n', keys = '<Leader>' },
-          { mode = 'x', keys = '<Leader>' },
-
-          -- Built-in completion
-          { mode = 'i', keys = '<C-x>' },
-
-          -- `g` key
-          { mode = 'n', keys = 'g' },
-          { mode = 'x', keys = 'g' },
-
-          -- Marks
-          { mode = 'n', keys = "'" },
-          { mode = 'n', keys = '`' },
-          { mode = 'x', keys = "'" },
-          { mode = 'x', keys = '`' },
-
-          -- Registers
-          { mode = 'n', keys = '"' },
-          { mode = 'x', keys = '"' },
-          { mode = 'i', keys = '<C-r>' },
-          { mode = 'c', keys = '<C-r>' },
-
-          -- Window commands
-          { mode = 'n', keys = '<C-w>' },
-
-          -- `z` key
-          { mode = 'n', keys = 'z' },
-          { mode = 'x', keys = 'z' },
-        },
-        clues = {
-          { mode = 'n', keys = '<Leader>b', desc = '+Buffer' },
-          { mode = 'n', keys = '<Leader>c', desc = '+Code' },
-          { mode = 'n', keys = '<Leader>d', desc = '+Diagnostic' },
-          { mode = 'n', keys = '<Leader>D', desc = '+Debug' },
-          { mode = 'n', keys = '<Leader>f', desc = '+Find' },
-          { mode = 'n', keys = '<Leader>g', desc = '+Grep' },
-          { mode = 'n', keys = '<Leader>G', desc = '+Git' },
-          { mode = 'n', keys = '<Leader>h', desc = '+Harpoon' },
-          { mode = 'n', keys = '<Leader>s', desc = '+Surround' },
-          { mode = 'n', keys = '<Leader>t', desc = '+Toggle' },
-          { mode = 'n', keys = '<Leader>W', desc = '+Wiki' },
-          miniclue.gen_clues.builtin_completion(),
-          miniclue.gen_clues.g(),
-          miniclue.gen_clues.marks(),
-          miniclue.gen_clues.registers(),
-          miniclue.gen_clues.windows(),
-          miniclue.gen_clues.z(),
-        },
-        window = {
-          config = {
-            width = 'auto',
-          },
-          delay = 400,
-        },
-      }
-    end,
-  },
-
-  {
-    -- Highlight, edit, and navigate code
-    'nvim-treesitter/nvim-treesitter',
-    event = { 'BufReadPost', 'BufNewFile' },
-    cmd = { 'TSInstall', 'TSUpdate' },
-    build = ':TSUpdate',
-    dependencies = {
-      -- Selection expansion
-      'RRethy/nvim-treesitter-textsubjects',
-    },
-    opts = {
-      ensure_installed = { 'git_rebase' },
-      auto_install = true,
-      highlight = {
-        enable = true,
-        additional_vim_regex_highlighting = false,
-      },
-      indent = { enable = true, disable = { 'c', 'cpp', 'yaml' } },
-      textsubjects = {
-        enable = true,
-        prev_selection = ',',
-        keymaps = {
-          ['.'] = { 'textsubjects-smart', desc = 'Expand selection' },
-          [';'] = { 'textsubjects-container-outer', desc = 'Select outside containers (classes, functions, etc.)' },
-          ['i;'] = { 'textsubjects-container-inner', desc = 'Select inside containers (classes, functions, etc.)' },
-        },
+do
+  local plugins = {
+    {
+      name = 'vim-fugitive',
+      cmd = { 'Git', 'Gedit', 'Ge' },
+      keys = {
+        { '<leader>GG', '<cmd>Ge :<cr>',      desc = 'Git status' },
+        { '<leader>Gg', '<cmd>Ge :<cr>',      desc = 'Git status' },
+        { '<leader>Gs', '<cmd>Git<cr>',       desc = 'Git status' },
+        { '<leader>GB', '<cmd>Git blame<cr>', desc = 'Git blame' },
+        { '<leader>Gl', '<cmd>Gclog<cr>',     desc = 'Git log in quickfix list' },
       },
     },
-    config = function(_, opts)
-      require('nvim-treesitter.install').prefer_git = true
-      ---@diagnostic disable-next-line: missing-fields
-      require('nvim-treesitter.configs').setup(opts)
-    end,
-  },
-
-  {
-    -- Undo UI
-    'mbbill/undotree',
-    cmd = 'UndotreeToggle',
-    keys = {
-      { '<leader>u', '<cmd>UndotreeToggle<cr>', desc = 'Toggle Undotree' },
+    {
+      name = 'nvim-treesitter',
+      config = function()
+        require('nvim-treesitter.install').prefer_git = true
+        require('nvim-treesitter.configs').setup({
+          ensure_installed = { 'git_rebase' },
+          auto_install = true,
+          highlight = {
+            enable = true,
+            additional_vim_regex_highlighting = false,
+          },
+          indent = { enable = true, disable = { 'c', 'cpp', 'yaml' } },
+        })
+      end,
     },
-  },
+    {
+      name = 'vimwiki',
+      cmd = { 'VimwikiIndex', 'VimwikiMakeDiaryNote' },
+      keys = {
+        { '<leader>ww', desc = 'Wiki: Open default index file' },
+        { '<leader>ws', desc = 'Wiki: Select and open index file' },
+        { '<leader>wd', desc = 'Wiki: Create diary note' },
+      },
+      config = function()
+        vim.g.vimwiki_list = {
+          {
+            path = '~/wiki/',
+            syntax = 'markdown',
+            ext = 'md',
+            diary_rel_path = 'Notes',
+          },
+        }
+        vim.g.vimwiki_global_ext = 0
+        vim.g.vimwiki_ext2syntax = vim.empty_dict()
+        vim.g.vimwiki_auto_header = 1
+      end,
+    }
+  }
 
-  {
-    -- Rearrange windows
-    'sindrets/winshift.nvim',
-    cmd = 'WinShift',
-    keys = {
-      { '<leader>zz', '<cmd>WinShift<cr>', desc = 'WinShift' },
-    },
-  },
+  for _, plugin in pairs(plugins) do
+    local plugin_loaded = false
+    local shim_unloaded = false
+    local config_executed = false
 
-  {
-    -- Wiki
-    'vimwiki/vimwiki',
-    cmd = { 'VimwikiIndex', 'VimwikiMakeDiaryNote' },
-    event = 'BufEnter *.md',
-    keys = {
-      { '<leader>Ww', desc = 'Wiki: Open default index file' },
-      { '<leader>Ws', desc = 'Wiki: Select and open index file' },
-      { '<leader>Wd', desc = 'Wiki: Create diary note' },
-    },
-    init = function()
-      vim.g.vimwiki_list = {
-        {
-          path = '~/wiki/',
-          syntax = 'markdown',
-          ext = 'md',
-          diary_rel_path = 'Notes',
-        },
-      }
-      vim.g.vimwiki_global_ext = 0
-      vim.g.vimwiki_ext2syntax = vim.empty_dict()
-      vim.g.vimwiki_auto_header = 1
+    local function load_plug()
+      if not plugin_loaded then
+        vim.cmd.packadd(plugin.name)
+        plugin_loaded = true
+      end
     end
-  },
-
-  {
-    -- Lua LSP
-    'folke/lazydev.nvim',
-    ft = 'lua',
-    opts = {
-      library = {
-        -- Load luvit types when the `vim.uv` word is found
-        { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
-      },
-    },
-  },
-
-  {
-    -- Zig
-    'ziglang/zig.vim',
-    ft = { 'zig' },
-  },
-
-  {
-    -- Scala
-    'scalameta/nvim-metals',
-    ft = { 'scala', 'sbt', 'java' },
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-    },
-    opts = function()
-      local metals_config = require('metals').bare_config()
-      metals_config.on_attach = function()
-        require('metals').setup_dap()
+    local function unload_shim()
+      if not shim_unloaded then
+        for _, cmd in pairs(plugin.cmd) do
+          vim.api.nvim_del_user_command(cmd)
+        end
+        for _, key in pairs(plugin.keys) do
+          if not key[2] then
+            pcall(vim.keymap.del, 'n', key[1], { buffer = nil })
+          end
+        end
+        shim_unloaded = true
       end
-      metals_config.settings = {
-        autoImportBuild = 'off',
-      }
+    end
 
-      return metals_config
-    end,
-    config = function(self, metals_config)
-      local nvim_metals_group = vim.api.nvim_create_augroup('nvim-metals', { clear = true })
-      vim.api.nvim_create_autocmd('FileType', {
-        pattern = self.ft,
-        callback = function()
-          require('metals').initialize_or_attach(metals_config)
-        end,
-        group = nvim_metals_group,
-      })
-    end,
-  },
+    if plugin.config then
+      if not config_executed then
+        plugin.config()
+        config_executed = true
+      end
+    end
 
-  {
-    -- Pkl
-    'apple/pkl-neovim',
-    ft = 'pkl',
-    dependencies = {
-      'nvim-treesitter/nvim-treesitter',
-    },
-    build = function()
-      require('pkl-neovim').init()
-    end,
-    config = function()
-      vim.g.pkl_neovim = {
-        start_command = { 'pkl-lsp' },
-      }
-    end,
-  },
-}
+    if plugin.cmd then
+      for _, cmd in pairs(plugin.cmd) do
+        vim.api.nvim_create_user_command(cmd, function(event)
+          local command = {
+            cmd = cmd,
+            bang = event.bang or nil,
+            mods = event.smods,
+            args = event.fargs,
+            count = event.count >= 0 and event.range == 0 and event.count or nil,
+          }
+          if event.range == 1 then
+            command.range = { event.line1 }
+          elseif event.range == 2 then
+            command.range = { event.line1, event.line2 }
+          end
 
--- Load plugins
-require('lazy').setup(lazy_plugins, {
-  ui = {
-    icons = vim.g.have_nerd_font and {} or {
-      cmd = '⌘',
-      config = '🛠',
-      event = '📅',
-      ft = '📂',
-      init = '⚙',
-      keys = '🗝',
-      plugin = '🔌',
-      runtime = '💻',
-      require = '🌙',
-      source = '📄',
-      start = '🚀',
-      task = '📌',
-      lazy = '💤 ',
-    },
-  },
-})
+          unload_shim()
+          load_plug()
+
+          local info = vim.api.nvim_get_commands({})[cmd] or vim.api.nvim_buf_get_commands(0, {})[cmd]
+          command.nargs = info.nargs
+          if event.args and event.args ~= "" and info.nargs and info.nargs:find("[1?]") then
+            command.args = { event.args }
+          end
+          vim.cmd(command)
+        end, { bang = true, range = true, nargs = '*' })
+      end
+    end
+
+    if plugin.keys then
+      for _, key in pairs(plugin.keys) do
+        local lhs = key[1]
+        local rhs = key[2]
+        vim.keymap.set('n', lhs, function()
+          unload_shim()
+          load_plug()
+          local feed_key = vim.api.nvim_replace_termcodes('<Ignore>' .. (rhs or lhs), true, true, true)
+          vim.api.nvim_feedkeys(
+            feed_key,
+            'i',
+            false
+          )
+        end, { desc = key.desc })
+      end
+    end
+  end
+end
+
+--
+-- Zig
+--
+vim.g.zig_fmt_autosave = 0
 
 -- vim: ts=2 sts=2 sw=2 et

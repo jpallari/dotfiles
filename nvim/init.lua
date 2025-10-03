@@ -580,7 +580,6 @@ do
   for _, plugin in pairs(plugins) do
     local plugin_loaded = false
     local shim_unloaded = false
-    local config_executed = false
 
     local function load_plug()
       if not plugin_loaded then
@@ -603,9 +602,12 @@ do
     end
 
     if plugin.config then
-      if not config_executed then
-        plugin.config()
-        config_executed = true
+      local ok, err = pcall(plugin.config)
+      if not ok then
+        vim.notify(
+          'Failed to config plugin "' .. plugin.name .. '": ' .. err,
+          vim.log.levels.WARN
+        )
       end
     end
 

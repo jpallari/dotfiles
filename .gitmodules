@@ -10,3 +10,6 @@
 [submodule "nvim/pack/plugins/opt/vimwiki"]
 	path = nvim/pack/plugins/opt/vimwiki
 	url = https://github.com/vimwiki/vimwiki.git
+[submodule "nvim/pack/plugins/start/pkl-neovim"]
+	path = nvim/pack/plugins/start/pkl-neovim
+	url = https://github.com/apple/pkl-neovim.git

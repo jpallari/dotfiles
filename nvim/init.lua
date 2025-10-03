@@ -384,14 +384,12 @@ do
   -- Diagnostic
   mapk('n', '<leader>dd', vim.diagnostic.open_float, { desc = 'Diagnostic error messages' })
   mapk('n', '<leader>dl', vim.diagnostic.setloclist, { desc = 'Diagnostic location list' })
-  mapk('n', '<leader>dq', function()
-    vim.diagnostic.setqflist()
-  end, { desc = 'Diagnostic quickfix list' })
+  mapk('n', '<leader>dq', vim.diagnostic.setqflist, { desc = 'Diagnostic quickfix list' })
   mapk('n', '<leader>de', function()
-    vim.diagnostic.setqflist { severity = vim.diagnostic.severity.ERROR }
+    vim.diagnostic.setqflist({ severity = vim.diagnostic.severity.ERROR })
   end, { desc = 'Diagnostic errors quickfix list' })
   mapk('n', '<leader>dw', function()
-    vim.diagnostic.setqflist { severity = vim.diagnostic.severity.WARN }
+    vim.diagnostic.setqflist({ severity = vim.diagnostic.severity.WARN })
   end, { desc = 'Diagnostic warnings quickfix list' })
 
   -- Window management
@@ -446,6 +444,7 @@ do
   mapk('n', '<leader><leader>', '<cmd>ls<cr>:b ', { desc = 'Select buffer' })
   mapk('n', '<leader>m', '<cmd>marks \'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ<cr>', { desc = 'View marks' })
   mapk('n', '<leader>ff', ':FindFiles ', { desc = 'Find files' })
+  mapk('n', '<leader>fb', ':vim  %<left><left>', { desc = 'Find in buffer' })
   mapk('n', '<leader>fg', ':FindGitFiles ', { desc = 'Find files in git' })
   mapk('n', '<leader>gg', ':GitGrep ', { desc = 'Grep using git' })
   mapk('n', '<leader>gf', ':lgrep ', { desc = 'Grep' })

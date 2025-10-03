@@ -529,7 +529,7 @@ do
   local plugins = {
     {
       name = 'vim-fugitive',
-      cmd = { 'Git', 'Gedit', 'Ge' },
+      cmd = { 'Git', 'Gedit', 'Ge', 'Gclog', },
       keys = {
         { '<leader>GG', '<cmd>Ge :<cr>',      desc = 'Git status' },
         { '<leader>Gg', '<cmd>Ge :<cr>',      desc = 'Git status' },
@@ -659,5 +659,4 @@ do
   end
 end
 
---
 -- vim: ts=2 sts=2 sw=2 et

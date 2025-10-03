@@ -207,7 +207,7 @@ function FindFiles(pattern, cmd_name)
   vim.fn.setloclist(0, list_contents, 'r')
   vim.fn.setloclist(0, {}, 'a', { title = 'Find: ' .. pattern })
   if lines[1] then
-    vim.cmd.find(lines[1])
+    vim.cmd.lfirst()
   end
 end
 

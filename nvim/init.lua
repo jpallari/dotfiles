@@ -211,6 +211,285 @@ function FindFiles(pattern, cmd_name)
   end
 end
 
+local function selection_for_cmd_opts(opts)
+  local start_row, start_col, end_row, end_col
+
+  if opts.range > 0 then
+    -- Visual
+    local vstart = vim.fn.getpos("'<")
+    local vend = vim.fn.getpos("'>")
+    if vstart[2] > vend[2] or (vstart[2] == vend[2] and vstart[3] > vend[3]) then
+      start_row = vend[2]
+      start_col = vend[3]
+      end_row = vstart[2]
+      end_col = vstart[3]
+    else
+      start_row = vstart[2]
+      start_col = vstart[3]
+      end_row = vend[2]
+      end_col = vend[3]
+    end
+  else
+    -- Normal
+    local pos = vim.fn.getpos('.')
+    start_col = pos[3]
+    start_row = pos[2]
+    end_col = pos[3]
+    end_row = pos[2]
+  end
+
+  return {
+    { start_row, start_col - 1 },
+    { end_row,   end_col - 1 }
+  }
+end
+
+local function all_same(str)
+  if str == '' or str == nil or #str == 1 then
+    return true
+  end
+
+  local ch = str:sub(1, 1)
+  for i = 2, #str do
+    if str:sub(i, i) ~= ch then
+      return false
+    end
+  end
+  return true
+end
+
+local function matching_pair(str)
+  if not all_same(str) then
+    return str
+  end
+
+  if str:sub(1, 1) == '(' then
+    str = string.rep(')', #str)
+  elseif str:sub(1, 1) == '[' then
+    str = string.rep(']', #str)
+  elseif str:sub(1, 1) == '{' then
+    str = string.rep('}', #str)
+  elseif str:sub(1, 1) == '<' then
+    str = string.rep('>', #str)
+  end
+
+  return str
+end
+
+local function pos_is_before(a, b)
+  local a_lnum = a[1]
+  local a_col = a[2]
+  local b_lnum = b[1]
+  local b_col = b[2]
+  return a_lnum < b_lnum or (a_lnum == b_lnum and a_col < b_col)
+end
+
+local function find_pos(start, target, skip, left)
+  local search_flags = 'nW'
+  if left then
+    search_flags = 'bnW'
+  end
+
+  local target_pat = '\\V' .. target:gsub('\\', '\\\\')
+  local skip_pat = '\\V' .. skip:gsub('\\', '\\\\')
+
+  if target == skip then
+    -- When target and skip characters are the same,
+    -- we don't need to balance parentheses
+    local target_pos = vim.fn.searchpos(target_pat, search_flags)
+    if target_pos[1] == 0 then
+      return nil
+    end
+    return target_pos
+  end
+
+  local cur_pos = start
+  local result = nil
+  local between_count = 0
+
+  -- Parentheses balancing
+  while result == nil do
+    vim.api.nvim_win_set_cursor(0, cur_pos)
+    local target_pos = vim.fn.searchpos(target_pat, search_flags)
+    if target_pos[1] == 0 then
+      break
+    end
+
+    local skip_pos = vim.fn.searchpos(skip_pat, search_flags)
+    if skip_pos[1] == 0 then
+      result = target_pos
+      break
+    end
+
+    if (left and pos_is_before(skip_pos, target_pos)) or
+        (not left and pos_is_before(target_pos, skip_pos)) then
+      if between_count > 0 then
+        between_count = between_count - 1
+      else
+        result = target_pos
+        break
+      end
+    end
+
+    -- Find number of parentheses between skip and target
+    local next_skip_pos = skip_pos
+    while true do
+      vim.api.nvim_win_set_cursor(0, next_skip_pos)
+      next_skip_pos = vim.fn.searchpos(skip_pat, search_flags)
+      if next_skip_pos[1] == 0 or
+          (left and pos_is_before(next_skip_pos, target_pos)) or
+          (not left and pos_is_before(target_pos, next_skip_pos)) then
+        break
+      end
+      between_count = between_count + 1
+    end
+
+    cur_pos = target_pos
+  end
+
+  vim.api.nvim_win_set_cursor(0, start)
+  return result
+end
+
+local function buf_put_text(pos, text)
+  local lnum = pos[1]
+  local col = pos[2]
+  vim.api.nvim_buf_set_text(
+    0, lnum - 1, col - 1,
+    lnum - 1, col - 1,
+    { text }
+  )
+end
+
+local function buf_set_text(pos, text)
+  local lnum = pos[1]
+  local col = pos[2]
+  vim.api.nvim_buf_set_text(
+    0, lnum - 1, col - 1,
+    lnum - 1, col - 1 + #text,
+    { text }
+  )
+end
+
+local function buf_del_text(pos, len)
+  local lnum = pos[1]
+  local col = pos[2]
+  vim.api.nvim_buf_set_text(
+    0, lnum - 1, col - 1,
+    lnum - 1, col - 1 + len,
+    {}
+  )
+end
+
+local function pos_is_empty(pos)
+  return pos == nil or pos[1] == 0
+end
+
+local function text_pad_left(a, b)
+  a = a:sub(1, #b)
+  return a .. string.rep(' ', math.max(0, #b - #a))
+end
+
+local function text_pad_right(a, b)
+  a = a:sub(1, #b)
+  return string.rep(' ', math.max(0, #b - #a)) .. a
+end
+
+function Surround(start_pos, end_pos, args)
+  local action = args[1]
+
+  if action == 'r' or action == 'replace' then
+    local from_left = args[2]
+    local to_left = args[3]
+    if from_left == nil or to_left == nil then
+      vim.notify(
+        'Insufficient arguments for surround replace',
+        vim.log.levels.WARN
+      )
+      return
+    end
+
+    local from_right = matching_pair(from_left)
+    local to_right = matching_pair(to_left)
+
+    -- Fit the new string to match the length of the original
+    to_left = text_pad_left(to_left, from_left)
+    to_right = text_pad_right(to_right, from_right)
+
+    local left_pos = find_pos(start_pos, from_left, from_right, true)
+    local right_pos = find_pos(end_pos, from_right, from_left, false)
+    if pos_is_empty(left_pos) or pos_is_empty(right_pos) then
+      vim.notify('Nothing to replace', vim.log.levels.INFO)
+      return
+    end
+
+    buf_set_text(right_pos, to_right)
+    buf_set_text(left_pos, to_left)
+  elseif action == 'a' or action == 'add' then
+    local add_left = args[2]
+    if add_left == nil then
+      vim.notify(
+        'Insufficient arguments for surround add',
+        vim.log.levels.WARN
+      )
+      return
+    end
+
+    local add_right = matching_pair(add_left)
+    local left_pos = start_pos
+    local right_pos = end_pos
+
+    -- shift to capture first and last characters
+    left_pos[2] = left_pos[2] + 1
+    right_pos[2] = right_pos[2] + 2
+
+    local before_left = args[3]
+    if before_left ~= nil then
+      local before_right = matching_pair(before_left)
+      before_left = text_pad_left(before_left, add_left)
+      before_right = text_pad_right(before_right, add_right)
+      left_pos = find_pos(start_pos, before_left, before_right, true)
+      right_pos = find_pos(end_pos, before_right, before_left, false)
+      if pos_is_empty(left_pos) or pos_is_empty(right_pos) then
+        vim.notify('Nothing to replace', vim.log.levels.INFO)
+        return
+      end
+      ---@diagnostic disable-next-line: need-check-nil
+      left_pos[2] = left_pos[2] + 1 -- shift to capture first character
+    end
+
+    buf_put_text(right_pos, add_right)
+    buf_put_text(left_pos, add_left)
+    vim.api.nvim_win_set_cursor(0, start_pos)
+  elseif action == 'd' or action == 'delete' then
+    local target = args[2]
+    if target == nil then
+      vim.notify(
+        'Insufficient arguments for surround delete',
+        vim.log.levels.WARN
+      )
+      return
+    end
+    local pair = matching_pair(target)
+
+    local left_pos = find_pos(start_pos, target, pair, true)
+    local right_pos = find_pos(end_pos, pair, target, false)
+    if pos_is_empty(left_pos) or pos_is_empty(right_pos) then
+      vim.notify('Nothing to delete', vim.log.levels.INFO)
+      return
+    end
+
+    buf_del_text(right_pos, #pair)
+    buf_del_text(left_pos, #pair)
+  else
+    vim.notify(
+      'Unknown surround action: ' .. action,
+      vim.log.levels.WARN
+    )
+    return
+  end
+end
+
 --
 -- Custom commands
 --
@@ -251,6 +530,10 @@ do
     vim.cmd('lgrep ' .. args.args)
     vim.opt_local.grepprg = grepprg
   end, { nargs = 1, desc = 'Grep files from git' })
+  cmd('Surround', function(opts)
+    local positions = selection_for_cmd_opts(opts)
+    Surround(positions[1], positions[2], opts.fargs)
+  end, { nargs = '*', range = true, desc = 'Surround' })
 end
 
 --
@@ -428,6 +711,8 @@ do
   mapk('n', '<C-_>', 'gcc', { remap = true, desc = 'Comment current line' })
   mapk('v', '<C-/>', 'gc', { remap = true, desc = 'Comment selected lines' })
   mapk('v', '<C-_>', 'gc', { remap = true, desc = 'Comment selected lines' })
+  mapk('n', '<leader>s', ':Surround ', { desc = 'Surround' })
+  mapk('v', '<leader>s', ":'<,'>Surround ", { desc = 'Surround' })
 
   -- Keep selection on indentation
   mapk('v', '<', '<gv', { desc = 'Lower indent and keep selection' })

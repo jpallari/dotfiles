@@ -743,6 +743,9 @@ do
   mapk('n', '<leader>tcl', '<cmd>setlocal cursorline!<cr>', { desc = 'Toggle cursor line' })
   mapk('n', '<leader>tcc', '<cmd>setlocal cursorcolumn!<cr>', { desc = 'Toggle cursor column' })
   mapk('n', '<leader>tas', '<cmd>ToggleAutoSave<cr>', { desc = 'Toggle autosave' })
+
+  -- Development
+  mapk('n', '<F10>', '<cmd>make<cr>', { desc = 'Run make' })
 end
 
 --

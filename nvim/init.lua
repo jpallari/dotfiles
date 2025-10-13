@@ -142,26 +142,14 @@ end
 
 function FindFiles(pattern, cmd_name)
   local rg_cmd = {
-    'rg', '--files',
-    '--hidden',
-    '--color=never',
-    '--smart-case',
-    '--iglob',
-    '!**/.git/*',
-    '--iglob',
-    '**/' .. pattern .. '*'
+    'rg',
+    '--files', '--hidden',
+    '--color=never', '--smart-case',
+    '--iglob', '**/' .. pattern .. '*',
+    '--iglob', '!**/.git/*',
   }
-  local find_cmd = {
-    'find', '.',
-    '-type', 'f',
-    '-ipath',
-    pattern,
-  }
-  local git_cmd = {
-    'git',
-    'ls-files',
-    pattern
-  }
+  local find_cmd = { 'find', '.', '-type', 'f', '-ipath', pattern, }
+  local git_cmd = { 'git', 'ls-files', pattern, }
   local cmd
 
   if cmd_name == 'rg' then

@@ -421,10 +421,30 @@ set_prompt_extra() {
     export PS_EXTRA="$1"
 }
 
+show_current_dir() {
+    local basedir topdir fulldir
+
+    if [ "$PWD" = "$HOME" ]; then
+        fulldir="${__COLOR_CYAN}~"
+    else
+        basedir=${PWD%/*}
+        basedir=${basedir/${HOME}/"~"}
+        topdir=${PWD##*/}
+        fulldir="${__COLOR_CYAN}${basedir}/${__COLOR_RESTORE}${__COLOR_YELLOW}${topdir}"
+    fi
+
+    echo "${fulldir}${__COLOR_RESTORE}"
+}
+
+chpwd() {
+    emulate -L zsh
+    show_current_dir
+}
+
 precmd() {
     local last_exit=$?
-    local status_warning
-    local basedir topdir fulldir fulldirnocolor
+    local prompt_status
+    local fulldirnocolor
 
     # update history (bash only)
     if [ -n "$BASH_VERSION" ]; then
@@ -432,33 +452,18 @@ precmd() {
     fi
 
     PS1=""
-    if [ -z "$NO_LONG_PROMPT" ]; then
-        if [ "$last_exit" != 0 ]; then
-            status_warning="$__PRC_FAIL !"
-        fi
+    if [ "$last_exit" != 0 ]; then
+        prompt_status="$__PRC_FAIL"
+    fi
+    PS1+="${PS_EXTRA}${prompt_status:-}\$${__PRC_RESTORE} "
 
-        if [ "$PWD" = "$HOME" ]; then
-            fulldir="${__PRC_BASEDIR}~"
-            fulldirnocolor="~"
-        else
-            basedir=${PWD%/*}
-            basedir=${basedir/${HOME}/"~"}
-            topdir=${PWD##*/}
-            fulldir="${__PRC_BASEDIR}${basedir}/${__PRC_RESTORE}${__PRC_TOPDIR}${topdir}"
-            fulldirnocolor="${basedir}/${topdir}"
-        fi
-
-        PS1+=$'\n'
-        PS1+="${fulldir}"
-        PS1+="${status_warning:-}"
-        PS1+="${__PRC_RESTORE}"
-        PS1+=$'\n'
-        PS1+="${PS_EXTRA}\$${__PRC_RESTORE} "
+    if [ "$PWD" = "$HOME" ]; then
+        fulldirnocolor="~"
     else
-        if [ "$last_exit" != 0 ]; then
-            status_warning="$__PRC_FAIL"
-        fi
-        PS1+="${PS_EXTRA}${status_warning:-}\$${__PRC_RESTORE} "
+        basedir=${PWD%/*}
+        basedir=${basedir/${HOME}/"~"}
+        topdir=${PWD##*/}
+        fulldirnocolor="${basedir}/${topdir}"
     fi
 
     # include VTE specific additions
@@ -521,16 +526,10 @@ if [ -n "$BASH_VERSION" ]; then
     __PRC_OK="\[${__COLOR_GREEN}\]"
     __PRC_FAIL="\[${__COLOR_RED}\]"
     __PRC_RESTORE="\[${__COLOR_RESTORE}\]"
-    __PRC_BASEDIR="\[${__COLOR_CYAN}\]"
-    __PRC_TOPDIR="\[${__COLOR_YELLOW}\]"
-    __PRC_TIME="\[${__COLOR_PURPLE}\]"
 elif [ -n "$ZSH_VERSION" ]; then
     __PRC_OK="%{%F{green}%}"
     __PRC_FAIL="%{%F{red}%}"
     __PRC_RESTORE="%{%f%}"
-    __PRC_BASEDIR="%{%F{cyan}%}"
-    __PRC_TOPDIR="%{%F{yellow}%}"
-    __PRC_TIME="%{%F{magenta}%}"
 fi
 
 # colors for ls
@@ -694,3 +693,5 @@ if [ -n "$TERRAFORM_PATH" ]; then
     complete -C "$TERRAFORM_PATH" terraform
     complete -o nospace -C "$TERRAFORM_PATH" terraform
 fi
+
+show_current_dir

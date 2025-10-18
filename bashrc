@@ -295,25 +295,43 @@ add_path() {
     export PATH="$1:$PATH"
 }
 
+# display current directory color coded
+color_pwd() {
+    local basedir topdir fulldir
+
+    if [ "$PWD" = "$HOME" ]; then
+        fulldir="${__COLOR_CYAN}~"
+    else
+        basedir=${PWD%/*}
+        basedir=${basedir/${HOME}/"~"}
+        topdir=${PWD##*/}
+        fulldir="${__COLOR_CYAN}${basedir}/${__COLOR_RESTORE}${__COLOR_YELLOW}${topdir}"
+    fi
+
+    printf "${fulldir}${__COLOR_RESTORE}\n"
+}
+
 # print out a key-value pair
 # used in whereami
 __print_kvpair() {
-    printf "${__COLOR_PURPLE}%-12s: ${__COLOR_CYAN}%s${__COLOR_RESTORE}\n" "$@"
+    printf "${__COLOR_LBLUE}%s${__COLOR_LBLACK}:${__COLOR_RESTORE} %s\n" "$@"
 }
 
 # print user and location
 whereami() {
-    __print_kvpair "who & where" "${USER} @ ${HOSTNAME:-$HOST}"
-    __print_kvpair "directory" "${PWD}"
-    __print_kvpair "time" "$(date)"
+    __print_kvpair "user " \
+        "$(printf "%s ${__COLOR_CYAN}@${__COLOR_RESTORE} %s${__COLOR_RESTORE}" \
+            "$USER" "${HOSTNAME:-$HOST}" \
+        )"
+    __print_kvpair "dir  " "$(color_pwd)"
     if [ -n "${VIRTUAL_ENV}" ]; then
-        __print_kvpair "python venv" "${VIRTUAL_ENV}"
+        __print_kvpair "venv " "${VIRTUAL_ENV}"
     fi
     if [ -n "${AWS_VAULT}" ]; then
-        __print_kvpair "aws vault" "${AWS_VAULT}"
+        __print_kvpair "aws  " "${AWS_VAULT}"
     fi
     if [ "$(git rev-parse --is-inside-work-tree 2>/dev/null)" = "true" ]; then
-        __print_kvpair "git branch" "$(git rev-parse --abbrev-ref HEAD)"
+        __print_kvpair "git  " "$(git rev-parse --abbrev-ref HEAD)"
     fi
 }
 alias wai=whereami
@@ -421,24 +439,9 @@ set_prompt_extra() {
     export PS_EXTRA="$1"
 }
 
-show_current_dir() {
-    local basedir topdir fulldir
-
-    if [ "$PWD" = "$HOME" ]; then
-        fulldir="${__COLOR_CYAN}~"
-    else
-        basedir=${PWD%/*}
-        basedir=${basedir/${HOME}/"~"}
-        topdir=${PWD##*/}
-        fulldir="${__COLOR_CYAN}${basedir}/${__COLOR_RESTORE}${__COLOR_YELLOW}${topdir}"
-    fi
-
-    echo "${fulldir}${__COLOR_RESTORE}"
-}
-
 chpwd() {
     emulate -L zsh
-    show_current_dir
+    color_pwd
 }
 
 precmd() {
@@ -507,20 +510,22 @@ fi
 
 # colors
 __COLOR_RESTORE='\e[0m'
+__COLOR_BLACK='\e[0;30m'
 __COLOR_RED='\e[0;31m'
 __COLOR_GREEN='\e[0;32m'
 __COLOR_YELLOW='\e[0;33m'
 __COLOR_BLUE='\e[0;34m'
 __COLOR_PURPLE='\e[0;35m'
 __COLOR_CYAN='\e[0;36m'
-__COLOR_LIGHTGRAY='\e[0;37m'
+__COLOR_WHITE='\e[0;37m'
+__COLOR_LBLACK='\e[1;30m'
 __COLOR_LRED='\e[1;31m'
 __COLOR_LGREEN='\e[1;32m'
 __COLOR_LYELLOW='\e[1;33m'
 __COLOR_LBLUE='\e[1;34m'
 __COLOR_LPURPLE='\e[1;35m'
 __COLOR_LCYAN='\e[1;36m'
-__COLOR_WHITE='\e[1;37m'
+__COLOR_LWHITE='\e[1;37m'
 
 if [ -n "$BASH_VERSION" ]; then
     __PRC_OK="\[${__COLOR_GREEN}\]"
@@ -694,4 +699,6 @@ if [ -n "$TERRAFORM_PATH" ]; then
     complete -o nospace -C "$TERRAFORM_PATH" terraform
 fi
 
-show_current_dir
+### display information every new shell ###
+
+whereami

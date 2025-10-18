@@ -57,6 +57,7 @@ link_gitconfig() {
 mkdir -p "${XDG_CONFIG_DIR}"
 link_xdg "foot"
 link_xdg "nvim"
+link_xdg "mc"
 link_xdg "powershell"
 link_xdg "wezterm"
 link_home "bashrc" "zshrc"

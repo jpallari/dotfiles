@@ -83,7 +83,7 @@ editor_backup_extension=~
 editor_filesize_threshold=64M
 editor_stop_format_chars=-+*\\,.;:&>
 mcview_eof=
-skin=dark
+skin=default
 filepos_max_saved_entries=1024
 
 [Layout]
@@ -112,7 +112,7 @@ clipboard_store=
 clipboard_paste=
 
 [Colors]
-base_color=
+base_color=menunormal=black,lightgray:menuhot=magenta:menuhotsel=brightmagenta,black:marked=black,yellow
 foot=
 color_terminals=
 xterm-256color=

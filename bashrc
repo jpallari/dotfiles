@@ -455,7 +455,9 @@ precmd() {
     fi
 
     PS1=""
-    if [ "$last_exit" != 0 ]; then
+    if [ "$last_exit" = 0 ]; then
+        prompt_status="$__PRC_OK"
+    else
         prompt_status="$__PRC_FAIL"
     fi
     PS1+="${PS_EXTRA}${prompt_status:-}\$${__PRC_RESTORE} "
@@ -528,12 +530,12 @@ __COLOR_LCYAN='\e[1;36m'
 __COLOR_LWHITE='\e[1;37m'
 
 if [ -n "$BASH_VERSION" ]; then
-    __PRC_OK="\[${__COLOR_GREEN}\]"
+    __PRC_OK="\[${__COLOR_LGREEN}\]"
     __PRC_FAIL="\[${__COLOR_RED}\]"
     __PRC_RESTORE="\[${__COLOR_RESTORE}\]"
 elif [ -n "$ZSH_VERSION" ]; then
-    __PRC_OK="%{%F{green}%}"
-    __PRC_FAIL="%{%F{red}%}"
+    __PRC_OK="%{%B%F{green}%}"
+    __PRC_FAIL="%{%B%F{red}%}"
     __PRC_RESTORE="%{%f%}"
 fi
 

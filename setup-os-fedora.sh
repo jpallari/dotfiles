@@ -2,4 +2,15 @@
 set -euo pipefail
 
 dnf upgrade -y
-dnf install -y zsh neovim git curl
+dnf install -y \
+    zsh \
+    neovim \
+    git \
+    curl \
+    mc \
+    fzf \
+    @development-tools \
+    clang \
+    clang-devel \
+    rustup \
+    golang

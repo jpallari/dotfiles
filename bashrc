@@ -536,7 +536,7 @@ if [ -n "$BASH_VERSION" ]; then
 elif [ -n "$ZSH_VERSION" ]; then
     __PRC_OK="%{%B%F{green}%}"
     __PRC_FAIL="%{%B%F{red}%}"
-    __PRC_RESTORE="%{%f%}"
+    __PRC_RESTORE="%{%b%f%}"
 fi
 
 # colors for ls

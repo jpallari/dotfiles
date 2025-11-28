@@ -688,13 +688,6 @@ if [ -n "$_dotfile_shell" ]; then
     if [ -s "$HOME/.local_tools.$_dotfile_shell" ]; then
         . "$HOME/.local_tools.$_dotfile_shell"
     fi
-
-    # fzf
-    if [ -f "/usr/share/fzf/shell/key-bindings.$_dotfile_shell" ]; then
-        . "/usr/share/fzf/shell/key-bindings.$_dotfile_shell"
-    elif [ -f "$HOME/.local/share/fzf/shell/key-bindings.$_dotfile_shell" ]; then
-        . "$HOME/.local/share/fzf/shell/key-bindings.$_dotfile_shell"
-    fi
 fi
 
 # aws cli

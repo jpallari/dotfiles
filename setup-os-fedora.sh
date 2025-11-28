@@ -12,5 +12,8 @@ dnf install -y \
     @development-tools \
     clang \
     clang-devel \
+    libasan \
+    libubsan \
+    cppcheck \
     rustup \
     golang

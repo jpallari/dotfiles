@@ -6,7 +6,8 @@
 # history
 HISTFILE="$HOME/.shell_history"
 HISTCONTROL=ignoreboth
-HISTIGNORE='bg:fg:history'
+HISTIGNORE='bg:fg:history:fc:hisf'
+HISTORY_IGNORE='(bg|fg|history|fc|hisf)*'
 HISTSIZE=100000
 SAVEHIST=$HISTSIZE
 HISTFILESIZE=$HISTSIZE
@@ -187,6 +188,12 @@ jqpreview() {
     if [ -n "${query}" ]; then
         jq "${query}" "${1}"
     fi
+}
+
+# find commands from history
+hisf() {
+    local query=$1 limit=${2:-5}
+    fc -l 0 | grep "${query}" | tail -n "${limit}"
 }
 
 GCD_PROJECT_DIRECTORY=$HOME/projects

@@ -857,6 +857,26 @@ do
       end,
     },
     {
+      name = 'mini.files',
+      keys = {
+        { '\\', function() MiniFiles.open() end, desc = 'Files' },
+      },
+      config_lazy = true,
+      config = function()
+        require('mini.files').setup({
+          content = {
+            prefix = function() return '' end
+          },
+          mappings = {
+            close = '\\'
+          },
+          windows = {
+            preview = true,
+          },
+        })
+      end,
+    },
+    {
       name = 'vimwiki',
       cmd = { 'VimwikiIndex', 'VimwikiMakeDiaryNote' },
       keys = {

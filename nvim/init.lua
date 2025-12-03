@@ -479,6 +479,18 @@ function Surround(start_pos, end_pos, args)
   end
 end
 
+function PluginUpdateHelp()
+  local config_path = vim.fn.stdpath('config')
+  local plugin_doc_dirs = vim.fn.glob(
+    config_path .. '/pack/plugins/*/*/doc',
+    false, true
+  )
+  for _, dirpath in pairs(plugin_doc_dirs) do
+    print('Found docs dir: ' .. dirpath)
+    vim.cmd.helptags(dirpath)
+  end
+end
+
 --
 -- Custom commands
 --
@@ -523,6 +535,9 @@ do
     local positions = selection_for_cmd_opts(opts)
     Surround(positions[1], positions[2], opts.fargs)
   end, { nargs = '*', range = true, desc = 'Surround' })
+  cmd('PluginUpdateHelp', function()
+    PluginUpdateHelp()
+  end, { desc = 'Update plugin help docs' })
 end
 
 --

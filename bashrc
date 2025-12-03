@@ -276,8 +276,7 @@ httpserver() (
 
 # print a horizontal line
 hr() {
-    printf -v line "%${COLUMNS}s" ""
-    echo "${line// /=}"
+    printf "\e[07m%${COLUMNS}s\e[0m" "" | tr ' ' '='
 }
 
 # python oneliner

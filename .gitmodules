@@ -13,3 +13,6 @@
 [submodule "nvim/pack/plugins/start/pkl-neovim"]
 	path = nvim/pack/plugins/start/pkl-neovim
 	url = https://github.com/apple/pkl-neovim.git
+[submodule "nvim/pack/plugins/opt/mini.files"]
+	path = nvim/pack/plugins/opt/mini.files
+	url = https://github.com/nvim-mini/mini.files.git

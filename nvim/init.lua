@@ -728,8 +728,8 @@ do
 
   -- Files and buffers
   mapk('n', '<leader>e', ":e <C-R>=expand('%:p:h') . '/' <cr>", { desc = 'Open file from current buffer directory' })
-  mapk('n', '\\', '<cmd>Lexplore!<cr>', { desc = 'File explorer' })
-  mapk('n', '<leader>\\', '<cmd>Lexplore! %:p:h<cr>', { desc = 'File explorer in current dir' })
+  mapk('n', '<leader>\\', '<cmd>Lexplore!<cr>', { desc = 'File explorer in current directory' })
+  mapk('n', '\\', '<cmd>Lexplore! %:p:h<cr>', { desc = 'File explorer in current file directory' })
   mapk('n', '<leader><leader>', '<cmd>ls<cr>:b ', { desc = 'Select buffer' })
   mapk('n', '<leader>m', '<cmd>marks \'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ<cr>', { desc = 'View marks' })
   mapk('n', '<leader>ff', ':FindFiles ', { desc = 'Find files' })

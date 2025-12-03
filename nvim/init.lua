@@ -883,6 +883,7 @@ do
   for _, plugin in pairs(plugins) do
     local plugin_loaded = false
     local shim_unloaded = false
+    local config_loaded = false
 
     local function load_plug()
       if not plugin_loaded then
@@ -890,28 +891,40 @@ do
         plugin_loaded = true
       end
     end
+
     local function unload_shim()
       if not shim_unloaded then
-        for _, cmd in pairs(plugin.cmd) do
-          vim.api.nvim_del_user_command(cmd)
+        if plugin.cmd then
+          for _, cmd in pairs(plugin.cmd) do
+            vim.api.nvim_del_user_command(cmd)
+          end
         end
-        for _, key in pairs(plugin.keys) do
-          if not key[2] then
-            pcall(vim.keymap.del, 'n', key[1], { buffer = nil })
+        if plugin.keys then
+          for _, key in pairs(plugin.keys) do
+            if not key[2] then
+              pcall(vim.keymap.del, 'n', key[1], { buffer = nil })
+            end
           end
         end
         shim_unloaded = true
       end
     end
 
-    if plugin.config then
-      local ok, err = pcall(plugin.config)
-      if not ok then
-        vim.notify(
-          'Failed to config plugin "' .. plugin.name .. '": ' .. err,
-          vim.log.levels.WARN
-        )
+    local function load_config()
+      if plugin.config and not config_loaded then
+        local ok, err = pcall(plugin.config)
+        if not ok then
+          vim.notify(
+            'Failed to config plugin "' .. plugin.name .. '": ' .. err,
+            vim.log.levels.WARN
+          )
+        end
+        config_loaded = true
       end
+    end
+
+    if not plugin.config_lazy then
+      load_config()
     end
 
     if plugin.cmd then
@@ -932,6 +945,7 @@ do
 
           unload_shim()
           load_plug()
+          load_config()
 
           local info = vim.api.nvim_get_commands({})[cmd] or vim.api.nvim_buf_get_commands(0, {})[cmd]
           command.nargs = info.nargs
@@ -950,12 +964,17 @@ do
         vim.keymap.set('n', lhs, function()
           unload_shim()
           load_plug()
-          local feed_key = vim.api.nvim_replace_termcodes('<Ignore>' .. (rhs or lhs), true, true, true)
-          vim.api.nvim_feedkeys(
-            feed_key,
-            'i',
-            false
-          )
+          load_config()
+          if type(rhs) == 'function' then
+            rhs()
+          else
+            local feed_key = vim.api.nvim_replace_termcodes('<Ignore>' .. (rhs or lhs), true, true, true)
+            vim.api.nvim_feedkeys(
+              feed_key,
+              'i',
+              false
+            )
+          end
         end, { desc = key.desc })
       end
     end

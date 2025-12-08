@@ -496,48 +496,79 @@ end
 --
 do
   local cmd = vim.api.nvim_create_user_command
+
   cmd('SetIndent', function(args)
     SetIndent(args.args)
   end, { nargs = '*', desc = 'Set indentation level' })
+
   cmd('SetIndentTab', function(args)
     SetIndentTab(args.args)
   end, { nargs = '*', desc = 'Set tab indentation level' })
+
   cmd('ToggleAutoSave', function()
     vim.g.disableautosave = not vim.g.disableautosave
     print('[Auto save] ' .. (vim.g.disableautosave and 'OFF' or 'ON'))
   end, { nargs = 0, desc = 'Toggle auto save' })
+
   cmd('TrimWhitespace', function()
     vim.cmd '%s/\\s\\+$//e'
   end, { desc = 'Trim trailing whitespace characters' })
-  cmd('CopyFullPath', function()
-    local path = vim.fn.expand('%:p')
-    vim.fn.setreg('+', path)
-    print('Path: ' .. path)
-  end, { desc = 'Copy full path to clipboard' })
-  cmd('CopyRelPath', function()
-    local path = vim.fn.expand('%:.')
-    vim.fn.setreg('+', path)
-    print('Path: ' .. path)
-  end, { desc = 'Copy relative path to clipboard' })
+
+  cmd('CopyPath', function(args)
+    local expansion = '%:.'
+    local pos_mode = ''
+
+    for _, v in pairs(args.fargs) do
+      if v == 'f' then
+        expansion = '%:p'
+      elseif v == 'l' then
+        pos_mode = ':line'
+      elseif v == 'c' then
+        pos_mode = ':line:col'
+      elseif v == '+' then
+        pos_mode = '+line'
+      end
+    end
+
+    local path = vim.fn.expand(expansion)
+    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+    local pos = ''
+    if pos_mode == ':line' then
+      pos = ':' .. row
+    elseif pos_mode == ':line:col' then
+      pos = ':' .. row .. ':' .. col
+    elseif pos_mode == '+line' then
+      pos = ' +' .. row
+    end
+    local contents = path .. pos
+
+    vim.fn.setreg('+', contents)
+    print(contents)
+  end, { nargs = '*', desc = 'Copy path to clipboard'})
+
   cmd('FindFiles', function(args)
     FindFiles(args.args)
   end, { nargs = 1, desc = 'Find files by file name' })
+
   cmd('FindGitFiles', function(args)
     FindFiles(args.args, 'git')
   end, { nargs = 1, desc = 'Find files by file name from git' })
+
   cmd('GitGrep', function(args)
     local grepprg = vim.opt_local.grepprg
     vim.opt_local.grepprg = 'git grep -n --column'
     vim.cmd('lgrep ' .. args.args)
     vim.opt_local.grepprg = grepprg
   end, { nargs = 1, desc = 'Grep files from git' })
+
   cmd('Surround', function(opts)
     local positions = selection_for_cmd_opts(opts)
     Surround(positions[1], positions[2], opts.fargs)
   end, { nargs = '*', range = true, desc = 'Surround' })
+
   cmd('PluginUpdateHelp', function()
     PluginUpdateHelp()
-  end, { desc = 'Update plugin help docs' })
+  end, { nargs = 0, desc = 'Update plugin help docs' })
 end
 
 --
@@ -584,6 +615,16 @@ do
       end
 
       vim.cmd 'silent! update'
+    end,
+  })
+
+  -- Quickfix and location list settings
+  autocmd('FileType', {
+    desc = 'Quickfix and location list settings',
+    group = augroup,
+    pattern = 'qf',
+    callback = function()
+      vim.opt_local.wrap = false
     end,
   })
 
@@ -730,7 +771,7 @@ do
   mapk('n', '<leader>e', ":e <C-R>=expand('%:p:h') . '/' <cr>", { desc = 'Open file from current buffer directory' })
   mapk('n', '<leader>\\', '<cmd>Lexplore!<cr>', { desc = 'File explorer in current directory' })
   mapk('n', '\\', '<cmd>Lexplore! %:p:h<cr>', { desc = 'File explorer in current file directory' })
-  mapk('n', '<leader><leader>', '<cmd>ls<cr>:b ', { desc = 'Select buffer' })
+  mapk('n', '<leader><leader>', '<cmd>silent set nomore | ls | set more<cr>:b ', { desc = 'Select buffer' })
   mapk('n', '<leader>m', '<cmd>marks \'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ<cr>', { desc = 'View marks' })
   mapk('n', '<leader>ff', ':FindFiles ', { desc = 'Find files' })
   mapk('n', '<leader>fb', ':vim  %<left><left>', { desc = 'Find in buffer' })
@@ -834,9 +875,9 @@ do
       name = 'vim-fugitive',
       cmd = { 'Git', 'Gedit', 'Ge', 'Gclog', },
       keys = {
-        { '<leader>GG', '<cmd>Ge :<cr>',      desc = 'Git status' },
-        { '<leader>Gg', '<cmd>Ge :<cr>',      desc = 'Git status' },
-        { '<leader>Gs', '<cmd>Git<cr>',       desc = 'Git status' },
+        { '<leader>GG', '<cmd>tab Git<cr>',   desc = 'Git status' },
+        { '<leader>Gg', '<cmd>tab Git<cr>',   desc = 'Git status' },
+        { '<leader>Gs', '<cmd>Git<cr>',       desc = 'Git status (split)' },
         { '<leader>GB', '<cmd>Git blame<cr>', desc = 'Git blame' },
         { '<leader>Gl', '<cmd>Gclog<cr>',     desc = 'Git log in quickfix list' },
       },

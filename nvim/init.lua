@@ -58,7 +58,6 @@ vim.opt.undofile = true
 vim.g.netrw_banner = 0
 vim.g.netrw_liststyle = 0
 vim.g.netrw_altfile = 1
-vim.g.netrw_keepdir = 0
 vim.g.netrw_winsize = 40
 vim.g.netrw_fastbrowse = 1
 vim.g.netrw_localcopydircmd = 'cp -r'
@@ -491,6 +490,34 @@ function PluginUpdateHelp()
   end
 end
 
+function BufferQList()
+  local buffers = vim.fn.getbufinfo({buflisted = 1})
+  local list_contents = {}
+
+  for _, buf in ipairs(buffers) do
+    if buf.name ~= nil and buf.name ~= '' then
+      local mark = vim.api.nvim_buf_get_mark(buf.bufnr, '"')
+      local lnum = mark[1]
+      local col = mark[2]
+      local lines = vim.api.nvim_buf_get_lines(buf.bufnr, lnum - 1, lnum, false)
+      local module = buf.name
+      if vim.startswith(buf.name, '/') or vim.startswith(buf.name, '~') then
+        module = vim.fn.fnamemodify(buf.name, ':~:.')
+      end
+      table.insert(list_contents, {
+        bufnr = buf.bufnr,
+        module = module,
+        lnum = lnum,
+        col = col,
+        text = lines[1] or "",
+      })
+    end
+  end
+
+  vim.fn.setqflist(list_contents, 'r')
+  vim.cmd.copen()
+end
+
 --
 -- Custom commands
 --
@@ -569,6 +596,10 @@ do
   cmd('PluginUpdateHelp', function()
     PluginUpdateHelp()
   end, { nargs = 0, desc = 'Update plugin help docs' })
+
+  cmd('BufferQList', function()
+    BufferQList()
+  end, { nargs = 0, desc = 'List buffers in Quickfix window'})
 end
 
 --
@@ -693,7 +724,7 @@ vim.filetype.add({
 })
 
 --
--- Keymaps
+-- Key mappings
 --
 do
   local mapk = vim.keymap.set
@@ -759,6 +790,13 @@ do
   mapk('n', '<leader>s', ':Surround ', { desc = 'Surround' })
   mapk('v', '<leader>s', ":'<,'>Surround ", { desc = 'Surround' })
 
+  -- Quick search and replace
+  for _, mode in pairs({'n', 'v'}) do
+    mapk(mode, '<leader>rw', ':%s/<C-r><C-w>//c<left><left>', { desc = 'Replace word under cursor' })
+    mapk(mode, '<leader>rs', ':%s///c<left><left>', { desc = 'Replace last search' })
+    mapk(mode, '<leader>rp', ':%s/<C-r>r//c<left><left>', { desc = 'Replace contents from register "r"' })
+  end
+
   -- Keep selection on indentation
   mapk('v', '<', '<gv', { desc = 'Lower indent and keep selection' })
   mapk('v', '>', '>gv', { desc = 'Increase indent and keep selection' })
@@ -772,7 +810,12 @@ do
   mapk('n', '<leader>\\', '<cmd>Lexplore!<cr>', { desc = 'File explorer in current directory' })
   mapk('n', '\\', '<cmd>Lexplore! %:p:h<cr>', { desc = 'File explorer in current file directory' })
   mapk('n', '<leader><leader>', '<cmd>silent set nomore | ls | set more<cr>:b ', { desc = 'Select buffer' })
-  mapk('n', '<leader>m', '<cmd>marks \'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ<cr>', { desc = 'View marks' })
+  mapk('n', '<leader>bb', '<cmd>BufferQList<cr>', { desc = 'Buffer list' })
+  mapk('n', '<leader>bf', ':vim  %<left><left>', { desc = 'Find in buffer' })
+  mapk('n', '<leader>mm', '<cmd>marks \'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ<cr>', { desc = 'View marks' })
+  mapk('n', '<leader>mr', '<cmd>marks 0123456789<cr>', { desc = 'View recent marks' })
+  mapk('n', '<leader>RR', '<cmd>registers abcdefghijklmnopqrstuvwxyz<cr>', { desc = 'View registers' })
+  mapk('n', '<leader>Rr', '<cmd>registers /.0123456789<cr>', { desc = 'View recent registers' })
   mapk('n', '<leader>ff', ':FindFiles ', { desc = 'Find files' })
   mapk('n', '<leader>fb', ':vim  %<left><left>', { desc = 'Find in buffer' })
   mapk('n', '<leader>fg', ':FindGitFiles ', { desc = 'Find files in git' })

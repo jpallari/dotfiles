@@ -504,6 +504,7 @@ function BufferQList()
       if vim.startswith(buf.name, '/') or vim.startswith(buf.name, '~') then
         module = vim.fn.fnamemodify(buf.name, ':~:.')
       end
+      module = module .. ' <' .. buf.bufnr .. '>'
       table.insert(list_contents, {
         bufnr = buf.bufnr,
         module = module,
@@ -515,6 +516,7 @@ function BufferQList()
   end
 
   vim.fn.setqflist(list_contents, 'r')
+  vim.fn.setqflist({}, 'a', { title = 'Buffers' })
   vim.cmd.copen()
 end
 
@@ -811,7 +813,7 @@ do
   mapk('n', '\\', '<cmd>Lexplore! %:p:h<cr>', { desc = 'File explorer in current file directory' })
   mapk('n', '<leader><leader>', '<cmd>silent set nomore | ls | set more<cr>:b ', { desc = 'Select buffer' })
   mapk('n', '<leader>bb', '<cmd>BufferQList<cr>', { desc = 'Buffer list' })
-  mapk('n', '<leader>bf', ':vim  %<left><left>', { desc = 'Find in buffer' })
+  mapk('n', '<leader>bf', ':lvimgrep  %<left><left>', { desc = 'Find in buffer' })
   mapk('n', '<leader>mm', '<cmd>marks \'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ<cr>', { desc = 'View marks' })
   mapk('n', '<leader>mr', '<cmd>marks 0123456789<cr>', { desc = 'View recent marks' })
   mapk('n', '<leader>RR', '<cmd>registers abcdefghijklmnopqrstuvwxyz<cr>', { desc = 'View registers' })
@@ -916,13 +918,14 @@ do
   local plugins = {
     {
       name = 'vim-fugitive',
-      cmd = { 'Git', 'Gedit', 'Ge', 'Gclog', },
+      cmd = { 'Git', 'Gedit', 'Ge', 'Gclog', 'Gllog', },
       keys = {
         { '<leader>GG', '<cmd>tab Git<cr>',   desc = 'Git status' },
         { '<leader>Gg', '<cmd>tab Git<cr>',   desc = 'Git status' },
         { '<leader>Gs', '<cmd>Git<cr>',       desc = 'Git status (split)' },
         { '<leader>GB', '<cmd>Git blame<cr>', desc = 'Git blame' },
-        { '<leader>Gl', '<cmd>Gclog<cr>',     desc = 'Git log in quickfix list' },
+        { '<leader>Gl', '<cmd>Gllog!<cr>',    desc = 'Git log in location list' },
+        { '<leader>GL', '<cmd>Gllog!<cr>',    desc = 'Git log in location list' },
       },
     },
     {

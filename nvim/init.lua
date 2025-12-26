@@ -758,12 +758,12 @@ do
   mapk('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
   mapk('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
   mapk('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
-  mapk('n', '<C-left>', ':vertical resize +5<CR>', { desc = 'Increase window size horizontally' })
-  mapk('n', '<C-right>', ':vertical resize -5<CR>', { desc = 'Decrease window size horizontally' })
-  mapk('n', '<C-up>', ':resize +5<CR>', { desc = 'Increase window size vertically' })
-  mapk('n', '<C-down>', ':resize -5<CR>', { desc = 'Decrease window size vertically' })
+  mapk('n', '<C-left>', '<cmd>vertical resize +5<cr>', { desc = 'Increase window size horizontally' })
+  mapk('n', '<C-right>', '<cmd>vertical resize -5<cr>', { desc = 'Decrease window size horizontally' })
+  mapk('n', '<C-up>', '<cmd>resize +5<cr>', { desc = 'Increase window size vertically' })
+  mapk('n', '<C-down>', '<cmd>resize -5<cr>', { desc = 'Decrease window size vertically' })
   for i = 1, 9 do
-    mapk('n', '<leader>' .. i, '<cmd>' .. i .. 'tabnext<cr>', { desc = 'Go to tab #' .. i })
+    mapk('n', '<M-' .. i .. '>', '<cmd>' .. i .. 'tabnext<cr>', { desc = 'Go to tab #' .. i })
   end
 
   -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
@@ -811,7 +811,7 @@ do
   mapk('n', '<leader>e', ":e <C-R>=expand('%:p:h') . '/' <cr>", { desc = 'Open file from current buffer directory' })
   mapk('n', '<leader>\\', '<cmd>Lexplore!<cr>', { desc = 'File explorer in current directory' })
   mapk('n', '\\', '<cmd>Lexplore! %:p:h<cr>', { desc = 'File explorer in current file directory' })
-  mapk('n', '<leader><leader>', '<cmd>silent set nomore | ls | set more<cr>:b ', { desc = 'Select buffer' })
+  mapk('n', '<leader><leader>', '<cmd>ls<cr>', { desc = 'Select buffer' })
   mapk('n', '<leader>bb', '<cmd>BufferQList<cr>', { desc = 'Buffer list' })
   mapk('n', '<leader>bf', ':lvimgrep  %<left><left>', { desc = 'Find in buffer' })
   mapk('n', '<leader>mm', '<cmd>marks \'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ<cr>', { desc = 'View marks' })

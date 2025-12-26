@@ -55,7 +55,6 @@ vim.opt.swapfile = false
 vim.opt.backup = false
 vim.opt.undodir = os.getenv('HOME' .. '/.vim/undodir')
 vim.opt.undofile = true
-vim.g.netrw_banner = 0
 vim.g.netrw_liststyle = 0
 vim.g.netrw_altfile = 1
 vim.g.netrw_winsize = 40

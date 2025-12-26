@@ -657,6 +657,7 @@ do
     pattern = 'qf',
     callback = function()
       vim.opt_local.wrap = false
+      vim.opt_local.cursorline = true
     end,
   })
 

@@ -813,6 +813,7 @@ do
   mapk('n', '\\', '<cmd>Lexplore! %:p:h<cr>', { desc = 'File explorer in current file directory' })
   mapk('n', '<leader><leader>', '<cmd>ls<cr>', { desc = 'Select buffer' })
   mapk('n', '<leader>bb', '<cmd>BufferQList<cr>', { desc = 'Buffer list' })
+  mapk('n', '<leader>bd', ':b # | :bd #<cr>', { desc = 'Buffer delete without closing a window' })
   mapk('n', '<leader>bf', ':lvimgrep  %<left><left>', { desc = 'Find in buffer' })
   mapk('n', '<leader>mm', '<cmd>marks \'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ<cr>', { desc = 'View marks' })
   mapk('n', '<leader>mr', '<cmd>marks 0123456789<cr>', { desc = 'View recent marks' })

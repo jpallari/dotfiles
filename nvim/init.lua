@@ -519,6 +519,60 @@ function BufferQList()
   vim.cmd.copen()
 end
 
+function AsyncMake(args)
+  local buf_nr = vim.api.nvim_win_get_buf(vim.fn.win_getid())
+
+  local efm = vim.api.nvim_buf_get_option(buf_nr, 'errorformat')
+  local makeprg = vim.api.nvim_buf_get_option(buf_nr, 'makeprg')
+  if not makeprg or makeprg == '' then
+    makeprg = 'make'
+  end
+  makeprg = vim.fn.expandcmd(makeprg)
+  local make_cmd = vim.split(makeprg, ' ')
+  for _, arg in ipairs(args) do
+    table.insert(make_cmd, vim.fn.expandcmd(arg))
+  end
+  local make_cmd_str = table.concat(make_cmd, ' ')
+
+  local lines = {}
+
+  local function on_text(job_id, data, event)
+    if data then
+      vim.list_extend(lines, data)
+    end
+  end
+
+  local function on_exit(job_id, data, event)
+    local log_level = vim.log.levels.INFO
+    if data ~= 0 then
+      log_level = vim.log.levels.WARN
+    end
+    local message = 'Command "' .. make_cmd_str .. '" completed with code ' .. data
+    vim.notify(message, log_level)
+
+    local setqflist_opts = {
+      title = make_cmd_str,
+      lines = lines,
+    }
+    if efm ~= '' then
+      setqflist_opts['efm'] = efm
+    end
+    vim.fn.setqflist({}, ' ', setqflist_opts)
+  end
+
+  vim.notify('Running: ' .. make_cmd_str)
+  vim.fn.jobstart(
+    make_cmd,
+    {
+      on_stderr = on_text,
+      on_stdout = on_text,
+      on_exit = on_exit,
+      stdout_buffered = true,
+      stderr_buffered = true,
+    }
+  )
+end
+
 --
 -- Custom commands
 --
@@ -601,6 +655,10 @@ do
   cmd('BufferQList', function()
     BufferQList()
   end, { nargs = 0, desc = 'List buffers in Quickfix window'})
+
+  cmd('Make', function(args)
+    AsyncMake(args.fargs)
+  end, { nargs = '*', desc = 'Async Make' })
 end
 
 --
@@ -861,6 +919,8 @@ do
 
   -- Development
   mapk('n', '<F9>', '<cmd>make<cr>', { desc = 'Run make' })
+  mapk('n', '<leader>MM', '<cmd>Make<cr>', { desc = 'Run async make' })
+  mapk('n', '<leader>MK', ':Make ', { desc = 'Run async make' })
 end
 
 --

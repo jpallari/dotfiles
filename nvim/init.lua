@@ -859,7 +859,7 @@ do
   mapk('n', '<leader>tas', '<cmd>ToggleAutoSave<cr>', { desc = 'Toggle autosave' })
 
   -- Development
-  mapk('n', '<F10>', '<cmd>make<cr>', { desc = 'Run make' })
+  mapk('n', '<F9>', '<cmd>make<cr>', { desc = 'Run make' })
 end
 
 --

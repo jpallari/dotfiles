@@ -41,6 +41,7 @@ vim.opt.foldlevelstart = 99
 vim.opt.foldmethod = 'indent'
 vim.opt.completeopt = { 'menuone', 'noselect', 'popup' }
 vim.opt.pumheight = 10
+vim.opt.guicursor = 'n-v-c-i:block'
 
 --
 -- Controls

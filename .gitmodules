@@ -16,3 +16,12 @@
 [submodule "nvim/pack/plugins/opt/mini.files"]
 	path = nvim/pack/plugins/opt/mini.files
 	url = https://github.com/nvim-mini/mini.files.git
+[submodule "nvim/pack/plugins/opt/nvim-dap"]
+	path = nvim/pack/plugins/opt/nvim-dap
+	url = https://codeberg.org/mfussenegger/nvim-dap.git
+[submodule "nvim/pack/plugins/opt/nvim-dap-go"]
+	path = nvim/pack/plugins/opt/nvim-dap-go
+	url = https://github.com/leoluz/nvim-dap-go.git
+[submodule "nvim/pack/plugins/opt/nvim-dap-view"]
+	path = nvim/pack/plugins/opt/nvim-dap-view
+	url = https://github.com/igorlfs/nvim-dap-view.git

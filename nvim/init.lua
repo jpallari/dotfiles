@@ -1038,7 +1038,42 @@ do
         vim.g.vimwiki_ext2syntax = vim.empty_dict()
         vim.g.vimwiki_auto_header = 1
       end,
-    }
+    },
+    {
+      name = { 'nvim-dap', 'nvim-dap-go', 'nvim-dap-view' },
+      cmd = { 'DapToggleBreakpoint', 'DapNew', 'DapViewOpen', 'DapViewToggle' },
+      keys = {
+        { '<leader>DR', desc = 'DAP: Run last' },
+        { '<leader>Dl', desc = 'DAP: List breakpoints' },
+        { '<leader>DJ', desc = 'DAP: Go down in stack' },
+        { '<leader>DK', desc = 'DAP: Go up in stack' },
+        { '<leader>DC', desc = 'DAP: Run to cursor' },
+        { '<leader>DGt', desc = 'DAP: Run test under cursor (Go)' },
+        { '<leader>DGT', desc = 'DAP: Run last test (Go)' },
+        { '<leader>DD', '<cmd>DapViewToggle<cr>', desc = 'DAP: Toggle view' },
+        { '<leader>Db', '<cmd>DapToggleBreakpoint<cr>', desc = 'DAP: Toggle breakpoint' },
+        { '<leader>Dr', '<cmd>DapNew<cr>', desc = 'DAP: Run' },
+        { '<F5>', '<cmd>DapContinue<cr>', desc = 'DAP: Continue' },
+        { '<F10>', '<cmd>DapStepOver<cr>', desc = 'DAP: Step over' },
+        { '<F11>', '<cmd>DapStepInto<cr>', desc = 'DAP: Step into' },
+        { '<F12>', '<cmd>DapStepOut<cr>', desc = 'DAP: Step out' },
+      },
+      config_lazy = true,
+      config = function()
+        local dap = require('dap')
+        local dap_go = require('dap-go')
+        dap_go.setup()
+
+        local mapk = vim.keymap.set
+        mapk('n', '<leader>DR', function() dap.run_last() end, { desc = 'DAP: Run last' })
+        mapk('n', '<leader>Dl', function() dap.list_breakpoints() end, { desc = 'DAP: List breakpoints' })
+        mapk('n', '<leader>DJ', function() dap.down() end, { desc = 'DAP: Go down in stack' })
+        mapk('n', '<leader>DK', function() dap.up() end, { desc = 'DAP: Go up in stack' })
+        mapk('n', '<leader>DC', function() dap.run_to_cursor() end, { desc = 'DAP: Run to cursor' })
+        mapk('n', '<leader>DGt', function() dap_go.debug_test() end, { desc = 'DAP: Run test under cursor (Go)' })
+        mapk('n', '<leader>DGT', function() dap_go.debug_last_test() end, { desc = 'DAP: Run last test (Go)' })
+      end,
+    },
   }
 
   for _, plugin in pairs(plugins) do
@@ -1048,7 +1083,13 @@ do
 
     local function load_plug()
       if not plugin_loaded then
-        vim.cmd.packadd(plugin.name)
+        if type(plugin.name) == "string" then
+          vim.cmd.packadd(plugin.name)
+        else
+          for _, name in ipairs(plugin.name) do
+            vim.cmd.packadd(name)
+          end
+        end
         plugin_loaded = true
       end
     end
@@ -1075,10 +1116,17 @@ do
       if plugin.config and not config_loaded then
         local ok, err = pcall(plugin.config)
         if not ok then
-          vim.notify(
-            'Failed to config plugin "' .. plugin.name .. '": ' .. err,
-            vim.log.levels.WARN
-          )
+          if type(plugin.name) == "string" then
+            vim.notify(
+              'Failed to config plugin ' .. plugin.name .. ': ' .. err,
+              vim.log.levels.WARN
+            )
+          else
+            vim.notify(
+              'Failed to config plugins ' .. table.concat(plugin.name, ', ') .. ': ' .. err,
+              vim.log.levels.WARN
+            )
+          end
         end
         config_loaded = true
       end

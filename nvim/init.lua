@@ -888,7 +888,7 @@ do
   mapk('n', '<leader>q', '<cmd>copen<cr>', { desc = 'Open quickfix list' })
   mapk('n', '<leader>l', '<cmd>lopen<cr>', { desc = 'Open location list' })
 
-  -- Insert mode navigation
+  -- Insert mode navigation/editing
   mapk('i', '<C-a>', '<C-O>^', { desc = 'Move cursor to line start' })
   mapk('i', '<C-e>', '<C-O>$', { desc = 'Move cursor to line end' })
   mapk('i', '<C-f>', '<right>', { desc = 'Move cursor right' })
@@ -897,16 +897,8 @@ do
   mapk('i', '<M-b>', '<c-left>', { desc = 'Move cursor one word left' })
   mapk('i', '<M-right>', '<c-right>', { desc = 'Move cursor one word right' })
   mapk('i', '<M-left>', '<c-left>', { desc = 'Move cursor one word left' })
-
-  -- Command mode navigation
-  mapk('c', '<C-a>', '<home>', { desc = 'Move cursor to start' })
-  mapk('c', '<C-e>', '<end>', { desc = 'Move cursor to end' })
-  mapk('c', '<C-f>', '<right>', { desc = 'Move cursor right' })
-  mapk('c', '<C-b>', '<left>', { desc = 'Move cursor left' })
-  mapk('c', '<M-f>', '<c-right>', { desc = 'Move cursor one word right' })
-  mapk('c', '<M-b>', '<c-left>', { desc = 'Move cursor one word left' })
-  mapk('c', '<M-right>', '<c-right>', { desc = 'Move cursor one word right' })
-  mapk('c', '<M-left>', '<c-left>', { desc = 'Move cursor one word left' })
+  mapk('i', '<C-d>', '<C-O>"_dl', { desc = 'Delete until the end of line' })
+  mapk('i', '<C-k>', '<C-O>d$', { desc = 'Delete until the end of line' })
 
   -- Toggles
   mapk('n', '<leader>th', '<cmd>setlocal hlsearch!<cr>', { desc = 'Toggle search hilight' })

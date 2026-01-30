@@ -74,7 +74,7 @@ vim.opt.gdefault = true
 vim.opt.infercase = true
 vim.opt.incsearch = true
 if vim.fn.executable('rg') then
-  vim.opt.grepprg = 'rg --vimgrep --hidden --smart-case --iglob "!**/.git/*"'
+  vim.opt.grepprg = 'rg --vimgrep --hidden --smart-case --iglob "!**/.git/*" -- $*'
   vim.opt.grepformat = '%f:%l:%c:%m,%f:%l:%m'
 end
 
@@ -146,10 +146,10 @@ function FindFiles(pattern, cmd_name)
     '--files', '--hidden',
     '--color=never', '--smart-case',
     '--iglob', '**/' .. pattern .. '*',
-    '--iglob', '!**/.git/*',
+    '--iglob', '!**/.git/*', '--',
   }
   local find_cmd = { 'find', '.', '-type', 'f', '-ipath', pattern, }
-  local git_cmd = { 'git', 'ls-files', pattern, }
+  local git_cmd = { 'git', 'ls-files', '--', pattern, }
   local cmd
 
   if cmd_name == 'rg' then
@@ -879,7 +879,7 @@ do
   mapk('n', '<leader>RR', '<cmd>registers abcdefghijklmnopqrstuvwxyz<cr>', { desc = 'View registers' })
   mapk('n', '<leader>Rr', '<cmd>registers /.0123456789<cr>', { desc = 'View recent registers' })
   mapk('n', '<leader>ff', ':FindFiles ', { desc = 'Find files' })
-  mapk('n', '<leader>fb', ':vim  %<left><left>', { desc = 'Find in buffer' })
+  mapk('n', '<leader>fb', ':lvimgrep  %<left><left>', { desc = 'Find in buffer' })
   mapk('n', '<leader>fg', ':FindGitFiles ', { desc = 'Find files in git' })
   mapk('n', '<leader>gg', ':GitGrep ', { desc = 'Grep using git' })
   mapk('n', '<leader>gf', ':lgrep ', { desc = 'Grep' })

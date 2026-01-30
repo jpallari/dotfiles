@@ -717,6 +717,8 @@ do
     callback = function()
       vim.opt_local.wrap = false
       vim.opt_local.cursorline = true
+      vim.keymap.set('n', '<leader>q', '<cmd>cclose<cr>', { desc = 'Close quickfix list', buffer = true })
+      vim.keymap.set('n', '<leader>l', '<cmd>lclose<cr>', { desc = 'Close location list', buffer = true })
     end,
   })
 
@@ -870,8 +872,8 @@ do
   mapk('n', '<leader>e', ":e <C-R>=expand('%:h') . '/' <cr>", { desc = 'Open file from current buffer directory' })
   mapk('n', '<leader>\\', '<cmd>Lexplore!<cr>', { desc = 'File explorer in current directory' })
   mapk('n', '\\', '<cmd>Lexplore! %:p:h<cr>', { desc = 'File explorer in current file directory' })
-  mapk('n', '<leader><leader>', '<cmd>ls<cr>', { desc = 'Select buffer' })
-  mapk('n', '<leader>bb', '<cmd>BufferQList<cr>', { desc = 'Buffer list' })
+  mapk('n', '<leader>bl', '<cmd>ls<cr>', { desc = 'Buffer list' })
+  mapk('n', '<leader>bb', '<cmd>BufferQList<cr>', { desc = 'Buffers quickfix list' })
   mapk('n', '<leader>bd', ':b # | :bd #<cr>', { desc = 'Buffer delete without closing a window' })
   mapk('n', '<leader>bf', ':lvimgrep  %<left><left>', { desc = 'Find in buffer' })
   mapk('n', '<leader>mm', '<cmd>marks \'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ<cr>', { desc = 'View marks' })

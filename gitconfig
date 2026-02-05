@@ -13,6 +13,7 @@
 	pushf = push --force-with-lease
 	resetupstream = "!git branch -u origin/\"$(git currentbranch)\""
 	st = status
+	syncremote = "!f(){ if [ -z \"$1\" ]; then echo 'No remote branch named'; return 1; fi; git fetch && git rebase $1 && git pushf; }; f"
 [branch]
 	autoSetupMerge = simple
 	autoSetupRebase = always

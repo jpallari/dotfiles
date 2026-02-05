@@ -929,7 +929,7 @@ do
       settings = {
         gopls = {
           gofumpt = true,
-          buildFlags = { '-tags=integration' },
+          buildFlags = { '-tags=integration,e2e' },
         },
       },
     },

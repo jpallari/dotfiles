@@ -1025,8 +1025,8 @@ do
         { '<leader>Gg', '<cmd>tab Git<cr>',   desc = 'Git status' },
         { '<leader>Gs', '<cmd>Git<cr>',       desc = 'Git status (split)' },
         { '<leader>GB', '<cmd>Git blame<cr>', desc = 'Git blame' },
-        { '<leader>Gl', '<cmd>Gllog!<cr>',    desc = 'Git log in location list' },
-        { '<leader>GL', '<cmd>Gllog!<cr>',    desc = 'Git log in location list' },
+        { '<leader>Gl', '<cmd>Gllog<cr>',     desc = 'Git log in location list' },
+        { '<leader>GL', '<cmd>Gllog<cr>',     desc = 'Git log in location list' },
       },
     },
     {

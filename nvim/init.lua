@@ -576,6 +576,49 @@ function AsyncMake(args)
   )
 end
 
+local filetype_to_tabname = {
+  fugitive = '[Fugitive]',
+  git = '[Git]',
+  qf = '[List]',
+}
+
+function tab_buf_name(buf_nr)
+  local filetype = vim.api.nvim_get_option_value('filetype', { buf = buf_nr })
+  local ft_tab_name = filetype_to_tabname[filetype]
+  if ft_tab_name ~= nil then
+    return ft_tab_name
+  end
+
+  local buf_name = vim.fn.bufname(buf_nr)
+  if buf_name == '' then
+    return '[No Name]'
+  end
+
+  return vim.fs.basename(vim.fn.bufname(buf_nr))
+end
+
+function Tabline()
+  local s = ''
+  local current_tab_id = vim.api.nvim_tabpage_get_number(0)
+  local current_tab_nr = vim.fn.tabpagenr()
+  local last_tab_nr = vim.fn.tabpagenr('$')
+
+  for tab_nr = 1,last_tab_nr do
+    local buf_list = vim.fn.tabpagebuflist(tab_nr)
+    local win_nr = vim.fn.tabpagewinnr(tab_nr)
+    local buf_nr = buf_list[win_nr]
+    local is_selected = (tab_nr == current_tab_id) and '%#TabLineSel#' or '%#TabLine#'
+    local selection = '%' .. tab_nr .. 'T'
+    local label = '#' .. tab_nr .. ' ' .. tab_buf_name(buf_nr)
+    s = s .. is_selected .. selection .. '  ' .. label .. '  '
+  end
+
+  s = s .. '%#TabLineFill#%T'
+  return s
+end
+
+vim.go.tabline = '%!v:lua.Tabline()'
+
 --
 -- Custom commands
 --

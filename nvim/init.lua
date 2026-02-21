@@ -764,6 +764,7 @@ do
       vim.opt_local.cursorline = true
       vim.keymap.set('n', '<leader>q', '<cmd>cclose<cr>', { desc = 'Close quickfix list', buffer = true })
       vim.keymap.set('n', '<leader>l', '<cmd>lclose<cr>', { desc = 'Close location list', buffer = true })
+      vim.keymap.set('n', 'g<enter>', '<c-w><enter><c-w>T', { desc = 'Open in new tab', buffer = true })
     end,
   })
 
@@ -946,6 +947,9 @@ do
   mapk('i', '<M-left>', '<c-left>', { desc = 'Move cursor one word left' })
   mapk('i', '<C-d>', '<C-O>"_dl', { desc = 'Delete until the end of line' })
   mapk('i', '<C-k>', '<C-O>d$', { desc = 'Delete until the end of line' })
+
+  -- Tag jumps
+  mapk('n', 'g<C-]>', '<C-W><C-]><C-W>T', { desc = 'Open tag in new tab' })
 
   -- Toggles
   mapk('n', '<leader>th', '<cmd>setlocal hlsearch!<cr>', { desc = 'Toggle search hilight' })

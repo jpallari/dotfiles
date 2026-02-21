@@ -17,6 +17,8 @@ vim.opt.title = false
 vim.opt.winborder = 'single'
 vim.cmd.colorscheme 'lunaperche'
 vim.cmd.hi 'Normal guibg=NONE guifg=NONE ctermbg=NONE ctermfg=NONE'
+vim.cmd.hi 'TabLine ctermbg=243 guibg=#767676'
+vim.cmd.hi 'TabLineSel cterm=bold,reverse ctermfg=251 ctermbg=16 gui=bold,reverse guifg=#c6c6c6 guibg=#000000'
 vim.cmd.hi 'Pmenu guibg=Blue'
 vim.cmd.hi 'NormalFloat guibg=NvimDarkGray2'
 vim.cmd.hi 'VertSplit guibg=NvimDarkGray2'

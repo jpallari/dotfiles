@@ -44,6 +44,7 @@ vim.opt.foldmethod = 'indent'
 vim.opt.completeopt = { 'menuone', 'noselect', 'popup' }
 vim.opt.pumheight = 10
 vim.opt.guicursor = 'n-v-c-i:block'
+vim.opt.tabpagemax = 10
 
 --
 -- Controls
@@ -602,6 +603,8 @@ function Tabline()
   local current_tab_id = vim.api.nvim_tabpage_get_number(0)
   local current_tab_nr = vim.fn.tabpagenr()
   local last_tab_nr = vim.fn.tabpagenr('$')
+  local win_width = vim.api.nvim_get_option_value('columns', {})
+  local tab_max_width = win_width / (last_tab_nr or 1) - 8
 
   for tab_nr = 1,last_tab_nr do
     local buf_list = vim.fn.tabpagebuflist(tab_nr)
@@ -609,7 +612,10 @@ function Tabline()
     local buf_nr = buf_list[win_nr]
     local is_selected = (tab_nr == current_tab_id) and '%#TabLineSel#' or '%#TabLine#'
     local selection = '%' .. tab_nr .. 'T'
-    local label = '#' .. tab_nr .. ' ' .. tab_buf_name(buf_nr)
+    local label = '#' .. tab_nr
+    if tab_max_width > 4 then
+      label = label .. ' ' .. string.sub(tab_buf_name(buf_nr), 1, tab_max_width)
+    end
     s = s .. is_selected .. selection .. '  ' .. label .. '  '
   end
 

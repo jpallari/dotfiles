@@ -121,29 +121,25 @@ vim.diagnostic.config({
 --
 -- Custom functions
 --
-function SetIndent(level)
+function set_indent(level, mode)
   if level == nil then
     level = 4
   end
   level = tonumber(level)
-  vim.opt_local.expandtab = true
-  vim.opt_local.tabstop = level
-  vim.opt_local.softtabstop = level
-  vim.opt_local.shiftwidth = level
-end
 
-function SetIndentTab(level)
-  if level == nil then
-    level = 4
+  if mode == 'tab' then
+    vim.opt_local.expandtab = false
+    vim.opt_local.softtabstop = 0
+  else
+    vim.opt_local.expandtab = true
+    vim.opt_local.softtabstop = level
   end
-  level = tonumber(level)
-  vim.opt_local.expandtab = false
+
   vim.opt_local.tabstop = level
-  vim.opt_local.softtabstop = 0
   vim.opt_local.shiftwidth = level
 end
 
-function FindFiles(pattern, cmd_name)
+function find_files(pattern, cmd_name)
   local rg_cmd = {
     'rg',
     '--files', '--hidden',
@@ -386,102 +382,108 @@ local function text_pad_right(a, b)
   return string.rep(' ', math.max(0, #b - #a)) .. a
 end
 
-function Surround(start_pos, end_pos, args)
-  local action = args[1]
+function surround_replace(start_pos, end_pos, from_left, to_left)
+  if from_left == nil or to_left == nil then
+    vim.notify(
+      'Insufficient arguments for surround replace',
+      vim.log.levels.WARN
+    )
+    return
+  end
 
-  if action == 'r' or action == 'replace' then
-    local from_left = args[2]
-    local to_left = args[3]
-    if from_left == nil or to_left == nil then
-      vim.notify(
-        'Insufficient arguments for surround replace',
-        vim.log.levels.WARN
-      )
-      return
-    end
+  local from_right = matching_pair(from_left)
+  local to_right = matching_pair(to_left)
 
-    local from_right = matching_pair(from_left)
-    local to_right = matching_pair(to_left)
+  -- Fit the new string to match the length of the original
+  to_left = text_pad_left(to_left, from_left)
+  to_right = text_pad_right(to_right, from_right)
 
-    -- Fit the new string to match the length of the original
-    to_left = text_pad_left(to_left, from_left)
-    to_right = text_pad_right(to_right, from_right)
+  local left_pos = find_pos(start_pos, from_left, from_right, true)
+  local right_pos = find_pos(end_pos, from_right, from_left, false)
+  if pos_is_empty(left_pos) or pos_is_empty(right_pos) then
+    vim.notify('Nothing to replace', vim.log.levels.INFO)
+    return
+  end
 
-    local left_pos = find_pos(start_pos, from_left, from_right, true)
-    local right_pos = find_pos(end_pos, from_right, from_left, false)
+  buf_set_text(right_pos, to_right)
+  buf_set_text(left_pos, to_left)
+end
+
+function surround_add(start_pos, end_pos, add_left, before_left)
+  if add_left == nil then
+    vim.notify(
+      'Insufficient arguments for surround add',
+      vim.log.levels.WARN
+    )
+    return
+  end
+
+  local add_right = matching_pair(add_left)
+  local left_pos = start_pos
+  local right_pos = end_pos
+
+  -- shift to capture first and last characters
+  left_pos[2] = left_pos[2] + 1
+  right_pos[2] = right_pos[2] + 2
+
+  if before_left ~= nil then
+    local before_right = matching_pair(before_left)
+    before_left = text_pad_left(before_left, add_left)
+    before_right = text_pad_right(before_right, add_right)
+    left_pos = find_pos(start_pos, before_left, before_right, true)
+    right_pos = find_pos(end_pos, before_right, before_left, false)
     if pos_is_empty(left_pos) or pos_is_empty(right_pos) then
       vim.notify('Nothing to replace', vim.log.levels.INFO)
       return
     end
+    ---@diagnostic disable-next-line: need-check-nil
+    left_pos[2] = left_pos[2] + 1 -- shift to capture first character
+  end
 
-    buf_set_text(right_pos, to_right)
-    buf_set_text(left_pos, to_left)
+  buf_put_text(right_pos, add_right)
+  buf_put_text(left_pos, add_left)
+  vim.api.nvim_win_set_cursor(0, start_pos)
+end
+
+function surround_delete(start_pos, end_pos, target)
+  if target == nil then
+    vim.notify(
+      'Insufficient arguments for surround delete',
+      vim.log.levels.WARN
+    )
+    return
+  end
+  local pair = matching_pair(target)
+
+  local left_pos = find_pos(start_pos, target, pair, true)
+  local right_pos = find_pos(end_pos, pair, target, false)
+  if pos_is_empty(left_pos) or pos_is_empty(right_pos) then
+    vim.notify('Nothing to delete', vim.log.levels.INFO)
+    return
+  end
+
+  buf_del_text(right_pos, #pair)
+  buf_del_text(left_pos, #pair)
+end
+
+function surround(start_pos, end_pos, args)
+  local action = args[1]
+
+  if action == 'r' or action == 'replace' then
+    surround_replace(start_pos, end_pos, args[2], args[3])
   elseif action == 'a' or action == 'add' then
-    local add_left = args[2]
-    if add_left == nil then
-      vim.notify(
-        'Insufficient arguments for surround add',
-        vim.log.levels.WARN
-      )
-      return
-    end
-
-    local add_right = matching_pair(add_left)
-    local left_pos = start_pos
-    local right_pos = end_pos
-
-    -- shift to capture first and last characters
-    left_pos[2] = left_pos[2] + 1
-    right_pos[2] = right_pos[2] + 2
-
-    local before_left = args[3]
-    if before_left ~= nil then
-      local before_right = matching_pair(before_left)
-      before_left = text_pad_left(before_left, add_left)
-      before_right = text_pad_right(before_right, add_right)
-      left_pos = find_pos(start_pos, before_left, before_right, true)
-      right_pos = find_pos(end_pos, before_right, before_left, false)
-      if pos_is_empty(left_pos) or pos_is_empty(right_pos) then
-        vim.notify('Nothing to replace', vim.log.levels.INFO)
-        return
-      end
-      ---@diagnostic disable-next-line: need-check-nil
-      left_pos[2] = left_pos[2] + 1 -- shift to capture first character
-    end
-
-    buf_put_text(right_pos, add_right)
-    buf_put_text(left_pos, add_left)
-    vim.api.nvim_win_set_cursor(0, start_pos)
+    surround_add(start_pos, end_pos, args[2], args[3])
   elseif action == 'd' or action == 'delete' then
-    local target = args[2]
-    if target == nil then
-      vim.notify(
-        'Insufficient arguments for surround delete',
-        vim.log.levels.WARN
-      )
-      return
-    end
-    local pair = matching_pair(target)
-
-    local left_pos = find_pos(start_pos, target, pair, true)
-    local right_pos = find_pos(end_pos, pair, target, false)
-    if pos_is_empty(left_pos) or pos_is_empty(right_pos) then
-      vim.notify('Nothing to delete', vim.log.levels.INFO)
-      return
-    end
-
-    buf_del_text(right_pos, #pair)
-    buf_del_text(left_pos, #pair)
+    surround_delete(start_pos, end_pos, args[2])
   else
     vim.notify(
       'Unknown surround action: ' .. action,
       vim.log.levels.WARN
     )
-    return
   end
 end
 
-function PluginUpdateHelp()
+function plugin_update_help()
   local config_path = vim.fn.stdpath('config')
   local plugin_doc_dirs = vim.fn.glob(
     config_path .. '/pack/plugins/*/*/doc',
@@ -493,7 +495,7 @@ function PluginUpdateHelp()
   end
 end
 
-function BufferQList()
+function buffer_qlist()
   local buffers = vim.fn.getbufinfo({buflisted = 1})
   local list_contents = {}
 
@@ -523,7 +525,7 @@ function BufferQList()
   vim.cmd.copen()
 end
 
-function AsyncMake(args)
+function async_make(args)
   local buf_nr = vim.api.nvim_win_get_buf(vim.fn.win_getid())
 
   local efm = vim.api.nvim_buf_get_option(buf_nr, 'errorformat')
@@ -583,7 +585,7 @@ local filetype_to_tabname = {
   qf = '[List]',
 }
 
-function tab_buf_name(buf_nr)
+local function tab_buf_name(buf_nr)
   local filetype = vim.api.nvim_get_option_value('filetype', { buf = buf_nr })
   local ft_tab_name = filetype_to_tabname[filetype]
   if ft_tab_name ~= nil then
@@ -598,7 +600,7 @@ function tab_buf_name(buf_nr)
   return vim.fs.basename(vim.fn.bufname(buf_nr))
 end
 
-function Tabline()
+function tabline()
   local s = ''
   local current_tab_id = vim.api.nvim_tabpage_get_number(0)
   local current_tab_nr = vim.fn.tabpagenr()
@@ -623,7 +625,7 @@ function Tabline()
   return s
 end
 
-vim.go.tabline = '%!v:lua.Tabline()'
+vim.go.tabline = '%!v:lua.tabline()'
 
 --
 -- Custom commands
@@ -632,11 +634,11 @@ do
   local cmd = vim.api.nvim_create_user_command
 
   cmd('SetIndent', function(args)
-    SetIndent(args.args)
+    set_indent(args.args, '')
   end, { nargs = '*', desc = 'Set indentation level' })
 
   cmd('SetIndentTab', function(args)
-    SetIndentTab(args.args)
+    set_indent(args.args, 'tab')
   end, { nargs = '*', desc = 'Set tab indentation level' })
 
   cmd('ToggleAutoSave', function()
@@ -681,11 +683,11 @@ do
   end, { nargs = '*', desc = 'Copy path to clipboard'})
 
   cmd('FindFiles', function(args)
-    FindFiles(args.args)
+    find_files(args.args)
   end, { nargs = 1, desc = 'Find files by file name' })
 
   cmd('FindGitFiles', function(args)
-    FindFiles(args.args, 'git')
+    find_files(args.args, 'git')
   end, { nargs = 1, desc = 'Find files by file name from git' })
 
   cmd('GitGrep', function(args)
@@ -697,19 +699,19 @@ do
 
   cmd('Surround', function(opts)
     local positions = selection_for_cmd_opts(opts)
-    Surround(positions[1], positions[2], opts.fargs)
+    surround(positions[1], positions[2], opts.fargs)
   end, { nargs = '*', range = true, desc = 'Surround' })
 
   cmd('PluginUpdateHelp', function()
-    PluginUpdateHelp()
+    plugin_update_help()
   end, { nargs = 0, desc = 'Update plugin help docs' })
 
   cmd('BufferQList', function()
-    BufferQList()
+    buffer_qlist()
   end, { nargs = 0, desc = 'List buffers in Quickfix window'})
 
   cmd('Make', function(args)
-    AsyncMake(args.fargs)
+    async_make(args.fargs)
   end, { nargs = '*', desc = 'Async Make' })
 end
 

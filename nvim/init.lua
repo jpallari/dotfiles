@@ -793,6 +793,9 @@ do
       map('<leader>cl', vim.lsp.codelens.run, 'Code lens')
       map('<leader>cs', vim.lsp.buf.signature_help, 'Code signature')
       map('<leader>cr', vim.lsp.buf.rename, 'Code Rename')
+      map('<leader>cS', '<cmd>LspStart<cr>', 'Start LSPs')
+      map('<leader>cQ', '<cmd>LspStop<cr>', 'Quit LSPs')
+      map('<leader>cR', '<cmd>LspRestart<cr>', 'Restart LSPs')
       map('<leader>tdh', function()
         vim.g.lsp_doc_hl_enabled = not vim.g.lsp_doc_hl_enabled
       end, 'Toggle document highlight')
@@ -1017,11 +1020,41 @@ do
     },
     zls = {},
   }
+  local lsp_server_names = {}
 
   for server_name, server in pairs(lsp_server_configs) do
     vim.lsp.config(server_name, server)
     vim.lsp.enable(server_name)
+    lsp_server_names[#lsp_server_names + 1] = server_name
   end
+
+  vim.api.nvim_create_user_command('LspStart', function(args)
+    local servers = lsp_server_names
+    if #args.fargs > 0 then
+      servers = args.fargs
+    end
+    vim.lsp.enable(servers, true)
+    vim.notify('Started LSP servers')
+  end, { nargs = '*', desc = 'LSP: Start LSP servers' })
+
+  vim.api.nvim_create_user_command('LspStop', function(args)
+    local servers = lsp_server_names
+    if #args.fargs > 0 then
+      servers = args.fargs
+    end
+    vim.lsp.enable(servers, false)
+    vim.notify('Stopped LSP servers')
+  end, { nargs = '*', desc = 'LSP: Stop LSP servers' })
+
+  vim.api.nvim_create_user_command('LspRestart', function(args)
+    local servers = lsp_server_names
+    if #args.fargs > 0 then
+      servers = args.fargs
+    end
+    vim.lsp.enable(servers, false)
+    vim.lsp.enable(servers, true)
+    vim.notify('Restarted LSP servers')
+  end, { nargs = '*', desc = 'LSP: Enable LSP servers' })
 end
 
 --

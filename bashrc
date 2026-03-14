@@ -428,6 +428,12 @@ shell_setup_tool_hooks() {
                 echo "limactl found" >&2
                 limactl completion "$dotfile_shell"
             fi
+
+            # mise
+            if command -v mise >/dev/null; then
+                echo "mise found" >&2
+                mise activate "$dotfile_shell"
+            fi
         } >"$script_path"
         echo "" >&2
     done

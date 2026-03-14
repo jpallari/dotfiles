@@ -57,7 +57,6 @@ vim.opt.clipboard = 'unnamedplus' -- global clipboard
 --
 vim.opt.swapfile = false
 vim.opt.backup = false
-vim.opt.undodir = os.getenv('HOME' .. '/.vim/undodir')
 vim.opt.undofile = true
 vim.g.netrw_liststyle = 0
 vim.g.netrw_altfile = 1
@@ -1144,6 +1143,7 @@ do
         { '<leader>DGT', desc = 'DAP: Run last test (Go)' },
         { '<leader>DD', '<cmd>DapViewToggle<cr>', desc = 'DAP: Toggle view' },
         { '<leader>Db', '<cmd>DapToggleBreakpoint<cr>', desc = 'DAP: Toggle breakpoint' },
+        { '<leader>DB', '<cmd>DapToggleBreakpoint<cr>', desc = 'DAP: Toggle breakpoint' },
         { '<leader>Dr', '<cmd>DapNew<cr>', desc = 'DAP: Run' },
         { '<F5>', '<cmd>DapContinue<cr>', desc = 'DAP: Continue' },
         { '<F10>', '<cmd>DapStepOver<cr>', desc = 'DAP: Step over' },
@@ -1154,8 +1154,9 @@ do
       config = function()
         local dap = require('dap')
         local dap_go = require('dap-go')
-        dap_go.setup()
+        local dap_view = require('dap-view')
 
+        -- Key bindings
         local mapk = vim.keymap.set
         mapk('n', '<leader>DR', function() dap.run_last() end, { desc = 'DAP: Run last' })
         mapk('n', '<leader>Dl', function() dap.list_breakpoints() end, { desc = 'DAP: List breakpoints' })
@@ -1164,6 +1165,71 @@ do
         mapk('n', '<leader>DC', function() dap.run_to_cursor() end, { desc = 'DAP: Run to cursor' })
         mapk('n', '<leader>DGt', function() dap_go.debug_test() end, { desc = 'DAP: Run test under cursor (Go)' })
         mapk('n', '<leader>DGT', function() dap_go.debug_last_test() end, { desc = 'DAP: Run last test (Go)' })
+
+        -- UI
+        dap_view.setup({
+          winbar = {
+            controls = {
+              enabled = true,
+            },
+          },
+          auto_toggle = true,
+        })
+
+        -- DAPs
+        dap.adapters['pwa-node'] = {
+          type = 'server',
+          host = 'localhost',
+          port = '${port}',
+          executable = {
+            command = 'node',
+            args = {
+              os.getenv('HOME') .. '/.local/share/dap/js-debug/src/dapDebugServer.js',
+              '${port}',
+            },
+          },
+        }
+
+        -- File type DAP configurations
+        for _, ft in ipairs({ 'javascript', 'typescript', 'javascriptreact', 'typescriptreact' }) do
+          dap.configurations[ft] = {
+            {
+              type = 'pwa-node',
+              request = 'launch',
+              name = 'Launch file',
+              program = '${file}',
+              cwd = '${workspaceFolder}',
+            },
+            {
+              type = 'pwa-node',
+              request = 'attach',
+              name = 'Attach to Node.js',
+              port = 9229,
+              address = 'localhost',
+              localRoot = vim.fn.getcwd(),
+              remoteRoot = '/usr/src/app',
+              cwd = vim.fn.getcwd(),
+              sourceMaps = true,
+              protocol = 'inspector',
+            },
+            {
+              type = 'pwa-node',
+              request = 'launch',
+              name = 'Debug Jest Tests',
+              program = '${workspaceFolder}/node_modules/jest/bin/jest.js',
+              args = { '--runInBand', '--no-cache', '${relativeFile}' },
+              cwd = '${workspaceFolder}',
+              runtimeExecutable = 'node',
+              console = 'integratedTerminal',
+              internalConsoleOptions = 'neverOpen',
+              sourceMaps = true,
+              skipFiles = { '<node_internals>/**' },
+            },
+          }
+        end
+
+        -- DAP Go
+        dap_go.setup()
       end,
     },
   }

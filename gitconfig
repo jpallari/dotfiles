@@ -14,6 +14,7 @@
 	resetupstream = "!git branch -u origin/\"$(git currentbranch)\""
 	st = status
 	syncremote = "!f(){ if [ -z \"$1\" ]; then echo 'No remote branch named'; return 1; fi; git fetch && git rebase $1 && git pushf; }; f"
+	signall = "!f(){ if [ -z \"$1\" ]; then echo 'No base ref named'; return 1; fi; git rebase --exec 'git commit --amend --no-edit -S' $(git merge-base HEAD \"$1\"); }; f"
 [branch]
 	autoSetupMerge = simple
 	autoSetupRebase = always

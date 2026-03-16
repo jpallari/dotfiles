@@ -1081,12 +1081,13 @@ do
       name = 'vim-fugitive',
       cmd = { 'Git', 'Gedit', 'Ge', 'Gclog', 'Gllog', },
       keys = {
-        { '<leader>GG', '<cmd>tab Git<cr>',   desc = 'Git status' },
-        { '<leader>Gg', '<cmd>tab Git<cr>',   desc = 'Git status' },
-        { '<leader>Gs', '<cmd>Git<cr>',       desc = 'Git status (split)' },
+        { '<leader>GG', '<cmd>tab Git<cr>', desc = 'Git status' },
+        { '<leader>Gg', '<cmd>tab Git<cr>', desc = 'Git status' },
+        { '<leader>Gs', '<cmd>Git<cr>', desc = 'Git status (split)' },
+        { '<leader>Gb', '<cmd>Git blame<cr>', desc = 'Git blame' },
         { '<leader>GB', '<cmd>Git blame<cr>', desc = 'Git blame' },
-        { '<leader>Gl', '<cmd>Gllog<cr>',     desc = 'Git log in location list' },
-        { '<leader>GL', '<cmd>Gllog<cr>',     desc = 'Git log in location list' },
+        { '<leader>Gl', '<cmd>tabnew | Gllog -200<cr>', desc = 'Git log in location list' },
+        { '<leader>GL', '<cmd>tabnew | Gllog -200<cr>', desc = 'Git log in location list' },
       },
     },
     {

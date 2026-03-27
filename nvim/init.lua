@@ -1,5 +1,5 @@
 --
--- Appearance
+-- UI
 --
 vim.opt.number = false
 vim.opt.relativenumber = false
@@ -15,38 +15,11 @@ vim.opt.termguicolors = true
 vim.opt.shortmess:append 'I'
 vim.opt.title = false
 vim.opt.winborder = 'single'
-vim.cmd.colorscheme 'lunaperche'
-vim.cmd.hi 'Normal guibg=NONE guifg=NONE ctermbg=NONE ctermfg=NONE'
-vim.cmd.hi 'TabLine ctermbg=243 guibg=#767676'
-vim.cmd.hi 'TabLineSel cterm=bold,reverse ctermfg=251 ctermbg=16 gui=bold,reverse guifg=#c6c6c6 guibg=#000000'
-vim.cmd.hi 'Pmenu ctermbg=DarkBlue guibg=Blue'
-vim.cmd.hi 'NormalFloat ctermbg=Black guibg=Black'
-vim.cmd.hi 'VertSplit ctermbg=Black guibg=Black'
-vim.g.terminal_color_0 = '#000000'
-vim.g.terminal_color_1 = '#c91b00'
-vim.g.terminal_color_2 = '#00c200'
-vim.g.terminal_color_3 = '#c7c400'
-vim.g.terminal_color_4 = '#0225c7'
-vim.g.terminal_color_5 = '#ca30c7'
-vim.g.terminal_color_6 = '#00c5c7'
-vim.g.terminal_color_7 = '#c7c7c7'
-vim.g.terminal_color_8 = '#686868'
-vim.g.terminal_color_9 = '#ff6e67'
-vim.g.terminal_color_10 = '#5ffa68'
-vim.g.terminal_color_11 = '#fffc67'
-vim.g.terminal_color_12 = '#6871ff'
-vim.g.terminal_color_13 = '#ff77ff'
-vim.g.terminal_color_14 = '#60fdff'
-vim.g.terminal_color_15 = '#ffffff'
-
---
--- UI
---
 vim.opt.updatetime = 250
 vim.opt.splitright = true
 vim.opt.splitbelow = true
-vim.opt.inccommand = 'split' -- preview subtitutions
-vim.opt.scrolloff = 5        -- min screen lines
+vim.opt.inccommand = 'split'
+vim.opt.scrolloff = 5
 vim.opt.errorbells = false
 vim.opt.ignorecase = true
 vim.opt.wildignorecase = true
@@ -132,6 +105,66 @@ vim.diagnostic.config({
   },
   update_in_insert = false,
 })
+
+--
+-- Colors
+--
+do
+  local function hi(name, val)
+    vim.api.nvim_set_hl(0, name, val)
+  end
+
+  -- Base
+  vim.cmd.colorscheme 'lunaperche'
+  hi('Normal', { fg = 'NONE', bg = 'NONE', ctermfg = 'NONE', ctermbg = 'NONE' })
+  hi('Normal', { fg = 'NONE', bg = 'NONE', ctermfg = 'NONE', ctermbg = 'NONE' })
+  hi('VertSplit', { fg = '#767676', bg = 'NONE', ctermfg = 243, ctermbg = 'NONE', })
+
+  -- Float
+  local float_base = { bg = '#121212', ctermbg = 233 }
+  hi('NormalFloat', vim.tbl_extend('error', float_base, {}))
+  hi('FloatBorder', vim.tbl_extend('error', float_base, { fg = '#767676', ctermfg = 243 }))
+  hi('FloatTitle', vim.tbl_extend('error', float_base, { bold = true, cterm = { bold = true }}))
+
+  -- Tab line
+  hi('TabLine', { bg = '#767676', ctermbg = 243 })
+  hi('TabLineSel', {
+    bold = true, reverse = true,
+    fg = '#c6c6c6', bg = '#000000',
+    cterm = { bold = true, reverse = true },
+    ctermfg = 251, ctermbg = 16,
+  })
+
+  -- Pop-up menu
+  local pmenu_base = { bg = 'Blue', ctermbg = 'DarkBlue' }
+  local pmenu_sel_base = { fg = 'Blue', bg = 'Yellow', ctermfg = 'DarkBlue', ctermbg = 'Yellow' }
+  hi('Pmenu', pmenu_base)
+  hi('PmenuExtra', vim.tbl_extend('error', pmenu_base, { fg = '#767676', ctermfg = 243 }))
+  hi('PmenuKind', vim.tbl_extend('error', pmenu_base, { fg = '#ff5f5f', ctermfg = 203 }))
+  hi('PmenuMatch', vim.tbl_extend('error', pmenu_base, { fg = '#d787d7', ctermfg = 176 }))
+  hi('PmenuSel', vim.tbl_extend('error', pmenu_sel_base, {}))
+  hi('PmenuExtraSel', vim.tbl_extend('error', pmenu_sel_base, {}))
+  hi('PmenuKindSel', vim.tbl_extend('error', pmenu_sel_base, {}))
+  hi('PmenuMatchSel', vim.tbl_extend('error', pmenu_sel_base, {}))
+
+  -- Terminal
+  vim.g.terminal_color_0 = '#000000'
+  vim.g.terminal_color_1 = '#c91b00'
+  vim.g.terminal_color_2 = '#00c200'
+  vim.g.terminal_color_3 = '#c7c400'
+  vim.g.terminal_color_4 = '#0225c7'
+  vim.g.terminal_color_5 = '#ca30c7'
+  vim.g.terminal_color_6 = '#00c5c7'
+  vim.g.terminal_color_7 = '#c7c7c7'
+  vim.g.terminal_color_8 = '#686868'
+  vim.g.terminal_color_9 = '#ff6e67'
+  vim.g.terminal_color_10 = '#5ffa68'
+  vim.g.terminal_color_11 = '#fffc67'
+  vim.g.terminal_color_12 = '#6871ff'
+  vim.g.terminal_color_13 = '#ff77ff'
+  vim.g.terminal_color_14 = '#60fdff'
+  vim.g.terminal_color_15 = '#ffffff'
+end
 
 --
 -- Custom functions

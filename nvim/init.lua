@@ -1080,6 +1080,8 @@ do
     lsp_server_names[#lsp_server_names + 1] = server_name
   end
 
+  -- LSP commands
+
   vim.api.nvim_create_user_command('LspStart', function(args)
     local servers = lsp_server_names
     if #args.fargs > 0 then
@@ -1107,6 +1109,35 @@ do
     vim.lsp.enable(servers, true)
     vim.notify('Restarted LSP servers')
   end, { nargs = '*', desc = 'LSP: Enable LSP servers' })
+
+  -- LSP customisations
+  vim.lsp.protocol.CompletionItemKind = {
+    [1] = 'Txt',
+    [2] = 'Mtd',
+    [3] = 'Fn',
+    [4] = 'Ctor',
+    [5] = 'Fld',
+    [6] = 'Var',
+    [7] = 'Cls',
+    [8] = 'Intf',
+    [9] = 'Mod',
+    [10] = 'Prop',
+    [11] = 'Unit',
+    [12] = 'Val',
+    [13] = 'Enum',
+    [14] = 'Kwd',
+    [15] = 'Snip',
+    [16] = 'Clr',
+    [17] = 'File',
+    [18] = 'Ref',
+    [19] = 'Dir',
+    [20] = 'Enum',
+    [21] = 'Cnst',
+    [22] = 'Strct',
+    [23] = 'Evnt',
+    [24] = 'Op',
+    [25] = 'Type',
+  }
 end
 
 --

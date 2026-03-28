@@ -664,7 +664,11 @@ function tabline()
     local selection = '%' .. tab_nr .. 'T'
     local label = '#' .. tab_nr
     if tab_max_width > 4 then
-      label = label .. ' ' .. string.sub(tab_buf_name(buf_nr), 1, tab_max_width)
+      local buf_name = tab_buf_name(buf_nr)
+      buf_name = #buf_name > tab_max_width
+        and string.sub(buf_name, 1, tab_max_width - 1) .. '…'
+        or buf_name
+      label = label .. ' ' .. buf_name
     end
     s = s .. is_selected .. selection .. '  ' .. label .. '  '
   end

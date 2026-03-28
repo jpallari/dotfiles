@@ -872,7 +872,19 @@ do
 
       -- Completion
       if client and client:supports_method('textDocument/completion') then
-        vim.lsp.completion.enable(true, client.id, event.buf, { autotrigger = false })
+        local max_width = 40
+        vim.lsp.completion.enable(
+          true, client.id, event.buf,
+          {
+            autotrigger = false,
+            convert = function(item)
+              local abbr = item.label
+              abbr = #abbr > max_width and item.label:gsub('%b()', '') or abbr
+              abbr = #abbr > max_width and (string.sub(abbr, 1, max_width - 1) .. '…') or abbr
+              return { abbr = abbr }
+            end,
+          }
+        )
         vim.keymap.set('i', '<C-space>', vim.lsp.completion.get, { desc = 'Trigger completion' })
       end
 

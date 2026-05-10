@@ -452,7 +452,9 @@ set_prompt_extra() {
 }
 
 chpwd() {
-    emulate -L zsh
+    if [ -n "$ZSH_VERSION" ]; then
+        emulate -L zsh
+    fi
     color_pwd
 }
 

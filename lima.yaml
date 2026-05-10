@@ -1,0 +1,57 @@
+# limactl create --name=dev -y lima.yml
+minimumLimaVersion: 2.0.0
+
+base:
+- template:fedora-43
+
+provision:
+- mode: dependency
+  script: |
+    #!/bin/bash
+    set -euo pipefail
+    dnf upgrade -y
+    dnf copr enable -y jdxcode/mise
+    dnf config-manager addrepo -y \
+        --from-repofile https://download.docker.com/linux/fedora/docker-ce.repo
+    dnf install -y \
+        @development-tools \
+        podman \
+        zsh \
+        neovim \
+        git \
+        curl \
+        mc \
+        fzf \
+        clang \
+        clang-devel \
+        libasan \
+        libubsan \
+        cppcheck \
+        rustup \
+        golang \
+        mise \
+        docker-ce \
+        docker-ce-cli \
+        containerd.io \
+        docker-buildx-plugin \
+        docker-compose-plugin
+- mode: system
+  script: |
+    #!/bin/bash
+    set -euo pipefail
+    systemctl enable --now docker
+    usermod -aG docker {{.User}}
+- mode: user
+  script: |
+    #!/bin/bash
+    set -euo pipefail
+    cat <<EOF > ~/.local.sh
+    CUSTOM_PATH+=":/usr/sbin:/sbin"
+    EOF
+    git clone --recurse-submodules https://github.com/jpallari/dotfiles.git dotfiles
+    cd dotfiles
+    ./setup.sh
+
+user:
+  shell: /usr/bin/zsh
+

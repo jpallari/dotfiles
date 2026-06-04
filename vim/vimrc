@@ -1,0 +1,351 @@
+vim9script
+
+set nocompatible
+
+filetype plugin indent on
+syntax enable
+
+import autoload 'jp.vim'
+
+# ===========================================================================
+# UI
+# ===========================================================================
+
+set nonumber
+set norelativenumber
+set showmode
+set laststatus=2
+set breakindent
+set signcolumn=yes
+set list
+set listchars=tab:»\ ,trail:·,nbsp:␣
+set nocursorline
+set wrap
+set termguicolors
+set shortmess+=I
+set notitle
+set updatetime=250
+set splitright
+set splitbelow
+set scrolloff=5
+set noerrorbells
+set ignorecase
+set wildignorecase
+set wildignore+=*.o,*.obj,*.pyc,*.class,*.jar
+set wildmode=longest:full:lastused
+set wildmenu wildoptions=pum
+set foldcolumn=0
+set foldtext=
+set foldnestmax=3
+set foldlevelstart=99
+set foldmethod=indent
+set completeopt=menuone,noselect,popup
+set pumheight=10
+set guicursor=n-v-c-i:block
+set tabpagemax=10
+
+# ===========================================================================
+# Controls
+# ===========================================================================
+
+set mouse=a
+set clipboard=unnamedplus
+
+# ===========================================================================
+# File management
+# ===========================================================================
+
+set noswapfile
+set nobackup
+set undofile
+&undodir = expand('~/.cache/vim/undo')
+if !isdirectory(&undodir)
+  mkdir(&undodir, 'p')
+endif
+
+g:netrw_liststyle = 0
+g:netrw_altfile = 1
+g:netrw_winsize = 40
+g:netrw_fastbrowse = 1
+g:netrw_localcopydircmd = 'cp -r'
+g:netrw_localmkdir = 'mkdir -p'
+g:netrw_localrmdir = 'rm -r'
+
+# ===========================================================================
+# Search
+# ===========================================================================
+
+set ignorecase
+set smartcase
+set nohlsearch
+set gdefault
+set infercase
+set incsearch
+if executable('rg')
+  set grepprg=rg\ --vimgrep\ --hidden\ --smart-case\ --iglob\ \"!**/.git/*\"\ --\ $*
+  set grepformat=%f:%l:%c:%m,%f:%l:%m
+endif
+
+# ===========================================================================
+# Editing
+# ===========================================================================
+
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+set expandtab
+set smartindent
+set nojoinspaces
+
+# ===========================================================================
+# System
+# ===========================================================================
+
+set exrc
+jp.SetupPerProjectViminfo()
+
+# ===========================================================================
+# Colors
+# ===========================================================================
+
+silent! colorscheme lunaperche
+highlight Normal     ctermfg=NONE ctermbg=NONE guifg=NONE guibg=NONE
+highlight VertSplit  ctermfg=243 ctermbg=NONE guifg=#767676 guibg=NONE
+
+highlight NormalFloat ctermbg=233 guibg=#121212
+highlight FloatBorder ctermfg=243 ctermbg=233 guifg=#767676 guibg=#121212
+highlight FloatTitle  ctermbg=233 guibg=#121212 cterm=bold gui=bold
+
+highlight TabLine    ctermbg=243 guibg=#767676
+highlight TabLineSel ctermfg=251 ctermbg=16 guifg=#c6c6c6 guibg=#000000
+      \ cterm=bold,reverse gui=bold,reverse
+
+highlight Pmenu          ctermbg=DarkBlue guibg=Blue
+highlight PmenuExtra     ctermfg=243      ctermbg=DarkBlue guifg=#767676 guibg=Blue
+highlight PmenuKind      ctermfg=203      ctermbg=DarkBlue guifg=#ff5f5f guibg=Blue
+highlight PmenuMatch     ctermfg=176      ctermbg=DarkBlue guifg=#d787d7 guibg=Blue
+highlight PmenuSel       ctermfg=DarkBlue ctermbg=Yellow   guifg=Blue    guibg=Yellow
+highlight PmenuExtraSel  ctermfg=DarkBlue ctermbg=Yellow   guifg=Blue    guibg=Yellow
+highlight PmenuKindSel   ctermfg=DarkBlue ctermbg=Yellow   guifg=Blue    guibg=Yellow
+highlight PmenuMatchSel  ctermfg=DarkBlue ctermbg=Yellow   guifg=Blue    guibg=Yellow
+
+g:terminal_ansi_colors = [
+  '#000000', '#c91b00', '#00c200', '#c7c400',
+  '#0225c7', '#ca30c7', '#00c5c7', '#c7c7c7',
+  '#686868', '#ff6e67', '#5ffa68', '#fffc67',
+  '#6871ff', '#ff77ff', '#60fdff', '#ffffff',
+]
+
+# ===========================================================================
+# File types
+# ===========================================================================
+
+augroup jp_filetypes
+  autocmd!
+  autocmd BufRead,BufNewFile *.tf set filetype=terraform
+augroup END
+
+# ===========================================================================
+# Tabline
+# ===========================================================================
+
+def TablineExpr(): string
+  return jp.Tabline()
+enddef
+&tabline = '%!' .. expand('<SID>') .. 'TablineExpr()'
+
+# ===========================================================================
+# Custom commands
+# ===========================================================================
+
+command! -nargs=* SetIndent       jp.SetIndent(<q-args>, '')
+command! -nargs=* SetIndentTab    jp.SetIndent(<q-args>, 'tab')
+command! -nargs=0 ToggleAutoSave  jp.ToggleAutoSave()
+command! TrimWhitespace %s/\s\+$//e
+command! -nargs=* CopyPath        jp.CopyPath([<f-args>])
+command! -nargs=1 FindFiles       jp.FindFiles(<q-args>)
+command! -nargs=1 FindGitFiles    jp.FindFiles(<q-args>, 'git')
+command! -nargs=1 GitGrep         jp.GitGrep(<q-args>)
+command! -nargs=* -range Surround
+      \ jp.Surround(
+      \   jp.SelectionForCmdOpts(<range>, <line1>, <line2>)[0],
+      \   jp.SelectionForCmdOpts(<range>, <line1>, <line2>)[1],
+      \   [<f-args>])
+command! -nargs=0 PluginUpdateHelp jp.PluginUpdateHelp()
+command! -nargs=0 BufferQList      jp.BufferQList()
+command! -nargs=* Make             jp.AsyncMake([<f-args>])
+
+# ===========================================================================
+# Autocommands
+# ===========================================================================
+
+augroup jp_dotfile
+  autocmd!
+
+  # Highlight when yanking (copying) text
+  autocmd TextYankPost * jp.OnYank()
+
+  # Create directories when saving files
+  autocmd BufWritePre * jp.MkdirForBuffer()
+
+  # Autosave
+  autocmd CursorHold,TextChanged,InsertLeave * jp.Autosave()
+
+  # Quickfix and location list settings
+  autocmd FileType qf jp.SetupQuickfixWindow()
+augroup END
+
+# ===========================================================================
+# Key mappings
+# ===========================================================================
+
+# Leader key
+g:mapleader = ' '
+g:maplocalleader = ' '
+
+# Clear search highlight on <Esc>
+nnoremap <Esc> <Cmd>nohlsearch<CR>
+
+# Movement
+nnoremap j gj
+nnoremap k gk
+
+# Window management
+nnoremap <C-h> <C-w><C-h>
+nnoremap <C-l> <C-w><C-l>
+nnoremap <C-j> <C-w><C-j>
+nnoremap <C-k> <C-w><C-k>
+nnoremap <C-Left>  <Cmd>vertical resize +5<CR>
+nnoremap <C-Right> <Cmd>vertical resize -5<CR>
+nnoremap <C-Up>    <Cmd>resize +5<CR>
+nnoremap <C-Down>  <Cmd>resize -5<CR>
+
+# Tab navigation: <M-1>...<M-9>
+if !has('gui_running')
+  for i in range(1, 9)
+    execute "set <M-" .. i .. ">=\e" .. i
+  endfor
+endif
+for i in range(1, 9)
+  execute printf('nnoremap <M-%d> <Cmd>%dtabnext<CR>', i, i)
+endfor
+
+# Exit terminal mode
+tnoremap <Esc><Esc> <C-\><C-n>
+
+# Editing
+inoremap <C-Space> <C-n>
+inoremap <M-BS> <C-w>
+cnoremap <M-BS> <C-w>
+vnoremap <leader>c "+y
+nnoremap <leader>v "+p
+nnoremap x "_dl
+nnoremap X "_dh
+nnoremap <leader>x "_d
+nnoremap <leader>X "_D
+nnoremap Y y$
+
+# Comment toggling via built-in `gc` operator (Vim 9.1 ships it).
+nmap <C-/> gcc
+nmap <C-_> gcc
+xmap <C-/> gc
+xmap <C-_> gc
+
+nnoremap <leader>s :Surround <Space>
+vnoremap <leader>s :'<,'>Surround <Space>
+
+# Quick search and replace
+for mode in ['n', 'v']
+  execute mode .. 'noremap <leader>rw :%s/<C-r><C-w>//c<left><left>'
+  execute mode .. 'noremap <leader>rs :%s///c<left><left>'
+  execute mode .. 'noremap <leader>rp :%s/<C-r>r//c<left><left>'
+endfor
+
+# Keep selection on indentation
+vnoremap < <gv
+vnoremap > >gv
+
+# Move selected lines up/down
+vnoremap J :m '>+1<CR>gv=gv
+vnoremap K :m '<-2<CR>gv=gv
+
+# Files and buffers
+nnoremap <leader>e :e <C-R>=expand('%:h') . '/'<CR>
+nnoremap <leader>\ <Cmd>Lexplore!<CR>
+nnoremap \         <Cmd>Lexplore! %:p:h<CR>
+nnoremap <leader>bl <Cmd>ls<CR>
+nnoremap <leader>bb <Cmd>BufferQList<CR>
+nnoremap <leader>bd :b # \| :bd #<CR>
+nnoremap <leader>bf :lvimgrep "" %<left><left><left>
+nnoremap <leader>mm <Cmd>marks 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ<CR>
+nnoremap <leader>mr <Cmd>marks 0123456789<CR>
+nnoremap <leader>RR <Cmd>registers abcdefghijklmnopqrstuvwxyz<CR>
+nnoremap <leader>Rr <Cmd>registers /.0123456789<CR>
+nnoremap <leader>ff :FindFiles<Space>
+nnoremap <leader>fb :lvimgrep "" %<left><left><left>
+nnoremap <leader>fg :FindGitFiles ""<left>
+nnoremap <leader>gg :GitGrep ""<left>
+nnoremap <leader>gf :lgrep ""<left>
+
+# Quickfix and location list
+nnoremap <leader>q <Cmd>copen<CR>
+nnoremap <leader>l <Cmd>lopen<CR>
+
+# Insert mode navigation/editing
+inoremap <C-a> <C-O>^
+inoremap <C-e> <C-O>$
+inoremap <C-f> <Right>
+inoremap <C-b> <Left>
+inoremap <M-f> <C-Right>
+inoremap <M-b> <C-Left>
+inoremap <M-Right> <C-Right>
+inoremap <M-Left>  <C-Left>
+inoremap <C-d> <C-O>"_dl
+inoremap <C-k> <C-O>d$
+
+# Tag jumps
+nnoremap g<C-]> <C-W><C-]><C-W>T
+
+# Toggles
+nnoremap <leader>th  <Cmd>setlocal hlsearch!<CR>
+nnoremap <leader>tp  <Cmd>set paste!<CR>
+nnoremap <leader>tn  <Cmd>set number!<CR>
+nnoremap <leader>tr  <Cmd>set relativenumber!<CR>
+nnoremap <leader>tw  <Cmd>setlocal wrap!<CR>
+nnoremap <leader>tcl <Cmd>setlocal cursorline!<CR>
+nnoremap <leader>tcc <Cmd>setlocal cursorcolumn!<CR>
+nnoremap <leader>tas <Cmd>ToggleAutoSave<CR>
+
+# Development
+nnoremap <F9> <Cmd>make<CR>
+nnoremap <leader>MM <Cmd>Make<CR>
+nnoremap <leader>MK :Make<Space>
+
+# ===========================================================================
+# Plugins (lazy loader; see autoload/jp.vim for the implementation)
+# ===========================================================================
+
+jp.PluginRegister({
+  name: 'vim-fugitive',
+  cmd:  ['Git', 'Gedit', 'Ge', 'Gclog', 'Gllog'],
+  keys: [
+    {lhs: '<leader>GG', rhs: '<cmd>tab Git<cr>'},
+    {lhs: '<leader>Gg', rhs: '<cmd>tab Git<cr>'},
+    {lhs: '<leader>Gs', rhs: '<cmd>Git<cr>'},
+    {lhs: '<leader>Gb', rhs: '<cmd>Git blame<cr>'},
+    {lhs: '<leader>GB', rhs: '<cmd>Git blame<cr>'},
+    {lhs: '<leader>Gl', rhs: '<cmd>tabnew \| Gllog -200<cr>'},
+    {lhs: '<leader>GL', rhs: '<cmd>tabnew \| Gllog -200<cr>'},
+  ],
+})
+
+jp.PluginRegister({
+  name: 'vimwiki',
+  cmd:  ['VimwikiIndex', 'VimwikiMakeDiaryNote'],
+  keys: [
+    {lhs: '<leader>ww'},
+    {lhs: '<leader>ws'},
+    {lhs: '<leader>wd'},
+  ],
+  config: () => jp.ConfigureVimwiki(),
+})

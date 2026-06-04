@@ -127,9 +127,7 @@ fi
 
 # vim in terminal w/ clipboard support etc.
 if command -v nvim >/dev/null; then
-    alias vim='nvim'
     EDITOR='nvim'
-    MANPAGER='nvim +Man!'
 elif command -v mvim >/dev/null; then
     alias vim='mvim -v'
     EDITOR='mvim -v'

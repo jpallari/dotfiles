@@ -125,20 +125,20 @@ elif [ -n "${XDG_SESSION_TYPE:-}" ]; then
     esac
 fi
 
-# vim in terminal w/ clipboard support etc.
+# editor
 if command -v nvim >/dev/null; then
     EDITOR='nvim'
 elif command -v mvim >/dev/null; then
     alias vim='mvim -v'
     EDITOR='mvim -v'
+elif command -v vim >/dev/null; then
+    EDITOR='vim'
 elif command -v vimx >/dev/null; then
     alias vim='vimx'
     EDITOR='vimx'
 elif command -v gvim >/dev/null; then
     alias vim='gvim -v'
     EDITOR='gvim -v'
-elif command -v vim >/dev/null; then
-    EDITOR='vim'
 else
     EDITOR='vi'
 fi

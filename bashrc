@@ -301,15 +301,23 @@ add_path() {
 
 # display current directory color coded
 color_pwd() {
-    local basedir topdir fulldir
-
     if [ "$PWD" = "$HOME" ]; then
-        fulldir="${__COLOR_CYAN}~"
+        printf "${__COLOR_CYAN}~${__COLOR_RESTORE}\n"
+        return
+    fi
+
+    local basedir topdir seconddir fulldir
+
+    basedir=${PWD/${HOME}/"~"}
+    topdir=${basedir##*/}
+    basedir=${basedir%/*}
+    seconddir=${basedir##*/}
+    basedir=${basedir%/*}
+
+    if [ "${seconddir}" = "${basedir}" ]; then
+        fulldir="${__COLOR_CYAN}${basedir}/${__COLOR_YELLOW}${topdir}"
     else
-        basedir=${PWD%/*}
-        basedir=${basedir/${HOME}/"~"}
-        topdir=${PWD##*/}
-        fulldir="${__COLOR_CYAN}${basedir}/${__COLOR_RESTORE}${__COLOR_YELLOW}${topdir}"
+        fulldir="${__COLOR_CYAN}${basedir}/${__COLOR_PURPLE}${seconddir}/${__COLOR_YELLOW}${topdir}"
     fi
 
     printf "${fulldir}${__COLOR_RESTORE}\n"

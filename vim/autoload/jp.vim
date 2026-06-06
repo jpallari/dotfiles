@@ -743,18 +743,6 @@ export def SetupPerProjectViminfo()
   &viminfofile = base .. '/' .. sha256(cwd)
 enddef
 
-export def ConfigureVimwiki()
-  g:vimwiki_list = [{
-    path: '~/wiki/',
-    syntax: 'markdown',
-    ext: 'md',
-    diary_rel_path: 'Notes',
-  }]
-  g:vimwiki_global_ext = 0
-  g:vimwiki_ext2syntax = {}
-  g:vimwiki_auto_header = 1
-enddef
-
 # ---------------------------------------------------------------------------
 # Lazy plugin loader
 # ---------------------------------------------------------------------------

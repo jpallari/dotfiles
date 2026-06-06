@@ -322,7 +322,7 @@ nnoremap <leader>MM <Cmd>Make<CR>
 nnoremap <leader>MK :Make<Space>
 
 # ===========================================================================
-# Plugins (lazy loader; see autoload/jp.vim for the implementation)
+# Plugins
 # ===========================================================================
 
 jp.PluginRegister({
@@ -347,5 +347,14 @@ jp.PluginRegister({
     {lhs: '<leader>ws'},
     {lhs: '<leader>wd'},
   ],
-  config: () => jp.ConfigureVimwiki(),
+  config: () => {
+    g:vimwiki_list = [{
+      path: '~/wiki/',
+      syntax: 'markdown',
+      ext: 'md',
+      diary_rel_path: 'Notes', }]
+    g:vimwiki_global_ext = 0
+    g:vimwiki_ext2syntax = {}
+    g:vimwiki_auto_header = 1
+  },
 })

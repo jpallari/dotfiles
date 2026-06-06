@@ -59,10 +59,13 @@ export def FindFiles(pattern: string, cmd_name: string = '')
     return
   endif
 
-  const rg_cmd = ['rg', '--files', '--hidden',
-                  '--color=never', '--smart-case',
-                  '--iglob', '**/' .. pattern .. '*',
-                  '--iglob', '!**/.git/*', '--']
+  const rg_cmd = [
+    'rg', '--files', '--hidden',
+    '--color=never', '--smart-case',
+    '--iglob', '**/' .. pattern .. '*',
+    '--iglob', '!**/.git/*',
+    '--'
+  ]
   const find_cmd = ['find', '.', '-type', 'f', '-ipath', pattern]
   const git_cmd = ['git', 'ls-files', '--', pattern]
   var cmd: list<string> = []
@@ -112,8 +115,8 @@ enddef
 # ---------------------------------------------------------------------------
 
 export def SelectionForCmdOpts(
-    range_count: number, line1: number, line2: number
-    ): list<list<number>>
+  range_count: number, line1: number, line2: number
+): list<list<number>>
   var start_row = 0
   var start_col = 0
   var end_row = 0
@@ -211,9 +214,11 @@ def BufDelText(pos: list<number>, plen: number)
   const lnum = pos[0]
   const col_ = pos[1]
   const line = getline(lnum)
-  setline(lnum,
-          strpart(line, 0, col_ - 1)
-            .. strpart(line, col_ - 1 + plen))
+  setline(
+    lnum,
+    strpart(line, 0, col_ - 1)
+    .. strpart(line, col_ - 1 + plen)
+  )
 enddef
 
 def TextPadLeft(a: string, b: string): string
@@ -227,7 +232,7 @@ def TextPadRight(a: string, b: string): string
 enddef
 
 export def FindPos(
-    start_pos: list<number>, target: string, skip: string, left: bool
+  start_pos: list<number>, target: string, skip: string, left: bool
 ): list<number>
   const search_flags = left ? 'bnW' : 'nW'
   const target_pat = '\V' .. substitute(target, '\\', '\\\\', 'g')
@@ -289,8 +294,8 @@ export def FindPos(
 enddef
 
 export def SurroundReplace(
-    start_pos: list<number>, end_pos: list<number>,
-    from_left: string, to_left_in: string
+  start_pos: list<number>, end_pos: list<number>,
+  from_left: string, to_left_in: string
 )
   if from_left ==# '' || to_left_in ==# ''
     NotifyWarn('Insufficient arguments for surround replace')
@@ -315,8 +320,8 @@ export def SurroundReplace(
 enddef
 
 export def SurroundAdd(
-    start_pos: list<number>, end_pos: list<number>,
-    add_left: string, before_left_in: string = ''
+  start_pos: list<number>, end_pos: list<number>,
+  add_left: string, before_left_in: string = ''
 )
   if add_left ==# ''
     NotifyWarn('Insufficient arguments for surround add')
@@ -350,8 +355,8 @@ export def SurroundAdd(
 enddef
 
 export def SurroundDelete(
-    start_pos: list<number>, end_pos: list<number>, target: string
-    )
+  start_pos: list<number>, end_pos: list<number>, target: string
+)
   if target ==# ''
     NotifyWarn('Insufficient arguments for surround delete')
     return
@@ -370,7 +375,7 @@ export def SurroundDelete(
 enddef
 
 export def Surround(
-    start_pos: list<number>, end_pos: list<number>, args: list<string>
+  start_pos: list<number>, end_pos: list<number>, args: list<string>
 )
   if empty(args)
     NotifyWarn('No surround action specified')
@@ -379,11 +384,15 @@ export def Surround(
   const action = args[0]
 
   if action ==# 'r' || action ==# 'replace'
-    SurroundReplace(start_pos, end_pos,
-                    get(args, 1, ''), get(args, 2, ''))
+    SurroundReplace(
+      start_pos, end_pos,
+      get(args, 1, ''), get(args, 2, '')
+    )
   elseif action ==# 'a' || action ==# 'add'
-    SurroundAdd(start_pos, end_pos,
-                get(args, 1, ''), get(args, 2, ''))
+    SurroundAdd(
+      start_pos, end_pos,
+      get(args, 1, ''), get(args, 2, '')
+    )
   elseif action ==# 'd' || action ==# 'delete'
     SurroundDelete(start_pos, end_pos, get(args, 1, ''))
   else
@@ -539,7 +548,7 @@ export def Tabline(): string
     const win_nr = tabpagewinnr(tab_nr)
     const buf_nr = buf_list[win_nr - 1]
     const is_selected = (tab_nr == current_tab_id)
-            ? '%#TabLineSel#' : '%#TabLine#'
+      ? '%#TabLineSel#' : '%#TabLine#'
     const selection = '%' .. tab_nr .. 'T'
     var label = '#' .. tab_nr
     if tab_max_width > 4
@@ -828,14 +837,14 @@ def TranslateKeys(s: string): string
   var work = s
   if exists('g:mapleader')
     work = substitute(
-        work, '\c<leader>',
-        escape(g:mapleader, '\&~'), 'g'
+      work, '\c<leader>',
+      escape(g:mapleader, '\&~'), 'g'
     )
   endif
   if exists('g:maplocalleader')
     work = substitute(
-        work, '\c<localleader>',
-        escape(g:maplocalleader, '\&~'), 'g'
+      work, '\c<localleader>',
+      escape(g:maplocalleader, '\&~'), 'g'
     )
   endif
   try
@@ -888,7 +897,8 @@ export def PluginRegister(spec: dict<any>)
         'command! -bang -range=-1 -nargs=* %s '
           .. 'call %sPluginRunCmd(%s, %s, <bang>0, '
           .. '"<mods>", <line1>, <line2>, <range>, <q-args>)',
-        c, SID, string(key), string(c))
+        c, SID, string(key), string(c)
+      )
     endfor
   endif
 

@@ -167,10 +167,10 @@ command! -nargs=1 FindFiles       jp.FindFiles(<q-args>)
 command! -nargs=1 FindGitFiles    jp.FindFiles(<q-args>, 'git')
 command! -nargs=1 GitGrep         jp.GitGrep(<q-args>)
 command! -nargs=* -range Surround
-      \ jp.Surround(
-      \   jp.SelectionForCmdOpts(<range>, <line1>, <line2>)[0],
-      \   jp.SelectionForCmdOpts(<range>, <line1>, <line2>)[1],
-      \   [<f-args>])
+  \ jp.Surround(
+  \   jp.SelectionForCmdOpts(<range>, <line1>, <line2>)[0],
+  \   jp.SelectionForCmdOpts(<range>, <line1>, <line2>)[1],
+  \   [<f-args>])
 command! -nargs=0 PluginUpdateHelp jp.PluginUpdateHelp()
 command! -nargs=0 BufferQList      jp.BufferQList()
 command! -nargs=* Make             jp.AsyncMake([<f-args>])

@@ -235,8 +235,6 @@ tnoremap <Esc><Esc> <C-\><C-n>
 
 # Editing
 inoremap <C-Space> <C-n>
-inoremap <M-BS> <C-w>
-cnoremap <M-BS> <C-w>
 vnoremap <leader>c "+y
 nnoremap <leader>v "+p
 nnoremap x "_dl
@@ -286,6 +284,8 @@ nnoremap <leader>q <Cmd>copen<CR>
 nnoremap <leader>l <Cmd>lopen<CR>
 
 # Insert mode navigation/editing
+inoremap <ESC><BS> <C-w>
+inoremap <M-BS> <C-w>
 inoremap <C-a> <C-O>^
 inoremap <C-e> <C-O>$
 inoremap <C-f> <Right>

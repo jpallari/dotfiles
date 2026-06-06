@@ -1174,7 +1174,7 @@ do
       name = 'nvim-treesitter',
       config = function()
         require('nvim-treesitter.install').prefer_git = true
-        require('nvim-treesitter.configs').setup({
+        require('nvim-treesitter').setup({
           ensure_installed = { 'git_rebase' },
           auto_install = true,
           highlight = {

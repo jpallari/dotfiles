@@ -127,20 +127,32 @@ fi
 
 # editor
 if command -v nvim >/dev/null; then
+    alias e='nvim'
     EDITOR='nvim'
 elif command -v mvim >/dev/null; then
-    alias vim='mvim -v'
+    alias e='mvim -v'
     EDITOR='mvim -v'
-elif command -v vim >/dev/null; then
-    EDITOR='vim'
+elif command -v gvim >/dev/null; then
+    alias e='gvim -v'
+    EDITOR='gvim -v'
 elif command -v vimx >/dev/null; then
-    alias vim='vimx'
+    alias e='vimx'
     EDITOR='vimx'
+elif command -v vim >/dev/null; then
+    alias e='vim'
+    EDITOR='vim'
+else
+    alias e='vi'
+    EDITOR='vi'
+fi
+
+# vim
+if command -v mvim >/dev/null; then
+    alias vim='mvim -v'
 elif command -v gvim >/dev/null; then
     alias vim='gvim -v'
-    EDITOR='gvim -v'
-else
-    EDITOR='vi'
+elif command -v vimx >/dev/null; then
+    alias vim='vimx'
 fi
 
 # newer gpg

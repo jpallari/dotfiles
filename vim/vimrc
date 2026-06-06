@@ -56,6 +56,7 @@ set clipboard=unnamedplus
 # File management
 # ===========================================================================
 
+set autoread
 set noswapfile
 set nobackup
 set undofile

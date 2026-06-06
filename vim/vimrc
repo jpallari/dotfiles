@@ -245,12 +245,6 @@ nnoremap <leader>x "_d
 nnoremap <leader>X "_D
 nnoremap Y y$
 
-# Comment toggling via built-in `gc` operator (Vim 9.1 ships it).
-nmap <C-/> gcc
-nmap <C-_> gcc
-xmap <C-/> gc
-xmap <C-_> gc
-
 nnoremap <leader>s :Surround <Space>
 vnoremap <leader>s :'<,'>Surround <Space>
 
@@ -324,6 +318,16 @@ nnoremap <leader>MK :Make<Space>
 # ===========================================================================
 # Plugins
 # ===========================================================================
+
+jp.PluginRegister({
+  name: 'comment',
+  keys: [
+    {mode: 'n', lhs: '<C-/>', rhs: 'gcc'},
+    {mode: 'n', lhs: '<C-_>', rhs: 'gcc'},
+    {mode: 'x', lhs: '<C-/>', rhs: 'gc'},
+    {mode: 'x', lhs: '<C-_>', rhs: 'gc'},
+  ],
+})
 
 jp.PluginRegister({
   name: 'vim-fugitive',

@@ -892,16 +892,17 @@ export def PluginRegister(spec: dict<any>)
 
   if has_key(spec, 'keys')
     for keyspec in spec.keys
+      const mode = get(keyspec, 'mode', 'n')
       const lhs = keyspec.lhs
       const rhs = get(keyspec, 'rhs', '')
       const idx = len(plugin_key_map)
       add(
-          plugin_key_map,
-          {key: key, lhs: lhs, rhs: rhs}
+        plugin_key_map,
+        {key: key, lhs: lhs, rhs: rhs}
       )
       execute printf(
-        'nnoremap <silent> %s <Cmd>call %sPluginRunKey(%d)<CR>',
-        lhs, SID, idx
+        '%snoremap <silent> %s <Cmd>call %sPluginRunKey(%d)<CR>',
+        mode, lhs, SID, idx
       )
     endfor
   endif

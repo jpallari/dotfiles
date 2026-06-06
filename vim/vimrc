@@ -243,8 +243,9 @@ nnoremap <leader>x "_d
 nnoremap <leader>X "_D
 nnoremap Y y$
 
-nnoremap <leader>s :Surround <Space>
-vnoremap <leader>s :'<,'>Surround <Space>
+# Surround
+nnoremap <leader>s :Surround<Space>
+vnoremap <leader>s :'<,'>Surround<Space>
 
 # Quick search and replace
 for mode in ['n', 'v']

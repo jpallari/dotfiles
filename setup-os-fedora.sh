@@ -2,6 +2,7 @@
 set -euo pipefail
 
 dnf upgrade -y
+dnf copr enable -y jdxcode/mise
 dnf install -y \
     zsh \
     neovim \
@@ -16,4 +17,5 @@ dnf install -y \
     libubsan \
     cppcheck \
     rustup \
-    golang
+    golang \
+    mise

@@ -25,3 +25,6 @@
 [submodule "nvim/pack/plugins/opt/nvim-dap-view"]
 	path = nvim/pack/plugins/opt/nvim-dap-view
 	url = https://github.com/igorlfs/nvim-dap-view.git
+[submodule "vim/pack/plugins/opt/lsp"]
+	path = vim/pack/plugins/opt/lsp
+	url = https://github.com/yegappan/lsp.git

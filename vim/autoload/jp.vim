@@ -790,7 +790,8 @@ def PluginUnloadShims(spec: dict<any>, key: string)
   if has_key(spec, 'keys')
     for keyspec in spec.keys
       if !has_key(keyspec, 'rhs') || keyspec.rhs ==# ''
-        execute 'silent! nunmap ' .. keyspec.lhs
+        const mode = get(keyspec, 'mode', 'n')
+        execute printf('silent! %sunmap %s', mode, keyspec.lhs)
       endif
     endfor
   endif

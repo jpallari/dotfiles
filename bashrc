@@ -362,7 +362,7 @@ alias wai=whereami
 
 # set the current window title
 set_window_title() {
-    echo -ne "\033]0;$@\007"
+    echo -ne "\033]0;$*\007"
 }
 
 # current time zone
@@ -525,7 +525,7 @@ precmd() {
         esac
         encoded+="${o}"
     done
-    printf '\e]7;file://%s%s\e\\' "${HOSTNAME}" "${encoded}"
+    printf "\e]7;file://%s%s\e\\" "${HOSTNAME}" "${encoded}"
 
     # include WSL specific additions
     if [ -n "${WSLENV:-}" ]; then

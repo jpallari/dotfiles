@@ -237,7 +237,6 @@ endfor
 tnoremap <Esc><Esc> <C-\><C-n>
 
 # Editing
-inoremap <C-Space> <C-n>
 vnoremap <leader>c "+y
 nnoremap <leader>v "+p
 nnoremap x "_dl
@@ -300,6 +299,10 @@ inoremap <M-Right> <C-Right>
 inoremap <M-Left>  <C-Left>
 inoremap <C-d> <C-O>"_dl
 inoremap <C-k> <C-O>d$
+
+# Completion
+inoremap <expr> <C-space> &omnifunc !=# '' ? "\<C-x>\<C-o>" : "\<C-n>"
+inoremap <expr> <C-@>     &omnifunc !=# '' ? "\<C-x>\<C-o>" : "\<C-n>"
 
 # Tag jumps
 nnoremap g<C-]> <C-W><C-]><C-W>T

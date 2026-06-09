@@ -1,7 +1,5 @@
 vim9script
 
-const SID = expand('<SID>')
-
 # ---------------------------------------------------------------------------
 # Notification helpers
 # ---------------------------------------------------------------------------
@@ -884,9 +882,9 @@ export def PluginRegister(spec: dict<any>)
     for c in spec.cmd
       execute printf(
         'command! -bang -range=-1 -nargs=* %s '
-          .. 'call %sPluginRunCmd(%s, %s, <bang>0, '
+          .. 'call PluginRunCmd(%s, %s, <bang>0, '
           .. '"<mods>", <line1>, <line2>, <range>, <q-args>)',
-        c, SID, string(key), string(c)
+        c, string(key), string(c)
       )
     endfor
   endif
@@ -902,8 +900,8 @@ export def PluginRegister(spec: dict<any>)
         {key: key, lhs: lhs, rhs: rhs}
       )
       execute printf(
-        '%snoremap <silent> %s <Cmd>call %sPluginRunKey(%d)<CR>',
-        mode, lhs, SID, idx
+        '%snoremap <silent> %s <ScriptCmd>PluginRunKey(%d)<CR>',
+        mode, lhs, idx
       )
     endfor
   endif

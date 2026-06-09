@@ -1,7 +1,5 @@
 vim9script
 
-const SID = expand('<SID>')
-
 # ---------------------------------------------------------------------------
 # Plugin options
 # ---------------------------------------------------------------------------
@@ -185,6 +183,62 @@ def LspToggleDocHighlightCmd()
 enddef
 
 # ---------------------------------------------------------------------------
+# LSP attach/detach hooks
+# ---------------------------------------------------------------------------
+
+def OnAttach()
+  # Key bindings
+  nnoremap <buffer> <silent> K           <cmd>LspHover<cr>
+  nnoremap <buffer> <silent> <C-]>       <cmd>LspGotoDefinition<cr>
+  nnoremap <buffer> <silent> grD         <cmd>LspGotoDeclaration<cr>
+  nnoremap <buffer> <silent> gra         <cmd>LspCodeAction<cr>
+  xnoremap <buffer> <silent> gra         :LspCodeAction<cr>
+  nnoremap <buffer> <silent> gri         <cmd>LspGotoImpl<cr>
+  nnoremap <buffer> <silent> grn         <cmd>LspRename<cr>
+  nnoremap <buffer> <silent> grr         <cmd>LspShowReferences<cr>
+  nnoremap <buffer> <silent> grt         <cmd>LspGotoTypeDef<cr>
+  nnoremap <buffer> <silent> grx         <cmd>LspCodeLens<cr>
+  nnoremap <buffer> <silent> gO          <cmd>LspDocumentSymbol<cr>
+  inoremap <buffer> <silent> <C-S>       <cmd>LspShowSignature<cr>
+  nnoremap <buffer> <silent> <leader>ca  <cmd>LspCodeAction<cr>
+  nnoremap <buffer> <silent> <leader>cf  <cmd>LspFormat<cr>
+  nnoremap <buffer> <silent> <leader>cl  <cmd>LspCodeLens<cr>
+  nnoremap <buffer> <silent> <leader>cs  <cmd>LspShowSignature<cr>
+  nnoremap <buffer> <silent> <leader>cr  <cmd>LspRename<cr>
+  nnoremap <buffer> <silent> <leader>tdh <cmd>LspToggleDocHighlight<cr>
+  nnoremap <buffer> <silent> <leader>tih <cmd>LspInlayHints toggle<cr>
+  nnoremap <buffer> <silent> <leader>dd  <cmd>LspDiag current<cr>
+  nnoremap <buffer> <silent> ]d          <cmd>LspDiag next<cr>
+  nnoremap <buffer> <silent> [d          <cmd>LspDiag prev<cr>
+enddef
+
+def OnDetach()
+  # Key bindings
+  silent! nunmap <buffer> K
+  silent! nunmap <buffer> <C-]>
+  silent! nunmap <buffer> grD
+  silent! nunmap <buffer> gra
+  silent! xunmap <buffer> gra
+  silent! nunmap <buffer> gri
+  silent! nunmap <buffer> grn
+  silent! nunmap <buffer> grr
+  silent! nunmap <buffer> grt
+  silent! nunmap <buffer> grx
+  silent! nunmap <buffer> gO
+  silent! iunmap <buffer> <C-S>
+  silent! nunmap <buffer> <leader>ca
+  silent! nunmap <buffer> <leader>cf
+  silent! nunmap <buffer> <leader>cl
+  silent! nunmap <buffer> <leader>cs
+  silent! nunmap <buffer> <leader>cr
+  silent! nunmap <buffer> <leader>tdh
+  silent! nunmap <buffer> <leader>tih
+  silent! nunmap <buffer> <leader>dd
+  silent! nunmap <buffer> ]d
+  silent! nunmap <buffer> [d
+enddef
+
+# ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
 
@@ -192,22 +246,16 @@ export def Setup()
   g:LspOptionsSet(LSP_OPTIONS)
   g:LspAddServer(Servers())
 
-  execute printf(
-    'command! -nargs=0 LspStart call %sLspStartCmd()',
-    SID
-  )
-  execute printf(
-    'command! -nargs=0 LspStop call %sLspStopCmd()',
-    SID
-  )
-  execute printf(
-    'command! -nargs=0 LspRestart call %sLspRestartCmd()',
-    SID
-  )
-  execute printf(
-    'command! -nargs=0 LspToggleDocHighlight call %sLspToggleDocHighlightCmd()',
-    SID
-  )
+  command! -nargs=0 LspStart LspStartCmd()
+  command! -nargs=0 LspStop LspStopCmd()
+  command! -nargs=0 LspRestart LspRestartCmd()
+  command! -nargs=0 LspToggleDocHighlight LspToggleDocHighlightCmd()
+
+  augroup jp_lsp
+    autocmd!
+    autocmd User LspAttached OnAttach()
+    autocmd User LspDetached OnDetach()
+  augroup END
 
   silent! doautocmd FileType
 enddef
